@@ -1,0 +1,57 @@
+Create Crowd MyCrowdOne
+    Set Capacity 100;
+    Set EnergyLevel 10;
+
+Create Crowd MyCrowdTwo
+    Set Capacity 100;
+    Set EnergyLevel 10;
+    
+Create Park ThrillPark 
+    Set Admission 100;
+    Set Capacity  1000;
+    Set Cost      10;
+    
+    Create Land ParkLand
+        Set Location 100;
+        Create Attraction GiantWheel In ParkLand;       
+        Create Restaurant Hotel In ParkLand;  
+        Create Store KidsStuff In ParkLand;          
+        
+Start:
+{
+    Set Cost 100 In ParkLand;
+
+    SimulatePark : Hotel;
+    
+    ExecuteSample : Hotel, GiantWheel;    
+
+    Execute : ;
+    
+    Iterate 
+    {
+        a = a+b;
+    }
+    Until (a < b);
+}
+
+Number SimulatePark : String Hotel
+{
+    Set Cost 100 In Hotel;
+    Set Capacity 100 In Hotel;
+    Set Employees 100 In Hotel;
+    Set SpendLevel 10 In Hotel;
+    Set EnergyIncrease 5 In Hotel;
+}    
+
+String ExecuteSample: String Hotel, String GiantWheel
+{
+    Set Cost 100 In Hotel;
+    Set Capacity 100 In Hotel;
+    Set ThrillLevel 10 In GiantWheel;
+    Set EnergyLost 5 In GiantWheel;
+}    
+
+Execute: 
+{
+    Set Cost 100 In Hotel;
+}
