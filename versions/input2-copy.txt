@@ -1,0 +1,6 @@
+Create Park ThrillPark 
+    Set Admission 100;
+    Set Capacity  1000;
+    Set Cost      10;
+
+    
