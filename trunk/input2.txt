@@ -1,0 +1,36 @@
+Crowd MyCrowdOne
+    Set Size 100;
+    Set EnergyLevel 10;
+
+Park ThrillPark 
+    Set Admission 100;
+    Set Capacity  1000;
+    Set Cost      10;
+    Land LandOne
+        Set Location 1;	
+	Attraction GiantWheel In LandOne
+	Set Cost 10;
+	Set Capacity 1000;
+	Set Employees 5;
+	Set ThrillLevel 10;
+	Set EnergyLost 5;
+	;
+	Store KidsStuff In LandOne
+	;
+	Restaurant Marriot In LandOne
+	Set Cost 200 ; 
+	Set Capacity 1000 ;
+	Set Employees 10 ;
+	Set SpendLevel  15;
+	Set EnergyIncrease 3;	
+	;	
+    Land LandOne
+        Set Location 1;
+    Land LandOne
+        Set Location 1;
+
+Crowd MyCrowdTwo
+    Set Size 100;
+    Set EnergyLevel 10;
+
+    
