@@ -2,12 +2,12 @@ Crowd MyCrowdOne
     Set Size 100;
     Set EnergyLevel 10;
 
-Park ThrillPark 
+Park ParkOne
     Set Admission 100;
     Set Capacity  1000;
     Set Cost      10;
     Land LandOne
-        Set Location 1;	
+        Set Location 1;
 	Attraction GiantWheel In LandOne
 	Set Cost 10;
 	Set Capacity 1000;
@@ -31,11 +31,12 @@ Crowd MyCrowdTwo
 
 Start:
 {
+    Number a = 0;
     variable = a + bi + (5 + 1) + ((4 - result) * (4 / 1));
     Number result = 0, newvar = 100.0;
     Number decl, init, sooper;
     String name = "Hemanth", nwstring = "string";
-
+    a = 10;
     resut = calculateRevenue: MyCrowdTwo, day;
     resut = calculateRevenue: ;
     calculateRevenue: ;

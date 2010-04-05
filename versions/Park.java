@@ -17,7 +17,7 @@ public class Park {
 	}
 	
 	public Park(){
-		setParkAttributeValues(100, 10000, 10);
+		setParkAttributeValues(100, 100, 10000);
 	}
 
 	public String getParkName() {

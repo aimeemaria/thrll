@@ -33,11 +33,11 @@ EnergyLost          { return Parser.EnergyLost;     }
 If                  { return Parser.If;             }
 In                  { return Parser.In;             }
 Iterate             { return Parser.Iterate;        }
-Land                { return Parser.Land;           }
+Land                { yyparser.noOfLands++; yyparser.setKeywordType(Parser.Land); return Parser.Land; }
 Location            { return Parser.Location;       }
 Months              { return Parser.Months;         }
 Number              { return Parser.Number;         }
-Park                { return Parser.Park;           }
+Park                { yyparser.noOfParks++; yyparser.setKeywordType(Parser.Park); return Parser.Park; }
 Print               { return Parser.Print;          }
 Restaurant          { return Parser.Restaurant;     }
 Return              { return Parser.Return;         }
@@ -58,7 +58,7 @@ Years               { return Parser.Years;          }
 {NL}                { /* Do nothing */ }
 
 /* Identifier */
-{ID}                { return Parser.ID; }
+{ID}                { yyparser.identifier = yytext(); return Parser.ID; }
 
 /* float */
 {NUMBER}            { yyparser.yylval = new ParserVal(Double.parseDouble(yytext()));
