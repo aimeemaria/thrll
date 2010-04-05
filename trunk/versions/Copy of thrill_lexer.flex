@@ -22,7 +22,6 @@ Admission           { return Parser.Admission;       }
 Attraction          { return Parser.Attraction;     }
 Capacity            { return Parser.Capacity;            }
 Cost                { return Parser.Cost;                 }
-Create              { yyparser.setKeywordType(Parser.Create); return Parser.Create;  }
 Crowd               { yyparser.setKeywordType(Parser.Crowd); return Parser.Crowd;     }
 Days                { return Parser.Days;                                                   }
 Duration            { return Parser.Duration;                                               }

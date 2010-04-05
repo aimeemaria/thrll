@@ -94,7 +94,7 @@ park_definition: Create { createObj = true; addKeyword("Create"); }
 		     park_elements
 		   ;
 
-park_elements: park_attributes 
+park_elements: park_attributes
 		 | SEMICOLON 
              ;
              
@@ -213,7 +213,12 @@ empty: ;
 		  case Duration:
 			  //durationObj = new Duration();
 			  break;
+		  case Store:
+			  storeObj = new Store();
+			  symbolTable.add(storeName, storeObj);
+			  Store s = symbolTable.getValue(storeName);
 		  }
+	  createObj = false;
 	  }
   }
   

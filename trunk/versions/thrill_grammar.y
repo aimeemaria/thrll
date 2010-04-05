@@ -2,6 +2,7 @@
 import java.lang.Math;
 import java.io.*;
 import java.util.StringTokenizer;
+import java.util.Hashtable;
 %}
 
 /* YACC Declarations */
@@ -33,7 +34,6 @@ import java.util.StringTokenizer;
 %token Admission        /* Admission keyword        */
 %token Attraction       /* Attraction keyword       */
 %token Capacity         /* Capacity keyword         */
-%token Create           /* Create keyword           */
 %token Crowd            /* Crowd keyword            */
 %token Cost             /* Cost keyword             */
 %token Duration         /* Duration keyword         */
@@ -58,7 +58,6 @@ import java.util.StringTokenizer;
 %token Start            /* Start keyword            */
 %token Store            /* Store keyword            */
 %token String           /* String keyword           */
-%token Thrill           /* Thrill keyword           */
 %token ThrillLevel      /* ThrillLevel keyword      */
 %token Until            /* Until keyword            */
 
@@ -74,141 +73,196 @@ import java.util.StringTokenizer;
 %token Years            /* Number of years           */
 
 /* Associativity and precedence */
-%left '-' '+'
-%left '*' '/'
-
-/* Grammar follows */
+%left MINUS PLUS
+%left MUL DIV
+%nonassoc EQUAL NOTEQUAL LESSEQUAL GREATEQUAL ISEQUAL LESS GREAT
+          
 %%
-program: thrill_elements start function;
 
-thrill_elements: crowd_definition park_definition 
-               | park_definition crowd_definition
-               ;               
+program: definitions usercode;
 
-crowd_definition: Create crowd_elements 
+definitions: crowd_definitions park_definition crowd_definitions;
+crowd_definitions: crowd_definitions crowd_definition   
+                 | empty
+                 ;
+
+usercode: start; 
+
+crowd_definition: Crowd crowd_name crowd_elements;
+                
+crowd_elements: SEMICOLON 
+              | crowd_attributes
+              ;
+              
+crowd_attributes: crowd_attributes crowd_attribute
                 | empty
                 ;
                 
-crowd_elements: Crowd crowd_name SEMICOLON | Crowd crowd_name crowd_attributes;
-crowd_attributes: c1 
-                | c2 
-                | c3 
-                | c4 
-                | c5
-                | empty
-                ;
-                
-c1: Set Capacity NUMBER SEMICOLON crowd_attributes;                
-c2: Set Size NUMBER SEMICOLON crowd_attributes;
-c3: Set EnergyLevel NUMBER SEMICOLON crowd_attributes;
-c4: Set ThrillLevel NUMBER SEMICOLON crowd_attributes;
-c5: Set SpendingCapacity NUMBER SEMICOLON crowd_attributes;
+crowd_attribute: c1
+               | c2
+               | c3 
+               | c4 
+               ;
 
-park_definition: Create park_elements;
+c1: Set SpendingCapacity NUMBER SEMICOLON;
+c2: Set Size NUMBER SEMICOLON;
+c3: Set EnergyLevel NUMBER SEMICOLON;            
+c4: Set ThrillLevel NUMBER SEMICOLON;
 
-park_elements: Park park_name SEMICOLON 
-             | Park park_name park_attributes land_definition;
+park_definition: Park { createObj = true; }
+		     park_name { try { createObject(); } catch(Exception ex) {} }
+		     park_elements 
+   	 	     land_definitions
+
+park_elements: SEMICOLON 
+             | park_attributes 
+             ;
              
-park_attributes: p1 
-               | p2 
-               | p3 
+park_attributes: park_attributes park_attribute 
                | empty
                ;
                
-p1: Set Admission NUMBER SEMICOLON park_attributes;
-p2: Set Capacity NUMBER SEMICOLON park_attributes;
-p3: Set Cost NUMBER SEMICOLON park_attributes;
+park_attribute: p1 
+              | p2 
+              | p3               
+              ;
+               
+p1: Set Admission NUMBER { parkObj.setAdmission(yylval.dval); } SEMICOLON;
+p2: Set Capacity NUMBER { parkObj.setCapacity(yylval.dval); } SEMICOLON;
+p3: Set Cost NUMBER { parkObj.setCost(yylval.dval); } SEMICOLON;
 
-land_definition: Create Land land_name land_attributes land_elements;
-land_attributes: Set Location NUMBER SEMICOLON;
-land_elements: attraction_definition 
-             | restaurant_definition 
-             | store_definition 
-             | empty
-             ;
- 
-attraction_definition: Create Attraction attraction_name In land_name attraction_attributes SEMICOLON land_elements;
-attraction_attributes: a1 
-                     | a2 
-                     | a3
-                     | a4 
-                     | a5 
-                     | empty
-                     ;                     
-a1: Set Cost NUMBER SEMICOLON attraction_attributes;
-a2: Set Capacity NUMBER SEMICOLON attraction_attributes;
-a3: Set Employees NUMBER SEMICOLON attraction_attributes;
-a4: Set Thrill NUMBER SEMICOLON attraction_attributes;
-a5: Set EnergyLost NUMBER SEMICOLON attraction_attributes;
+land_definitions: land_definitions land_definition
+                | empty
+		    ;
+land_definition: Land { createObj = true; }
+		     land_name { try { createObject(); } catch(Exception ex) {} }
+		     land_attributes land_elements;
+land_attributes: SEMICOLON
+		   | Set Location 
+		     NUMBER { 
+				  Land land = (Land)thrillObjects.get(identifier);
+				  if(land == null) 
+				  { 
+					// grrrr.. this land has not been defined! throw an exception 
+				  }
+				  land.setLocation(yylval.dval);
+				} 
+		     SEMICOLON;
+land_elements: land_elements land_element
+             | empty;
+land_element: attraction_definition 
+            | restaurant_definition 
+            | store_definition 
+            ;
 
-restaurant_definition: Create Restaurant restaurant_name In land_name restaurant_attributes SEMICOLON land_elements;
-restaurant_attributes: r1 
-                     | r2 
-                     | r3 
-                     | r4 
-                     | r5 
+attraction_definition: Attraction attraction_name In land_name attraction_attributes;
+attraction_attributes: SEMICOLON
+			   | attraction_attributes attraction_attribute
                      | empty
                      ;
-r1: Set Cost NUMBER SEMICOLON restaurant_attributes;
-r2: Set Capacity NUMBER SEMICOLON restaurant_attributes;
-r3: Set Employees NUMBER SEMICOLON restaurant_attributes;
-r4: Set SpendLevel NUMBER SEMICOLON restaurant_attributes;
-r5: Set EnergyIncrease NUMBER SEMICOLON restaurant_attributes;
+attraction_attribute: a1 
+                    | a2 
+                    | a3
+                    | a4 
+                    | a5
+                    ;                     
+a1: Set Cost NUMBER SEMICOLON;
+a2: Set Capacity NUMBER SEMICOLON;
+a3: Set Employees NUMBER SEMICOLON;
+a4: Set ThrillLevel NUMBER SEMICOLON;
+a5: Set EnergyLost NUMBER SEMICOLON;
 
-store_definition: Create Store store_name In land_name store_attributes SEMICOLON land_elements;
-store_attributes:  s1 
-                | s2 
-                | s3 
-                | s4 
+restaurant_definition: Restaurant restaurant_name In land_name restaurant_attributes;
+restaurant_attributes: SEMICOLON
+			   | restaurant_attributes restaurant_attribute
+                     | empty
+			   ;
+restaurant_attribute: r1 
+                    | r2 
+                    | r3 
+                    | r4 
+                    | r5
+                    ;
+r1: Set Cost NUMBER SEMICOLON; 
+r2: Set Capacity NUMBER SEMICOLON;
+r3: Set Employees NUMBER SEMICOLON;
+r4: Set SpendLevel NUMBER SEMICOLON;
+r5: Set EnergyIncrease NUMBER SEMICOLON;
+
+store_definition: Store  { createObj = true; }
+			store_name { try { storeName = identifier; createObject(); } catch(Exception ex) {} }
+			In 
+		      land_name 
+			{ 
+				Land land = (Land)thrillObjects.get(identifier);
+				if(land == null) 
+				{ 
+					// grrrr.. this land has not been defined! throw an exception 
+				}
+				// Now we need to make sure that this store is add to the list of stores in
+				// in the land object
+				Store s = (Store)thrillObjects.get(storeName);
+				s.setLand(land);
+				land.addStore(s);
+			} 			
+			store_attributes;
+store_attributes: SEMICOLON
+		    | store_attributes store_attribute
                 | empty
-                ;
-s1: Set Cost NUMBER SEMICOLON store_attributes;
-s2: Set Capacity NUMBER SEMICOLON store_attributes;
-s3: Set Employees NUMBER SEMICOLON store_attributes;
-s4: Set SpendLevel NUMBER SEMICOLON store_attributes;
+		    ;
+store_attribute: s1 
+               | s2 
+               | s3 
+               | s4
+               ;
+               
+s1: Set Cost NUMBER SEMICOLON;
+s2: Set Capacity NUMBER SEMICOLON;
+s3: Set Employees NUMBER SEMICOLON;
+s4: Set SpendLevel NUMBER SEMICOLON;
 
 start: Start COLON block;
 
-function: return_type function_name COLON actual_parameters block function 
+function: return_type function_name COLON actual_parameters block function
         | empty
         ;
-return_type: Number 
-           | String 
+return_type: Number
+           | String
            | empty
-           ;           
-actual_parameters: data_type variable_name actual_parameter 
-                 | empty;                 
-actual_parameter: COMMA actual_parameters 
+           ;
+actual_parameters: data_type variable_name actual_parameter
+                 | empty;
+actual_parameter: COMMA actual_parameters
                 | empty;
 
 block: start_block statements end_block;
 start_block: OPEN_PARAN;
 end_block: CLOSE_PARAN;
-statements : statement statements 
+
+statements: statements statement
            | empty;
-statement: add_attraction_attribute 
-         | add_crowd_attribute
-         | add_restaurant_attribute 
-         | add_store_attribute 
-         | assignment
-         | condition 
+statement: add_attraction_attribute
+	   | add_crowd_attribute
+	   | add_restaurant_attribute
+	   | add_store_attribute
+	   | assignment
+	   | condition
          | declaration
-         | function_call
+	   | function_call
          | initialization
-         | loop
-         | thrill_functions
+	   | thrill_functions
          ;
 
 add_attraction_attribute: Set Cost value In attraction_name SEMICOLON
                         | Set Capacity value In attraction_name SEMICOLON
                         | Set Employees value In attraction_name SEMICOLON
-                        | Set Thrill value In attraction_name SEMICOLON
+                        | Set ThrillLevel value In attraction_name SEMICOLON
                         | Set EnergyLost value In attraction_name SEMICOLON
                         ;
 
-add_crowd_attribute: Set Size value In crowd_name SEMICOLON 
-                   | Set EnergyLevel value In crowd_name SEMICOLON 
-                   | Set ThrillLevel value In crowd_name SEMICOLON 
+add_crowd_attribute: Set Size value In crowd_name SEMICOLON
+                   | Set EnergyLevel value In crowd_name SEMICOLON
+                   | Set ThrillLevel value In crowd_name SEMICOLON
                    | Set SpendingCapacity value In crowd_name SEMICOLON
                    ;
 
@@ -218,102 +272,108 @@ add_restaurant_attribute: Set Cost value In restaurant_name SEMICOLON
                         | Set SpendLevel value In restaurant_name SEMICOLON
                         | Set EnergyIncrease value In restaurant_name SEMICOLON
                         ;
-                          
-add_store_attribute: Set Cost value In store_name SEMICOLON 
-                   | Set Capacity value In store_name SEMICOLON 
-                   | Set Employees value In store_name SEMICOLON 
-                   | Set SpendLevel value In store_name SEMICOLON
-                   ;
 
-assignment: left_side EQUAL right_side SEMICOLON;
-left_side : variable_name;
-right_side : arithmetic_expression | function_call;
-arithmetic_expression: arithmetic_expression arithmetic_operator arithmetic_expression 
-                     | OPEN arithmetic_expression CLOSE                
-                     | variable_name 
+add_store_attribute: Set Cost value SEMICOLON
+                   | Set Capacity value In store_name SEMICOLON
+                   | Set Employees value In store_name SEMICOLON
+                   | Set SpendLevel value In store_name SEMICOLON
+		       ;
+
+assignment: left_side EQUAL right_side;
+left_side: variable_name;
+right_side: arithmetic_expression SEMICOLON 
+ 	   | function_call
+	   ;
+arithmetic_expression: arithmetic_expression PLUS arithmetic_expression
+			   | arithmetic_expression MINUS arithmetic_expression
+			   | arithmetic_expression MUL arithmetic_expression
+			   | arithmetic_expression DIV arithmetic_expression
+                     | OPEN arithmetic_expression CLOSE
+                     | variable_name
                      | constant
                      ;
-arithmetic_operator : PLUS 
-                    | MINUS 
-                    | DIV 
-                    | MUL
-                    ;
 
-condition: If OPEN relational_expression CLOSE block 
+condition: If OPEN relational_expression CLOSE block
          | If OPEN relational_expression CLOSE block Else block ;
-relational_expression : relational_expression relational_operator relational_expression %prec ISEQUAL
-                      | OPEN relational_expression CLOSE 
-                      | variable_name 
-                      | constant;
-                      
-relational_operator : LESSEQUAL 
-                    | GREATEQUAL 
-                    | NOTEQUAL 
-                    | ISEQUAL 
-                    | EQUAL 
-                    | LESS 
-                    | GREAT
-                    ;
+relational_expression: relational_expression LESSEQUAL relational_expression
+			   | relational_expression GREATEQUAL relational_expression
+			   | relational_expression NOTEQUAL relational_expression
+			   | relational_expression LESS relational_expression
+			   | relational_expression GREAT relational_expression
+                     | OPEN relational_expression CLOSE
+                     | variable_name
+                     | constant
+		         ;
 
-declaration : primitive_type declaration_list;
-declaration_list: variable_name COMMA declaration_list 
+declaration: primitive_type declaration_list;
+declaration_list: variable_name COMMA declaration_list
                 | variable_name SEMICOLON;
 
 function_call: function_name COLON formal_parameters SEMICOLON;
-formal_parameters: variable_name formal_parameter 
+formal_parameters: variable_name formal_parameter
                  | empty;
 formal_parameter: COMMA formal_parameters 
                 | empty;
 
-initialization : primitive_type initialization_list;
-initialization_list : variable_name EQUAL constant SEMICOLON | variable_name EQUAL constant COMMA initialization_list;
-
-loop: Iterate block Until OPEN relational_expression CLOSE SEMICOLON;
+initialization: primitive_type initialization_list;
+initialization_list: variable_name EQUAL constant SEMICOLON 
+		    | variable_name EQUAL constant COMMA initialization_list
+		    ;
 
 thrill_functions: calculate_revenue | output | simulate;
 calculate_revenue: CalculateRevenue COLON Crowd crowd_name COMMA Duration duration_type;
-duration_type: Days 
-             | Weeks 
-             | Months 
+duration_type: Days
+             | Weeks
+             | Months
              | Years;
-             
+
 output: Print constant_variable_chain;
 
-constant_variable_chain: constant_or_variable PLUS constant_variable_chain 
-                       | constant_or_variable;
-
-constant_or_variable: constant 
-                    | variable_name;
-constant: NUMBER 
-        | Quote ID Quote;
-        
 simulate: Simulate COLON SEMICOLON;
 
-attraction_name: ID;
-crowd_name: ID;
-function_name: ID;
-land_name: ID;
-park_name: ID;
-restaurant_name: ID;
-store_name: ID;
-variable_name: ID;
+constant_variable_chain: constant_or_variable PLUS constant_variable_chain
+                       | constant_or_variable;
 
-value: NUMBER 
-     | variable_name;
+constant_or_variable: constant
+                    | variable_name;
 
-data_type: complex_type 
+data_type: complex_type
          | primitive_type;
-         
-complex_type: Crowd 
+
+complex_type: Crowd
             | Duration;
 
-primitive_type: Number 
+primitive_type: Number
               | String;
+
+constant: NUMBER
+        | Quote ID Quote;
+
+value: NUMBER
+     | variable_name;
+
+attraction_name: variable_name;
+crowd_name: variable_name;
+function_name: variable_name;
+land_name: variable_name;
+park_name: variable_name;
+restaurant_name: variable_name;
+store_name: variable_name;
+variable_name: ID;
 
 empty: ;
 
 %%
   private Yylex lexer;
+  private Hashtable<String, Object> thrillObjects;
+  Park parkObj = null;
+  int noOfParks = 0, noOfLands = 0;
+  public String identifier = null;
+  String storeName = null;
+  String attractionName = null;
+  String restaurantName = null;
+  boolean createObj = false;
+  short keywordType = 0;
   
   private int yylex () {
     int yyl_return = -1;
@@ -322,7 +382,7 @@ empty: ;
       yyl_return = lexer.yylex();
     }
     catch (IOException e) {
-      System.err.println("IO error :" +e);
+      System.err.println("IO error:" +e);
     }
     return yyl_return;
   }
@@ -333,11 +393,73 @@ empty: ;
 
   public Parser(Reader r) {
     //yydebug = true;
+    System.out.println("yydebug = " + yydebug);
     lexer = new Yylex(r, this);
   }
   
   static boolean interactive;
-  
+
+  public void setKeywordType(short val){
+	keywordType = val;
+  }
+
+  public short getKeywordType(){
+  	return keywordType;
+  }
+
+ public void createObject() throws Exception{
+	  if(createObj){
+		  switch(keywordType){
+		  case Park: 			 
+			  // We can have only one park object in the entire program
+			  if(noOfParks > 1)
+				throw new Exception("Number of parks > 1");
+
+			  parkObj = new Park();
+			  parkObj.setParkName(identifier);
+			  // check for redefinition
+			  if(thrillObjects.containsKey("Park"))
+				  throw new Exception("Already defined");
+			  thrillObjects.put(identifier, parkObj);
+
+			  break;
+			  
+		  case Land:
+			  if(noOfLands > 6)
+				throw new Exception("Number of lands > 6");
+
+			  Land land = new Land();
+			  land.setLandName(identifier);
+			  // check for redefinition
+			  if(thrillObjects.containsKey(identifier))
+				  throw new Exception("Already defined");
+			  thrillObjects.put(identifier, land);
+
+			  break;
+			  
+		  case Crowd:
+			  //crowdObj = new Crowd();
+			  break;
+			  
+		  case Duration:
+			  //durationObj = new Duration();
+			  break;
+
+		  case Store:
+			  Store obj = new Store();
+			  obj.setStoreName(identifier);
+			  if(thrillObjects.containsKey(identifier))
+				  throw new Exception(identifier + " already defined");
+			  break;
+
+		  case Attraction:
+			  // Attraction obj = new Store;
+			  break;
+		  }
+	  createObj = false;
+	  }
+  }
+
   public static void main(String args[]) throws IOException {
     System.out.println("THRLL programming language");
 
@@ -356,10 +478,6 @@ empty: ;
 
     yyparser.yyparse();
     
-    if (interactive) {
       System.out.println();
       System.out.println("Have a nice day");
-    }
-  }  
-  
-  
+  }
