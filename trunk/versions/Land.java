@@ -2,22 +2,17 @@
 import java.util.ArrayList;
 
 public class Land {
-	String landName = null;
-	private int locationVal = 1;
-	double location = 0;
-	Park park = null;
+	private String landName;
+	private int locationVal;
+	private double location;
+	private Park park;
 	// other attributes
 
-	ArrayList<Store> attractionList = new ArrayList<Store>();
-	ArrayList<Store> restaurantList = new ArrayList<Store>();
+	ArrayList<Attraction> attractionList = new ArrayList<Attraction>();
+	ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
 	ArrayList<Store> storeList = new ArrayList<Store>();
 	
-	private void setLandAttributeValues(double location){
-		this.location = location;
-	}
-	
 	public Land(){
-		setLandAttributeValues(locationVal++);
 	}
 
 	public String getLandName() {
@@ -43,7 +38,15 @@ public class Land {
 	public void setPark(Park park) {
 		this.park = park;
 	}
-
+	
+	public void addAttraction(Attraction a){
+		attractionList.add(a);
+	}
+	
+	public void addRestaurant(Restaurant r){
+		restaurantList.add(r);
+	}
+	
 	public void addStore(Store s){
 		storeList.add(s);
 	}

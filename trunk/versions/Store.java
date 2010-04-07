@@ -1,28 +1,35 @@
 // this class implements the Store type
 public class Store {
-	String storeName = null;
-	Land land = null;
-	double employees = 0;
-	// other attributes
-	
-/*	private void setStoreAttributeValues(double admission, double capacity, double cost){
-		this.admission = admission;
-		this.capacity = capacity;
-		this.cost = cost;
+	private String storeName;	
+	private double cost;
+	private int capacity;	
+	private int employees;
+	private int spendLevel;
+	private Land land;
+
+	public Store(){		
 	}
-*/
-	public Store(){
-		//setStoreAttributeValues();
-	}
-	
+
 	public String getStoreName() {
 		return storeName;
 	}
-	
-	public double getEmployees() {
+
+	public double getCost() {
+		return cost;
+	}
+
+	public int getCapacity() {
+		return capacity;
+	}
+
+	public int getEmployees() {
 		return employees;
 	}
-	
+
+	public int getSpendLevel() {
+		return spendLevel;
+	}
+
 	public Land getLand() {
 		return land;
 	}
@@ -30,14 +37,24 @@ public class Store {
 	public void setStoreName(String storeName) {
 		this.storeName = storeName;
 	}
-	
-	public void setEmployees(double employees) {
+
+	public void setCost(double cost) {
+		this.cost = cost;
+	}
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	public void setEmployees(int employees) {
 		this.employees = employees;
 	}
-	
+
+	public void setSpendLevel(int spendLevel) {
+		this.spendLevel = spendLevel;
+	}
+
 	public void setLand(Land land) {
 		this.land = land;
 	}
-	
-
 }

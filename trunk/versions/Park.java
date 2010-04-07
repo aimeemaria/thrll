@@ -2,7 +2,7 @@
 import java.util.ArrayList;
 
 public class Park {
-	private String parkName = null;
+	private String parkName;
 	private double admission;
 	private int capacity;
 	private double cost;
@@ -11,9 +11,6 @@ public class Park {
 	private ArrayList<Land> landObjs = new ArrayList<Land>();
 
 	public Park(){
-		admission = 20.0;
-		capacity = 1000;
-		cost = 10000;
 	}
 	
 	public String getParkName() {
