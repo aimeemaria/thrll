@@ -1,17 +1,18 @@
 
 public class Attraction {
+	private String attractionName;
 	private int capacity;
 	private double cost;
 	private int energyLost;
 	private int employees;
-	private int thrillLevel;
+	private int thrillLevel;	
+	private Land land = null;
 	
 	public Attraction(){
-		cost = 100;
-		capacity = 100;
-		energyLost = 1;
-		employees = 5;
-		thrillLevel = 5;
+	}
+
+	public String getAttractionName() {
+		return attractionName;
 	}
 
 	public int getCapacity() {
@@ -34,6 +35,14 @@ public class Attraction {
 		return thrillLevel;
 	}
 
+	public Land getLand() {
+		return land;
+	}
+
+	public void setAttractionName(String attractionName) {
+		this.attractionName = attractionName;
+	}
+
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
@@ -52,5 +61,9 @@ public class Attraction {
 
 	public void setThrillLevel(int thrillLevel) {
 		this.thrillLevel = thrillLevel;
+	}
+
+	public void setLand(Land land) {
+		this.land = land;
 	}
 }

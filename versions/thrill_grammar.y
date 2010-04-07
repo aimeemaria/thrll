@@ -98,7 +98,14 @@ import java.util.Hashtable;
 %type <sval> p1
 %type <sval> p2
 %type <sval> p3
-
+%type <dval> land_attributes
+%type <sval> attraction_attributes
+%type <sval> attraction_attribute
+%type <sval> a1
+%type <sval> a2
+%type <sval> a3
+%type <sval> a4
+%type <sval> a5
 %%
 
 program: definitions usercode;
@@ -152,40 +159,45 @@ park_attribute: p1 { $$ = $1; }
               ;
                
 p1: Set Admission NUMBER SEMICOLON { $$ = ":Admission:" + $3;};
-p2: Set Capacity NUMBER SEMICOLON { $$ = ":Capacity:" + $3;};
-p3: Set Cost NUMBER SEMICOLON { $$ = ":Cost:" + $3;};
+p2: Set Capacity NUMBER SEMICOLON  { $$ = ":Capacity:" + $3;};
+p3: Set Cost NUMBER SEMICOLON      { $$ = ":Cost:" + $3;};
 
 land_definitions: land_definitions land_definition
-                | empty
+                | empty {}
 		    ;
 land_definition: Land { createObj = true; }
 		     land_name { try { createObject($3); } catch(Exception ex) {} }
-		     land_attributes land_elements { /*setLocation($3, $5);*/ } ;
+		     land_attributes land_elements { setLocation($3, $5); } ;
 land_attributes: SEMICOLON {}
-		   | Set Location NUMBER SEMICOLON { /*$$ = $3;*/ };
+		   | Set Location NUMBER SEMICOLON { $$ = $3; };
 land_elements: land_elements land_element
-             | empty;
+             | empty {}
+		 ;
 land_element: attraction_definition 
             | restaurant_definition 
             | store_definition 
             ;
 
-attraction_definition: Attraction attraction_name In land_name attraction_attributes;
-attraction_attributes: SEMICOLON
-			   | attraction_attributes attraction_attribute
-                     | empty
+attraction_definition: Attraction { createObj = true; }
+			     attraction_name { try { createObject($3); } catch(Exception ex) {} }
+			     In 
+			     land_name { createAttractionDefinition($6, $3); }
+			     attraction_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
+attraction_attributes: SEMICOLON {}
+			   | attraction_attributes attraction_attribute { $$ = $$ + $2; }
+                     | empty {}
                      ;
-attraction_attribute: a1 
-                    | a2 
-                    | a3
-                    | a4 
-                    | a5
+attraction_attribute: a1 { $$ = $1; }
+                    | a2 { $$ = $1; }
+                    | a3 { $$ = $1; }
+                    | a4 { $$ = $1; }
+                    | a5 { $$ = $1; }
                     ;                     
-a1: Set Cost NUMBER SEMICOLON;
-a2: Set Capacity NUMBER SEMICOLON;
-a3: Set Employees NUMBER SEMICOLON;
-a4: Set ThrillLevel NUMBER SEMICOLON;
-a5: Set EnergyLost NUMBER SEMICOLON;
+a1: Set Cost NUMBER SEMICOLON 	 { $$ = ":Cost:" + $3;};
+a2: Set Capacity NUMBER SEMICOLON 	 { $$ = ":Capacity:" + $3;};
+a3: Set Employees NUMBER SEMICOLON 	 { $$ = ":Employees:" + $3;};
+a4: Set ThrillLevel NUMBER SEMICOLON { $$ = ":ThrillLevel:" + $3;};
+a5: Set EnergyLost NUMBER SEMICOLON  { $$ = ":EnergyLost:" + $3;};
 
 restaurant_definition: Restaurant restaurant_name In land_name restaurant_attributes;
 restaurant_attributes: SEMICOLON
@@ -417,18 +429,22 @@ empty: ;
 	public void createObject(String identifier) throws Exception{
 		if(createObj){
 			switch(keywordType){
-			case Park: 			 
-				// We can have only one park object in the entire program
-				if(noOfParks > 1)
-					throw new Exception("Number of parks > 1");
-				
-				Park park = new Park();
-				park.setParkName(identifier);
+
+			case Attraction:
+				Attraction attraction = new Attraction();
+				attraction.setAttractionName(identifier);
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, attraction);
+				break;
+
+			case Crowd:
+				Crowd crowd = new Crowd();
+				crowd.setCrowdName(identifier);
 				// check for redefinition
 				if(thrillObjects.containsKey(identifier))
 					ThrillException.redefinitionException(identifier);
-				thrillObjects.put(identifier, park);
-				parkObj = park;
+				thrillObjects.put(identifier, crowd);
 
 				break;
 
@@ -447,19 +463,33 @@ empty: ;
 
 				break;
 
-			case Crowd:
-				Crowd crowd = new Crowd();
-				crowd.setCrowdName(identifier);
-				// check for redefinition
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
-				thrillObjects.put(identifier, crowd);
-				
-				break;
-
 			case Duration:
 				//Duration duration = new Duration();
 				break;
+
+			case Park: 			 
+				// We can have only one park object in the entire program
+				if(noOfParks > 1)
+					throw new Exception("Number of parks > 1");
+
+				Park park = new Park();
+				park.setParkName(identifier);
+				// check for redefinition
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, park);
+
+				// Need a local copy of Park object in the Land object
+				parkObj = park;
+
+				break;
+
+			case Restaurant:
+				Restaurant restaurant = new Restaurant();
+				restaurant.setRestaurantName(identifier);
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, restaurant);
 
 			case Store:
 				Store store = new Store();
@@ -467,10 +497,6 @@ empty: ;
 				if(thrillObjects.containsKey(identifier))
 					ThrillException.redefinitionException(identifier);
 				thrillObjects.put(identifier, store);
-				break;
-
-			case Attraction:
-				// Attraction attraction = new Attraction();
 				break;
 			}
 			createObj = false;
@@ -486,12 +512,30 @@ empty: ;
 		land.setLocation(location);
 	}
 
-	public void createAttractionDefinition() { 
-		// add code similar to createStoreDefinition
+	public void createAttractionDefinition(String landName, String attractioName) { 
+		Land land = (Land)thrillObjects.get(landName);
+		if(land == null) 
+		{ 
+			// grrrr.. this land has not been defined! throw an exception 
+		}
+		// Now we need to make sure that this store is add to the list of stores in
+		// in the land object
+		Attraction a = (Attraction)thrillObjects.get(attractioName);
+		a.setLand(land);
+		land.addAttraction(a);
 	}
-	
-	public void createRestaurantDefinition() { 
-		// add code similar to createStoreDefinition
+
+	public void createRestaurantDefinition(String landName, String restaurantName) { 
+		Land land = (Land)thrillObjects.get(landName);
+		if(land == null) 
+		{ 
+			// grrrr.. this land has not been defined! throw an exception 
+		}
+		// Now we need to make sure that this store is add to the list of stores in
+		// in the land object
+		Restaurant r = (Restaurant)thrillObjects.get(restaurantName);
+		r.setLand(land);
+		land.addRestaurant(r);
 	}
 
 	public void createStoreDefinition(String landName, String storeName) { 
@@ -507,10 +551,12 @@ empty: ;
 		land.addStore(s);
 	}	
 
- 	public void setAttribute(String identifier, String allAttributes) throws ThrillException{
- 		Object obj = thrillObjects.get(identifier);
+	public void setAttribute(String identifier, String allAttributes) throws ThrillException{
+		Object obj = thrillObjects.get(identifier);
 		if(obj instanceof Attraction){
 			Attraction a = (Attraction)obj;
+			if(a == null)
+				ThrillException.objectNotFoundException(identifier);
 			setAttractionAttribute(a, allAttributes);
 		}		
 		else if(obj instanceof Crowd){
@@ -536,99 +582,99 @@ empty: ;
 		else if(obj instanceof Store){
 			// similar to Crowd
 		}
- 	}
- 	
- 	public void setAttractionAttribute(Attraction a, String allAttributes){
- 		String regex = ":";
- 		String[] attributes = allAttributes.split(regex);
- 		
- 		for(int i = 1; i < attributes.length; i+=2){
- 			if(attributes[i].equalsIgnoreCase("Cost")){ 				 
- 				a.setCost(Double.parseDouble(attributes[i + 1]));
- 			}
- 			else if(attributes[i].equalsIgnoreCase("Capacity")){
- 				a.setCapacity((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else if(attributes[i].equalsIgnoreCase("Employees")){
- 				a.setEmployees((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else if(attributes[i].equalsIgnoreCase("EnergyLost")){
- 				a.setEnergyLost((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else{
- 				a.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 		}
- 	}
- 	
- 	public void setCrowdAttribute(Crowd c, String allAttributes)
- 	{		
- 		String regex = ":";
- 		String[] attributes = allAttributes.split(regex);
- 		
- 		for(int i = 1; i < attributes.length; i+=2){
- 			if(attributes[i].equalsIgnoreCase("EnergyLevel")){ 				 
- 				c.setEnergyLevel((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else if(attributes[i].equalsIgnoreCase("Size")){
- 				c.setSize((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else if(attributes[i].equalsIgnoreCase("SpendingCapacity")){
- 				c.setSpendingCapacity(Double.parseDouble(attributes[i + 1]));
- 			}
- 			else{
- 				c.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 		}	
 	}
- 	
- 	public void setLandAttribute(Land a, String allAttributes){
- 		// similar to setCrowdAttribute()
- 	}
- 	
- 	public void setParkAttribute(Park p, String allAttributes){
- 		String regex = ":";
- 		String[] attributes = allAttributes.split(regex);
- 		
- 		for(int i = 1; i < attributes.length; i+=2){
- 			if(attributes[i].equalsIgnoreCase("Admission")){ 				 
- 				p.setAdmission((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else if(attributes[i].equalsIgnoreCase("Capacity")){
- 				p.setCapacity((int)Double.parseDouble(attributes[i + 1]));
- 			}
- 			else{
- 				p.setCost(Double.parseDouble(attributes[i + 1]));
- 			}
- 		}
- 	}
- 	
- 	public void setRestaurantAttribute(Restaurant r, String allAttributes){
- 		// similar to setCrowdAttribute()
- 	}
- 	
- 	public void setStoreAttribute(Store s, String allAttributes){
- 		// similar to setCrowdAttribute()
- 	}
 
- 	public static void main(String args[]) throws IOException {
-    System.out.println("THRLL programming language");
+	public void setAttractionAttribute(Attraction a, String allAttributes){
+		String regex = ":";
+		String[] attributes = allAttributes.split(regex);
 
-    Parser yyparser;
-    if ( args.length > 0 ) {
-      // parse a file
-      yyparser = new Parser(new FileReader(args[0]));
-    }
-    else {
-      // interactive mode
-      System.out.println("[Quit with CTRL-D]");
-      System.out.println("Input");
-      interactive = true;
-	  yyparser = new Parser(new InputStreamReader(System.in));
-    }
+		for(int i = 1; i < attributes.length; i+=2){
+			if(attributes[i].equalsIgnoreCase("Cost")){ 				 
+				a.setCost(Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("Capacity")){
+				a.setCapacity((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("Employees")){
+				a.setEmployees((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("EnergyLost")){
+				a.setEnergyLost((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else{
+				a.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
+			}
+		}
+	}
 
-    yyparser.yyparse();
-    
-      System.out.println();
-      System.out.println("Have a nice day");
-  }
+	public void setCrowdAttribute(Crowd c, String allAttributes)
+	{		
+		String regex = ":";
+		String[] attributes = allAttributes.split(regex);
+
+		for(int i = 1; i < attributes.length; i+=2){
+			if(attributes[i].equalsIgnoreCase("EnergyLevel")){ 				 
+				c.setEnergyLevel((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("Size")){
+				c.setSize((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("SpendingCapacity")){
+				c.setSpendingCapacity(Double.parseDouble(attributes[i + 1]));
+			}
+			else{
+				c.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
+			}
+		}	
+	}
+
+	public void setLandAttribute(Land a, String allAttributes){
+		// similar to setCrowdAttribute()
+	}
+
+	public void setParkAttribute(Park p, String allAttributes){
+		String regex = ":";
+		String[] attributes = allAttributes.split(regex);
+
+		for(int i = 1; i < attributes.length; i+=2){
+			if(attributes[i].equalsIgnoreCase("Admission")){ 				 
+				p.setAdmission((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("Capacity")){
+				p.setCapacity((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else{
+				p.setCost(Double.parseDouble(attributes[i + 1]));
+			}
+		}
+	}
+
+	public void setRestaurantAttribute(Restaurant r, String allAttributes){
+		// similar to setCrowdAttribute()
+	}
+
+	public void setStoreAttribute(Store s, String allAttributes){
+		// similar to setCrowdAttribute()
+	}
+
+	public static void main(String args[]) throws IOException {
+		System.out.println("THRLL programming language");
+
+		Parser yyparser;
+		if ( args.length > 0 ) {
+			// parse a file
+			yyparser = new Parser(new FileReader(args[0]));
+		}
+		else {
+			// interactive mode
+			System.out.println("[Quit with CTRL-D]");
+			System.out.println("Input");
+			interactive = true;
+			yyparser = new Parser(new InputStreamReader(System.in));
+		}
+
+		yyparser.yyparse();
+
+		System.out.println();
+		System.out.println("Have a nice day");
+	}
