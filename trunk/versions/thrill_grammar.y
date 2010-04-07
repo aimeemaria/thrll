@@ -106,6 +106,19 @@ import java.util.Hashtable;
 %type <sval> a3
 %type <sval> a4
 %type <sval> a5
+%type <sval> restaurant_attributes
+%type <sval> restaurant_attribute
+%type <sval> r1
+%type <sval> r2
+%type <sval> r3
+%type <sval> r4
+%type <sval> r5
+%type <sval> store_attributes
+%type <sval> store_attribute
+%type <sval> s1
+%type <sval> s2
+%type <sval> s3
+%type <sval> s4
 %%
 
 program: definitions usercode;
@@ -125,7 +138,7 @@ crowd_elements: SEMICOLON {}
               | crowd_attributes { $$ = $1; }
               ;
               
-crowd_attributes: crowd_attributes crowd_attribute { $$ = $$ + $2;}
+crowd_attributes: crowd_attributes crowd_attribute { $$ += $2;}
                 | empty	{}
                 ;
                 
@@ -146,10 +159,10 @@ park_definition: Park { createObj = true; }
    	 	     land_definitions
 
 park_elements: SEMICOLON {}
-             | park_attributes { $$ = $1; System.out.println($$); }
+             | park_attributes { $$ = $1; }
              ;
              
-park_attributes: park_attributes park_attribute { $$ = $$ + $2; }
+park_attributes: park_attributes park_attribute { $$ += $2; }
                | empty {}
                ;
                
@@ -168,8 +181,7 @@ land_definitions: land_definitions land_definition
 land_definition: Land { createObj = true; }
 		     land_name { try { createObject($3); } catch(Exception ex) {} }
 		     land_attributes land_elements { setLocation($3, $5); } ;
-land_attributes: SEMICOLON {}
-		   | Set Location NUMBER SEMICOLON { $$ = $3; };
+land_attributes: Set Location NUMBER SEMICOLON { $$ = $3; };
 land_elements: land_elements land_element
              | empty {}
 		 ;
@@ -184,7 +196,7 @@ attraction_definition: Attraction { createObj = true; }
 			     land_name { createAttractionDefinition($6, $3); }
 			     attraction_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
 attraction_attributes: SEMICOLON {}
-			   | attraction_attributes attraction_attribute { $$ = $$ + $2; }
+			   | attraction_attributes attraction_attribute { $$ += $2; }
                      | empty {}
                      ;
 attraction_attribute: a1 { $$ = $1; }
@@ -199,42 +211,48 @@ a3: Set Employees NUMBER SEMICOLON 	 { $$ = ":Employees:" + $3;};
 a4: Set ThrillLevel NUMBER SEMICOLON { $$ = ":ThrillLevel:" + $3;};
 a5: Set EnergyLost NUMBER SEMICOLON  { $$ = ":EnergyLost:" + $3;};
 
-restaurant_definition: Restaurant restaurant_name In land_name restaurant_attributes;
-restaurant_attributes: SEMICOLON
-			   | restaurant_attributes restaurant_attribute
-                     | empty
+restaurant_definition: Restaurant { createObj = true; }
+			     restaurant_name { try { createObject($3); } catch(Exception ex) {} }
+			     In 
+  			     land_name { createRestaurantDefinition($6, $3); }
+			     restaurant_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
+			     ;
+restaurant_attributes: SEMICOLON {}
+			   | restaurant_attributes restaurant_attribute { $$ += $2; }
+                     | empty {}
 			   ;
-restaurant_attribute: r1 
-                    | r2 
-                    | r3 
-                    | r4 
-                    | r5
+restaurant_attribute: r1 { $$ = $1; }
+                    | r2 { $$ = $1; }
+                    | r3 { $$ = $1; }
+                    | r4 { $$ = $1; }
+                    | r5{ $$ = $1; }
                     ;
-r1: Set Cost NUMBER SEMICOLON; 
-r2: Set Capacity NUMBER SEMICOLON;
-r3: Set Employees NUMBER SEMICOLON;
-r4: Set SpendLevel NUMBER SEMICOLON;
-r5: Set EnergyIncrease NUMBER SEMICOLON;
+r1: Set Cost NUMBER SEMICOLON 		{ $$ = ":Cost:" + $3;};
+r2: Set Capacity NUMBER SEMICOLON;		{ $$ = ":Capacity:" + $3;};
+r3: Set Employees NUMBER SEMICOLON;		{ $$ = ":Employees:" + $3;};
+r4: Set SpendLevel NUMBER SEMICOLON;	{ $$ = ":SpendLevel:" + $3;};
+r5: Set EnergyIncrease NUMBER SEMICOLON;	{ $$ = ":EnergyIncrease:" + $3;};
 
 store_definition: Store  { createObj = true; }
 			store_name { try { createObject($3); } catch(Exception ex) {} }
 			In 
 		      land_name { createStoreDefinition($6, $3); }
-			store_attributes;
-store_attributes: SEMICOLON
-		    | store_attributes store_attribute
-                | empty
+			store_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
+			;
+store_attributes: SEMICOLON {}
+		    | store_attributes store_attribute { $$ += $2; }
+                | empty {}
 		    ;
-store_attribute: s1 
-               | s2 
-               | s3 
-               | s4
+store_attribute: s1 { $$ = $1; }
+               | s2 { $$ = $1; }
+               | s3 { $$ = $1; }
+               | s4 { $$ = $1; }
                ;
                
-s1: Set Cost NUMBER SEMICOLON;
-s2: Set Capacity NUMBER SEMICOLON;
-s3: Set Employees NUMBER SEMICOLON;
-s4: Set SpendLevel NUMBER SEMICOLON;
+s1: Set Cost NUMBER SEMICOLON		 { $$ = ":Cost:" + $3;};
+s2: Set Capacity NUMBER SEMICOLON;	 { $$ = ":Capacity:" + $3;};
+s3: Set Employees NUMBER SEMICOLON;	 { $$ = ":Employees:" + $3;};
+s4: Set SpendLevel NUMBER SEMICOLON; { $$ = ":SpendLevel:" + $3;}; 
 
 start: Start COLON block;
 
@@ -577,10 +595,16 @@ empty: ;
 			setParkAttribute(p, allAttributes);
 		}
 		else if(obj instanceof Restaurant){
-			// similar to Crowd
+			Restaurant r = (Restaurant)obj;
+			if(r == null)
+				ThrillException.objectNotFoundException(identifier);
+			setRestaurantAttribute(r, allAttributes);
 		}
 		else if(obj instanceof Store){
-			// similar to Crowd
+			Store s = (Store)obj;
+			if(s == null)
+				ThrillException.objectNotFoundException(identifier);
+			setStoreAttribute(s, allAttributes);
 		}
 	}
 
@@ -650,11 +674,50 @@ empty: ;
 	}
 
 	public void setRestaurantAttribute(Restaurant r, String allAttributes){
-		// similar to setCrowdAttribute()
+		String regex = ":";
+		String[] attributes = allAttributes.split(regex);
+
+		for(int i = 1; i < attributes.length; i+=2){
+			if(attributes[i].equalsIgnoreCase("Capacity")){
+				r.setCapacity((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase(attributes[i + 1])){
+				r.setCost(Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("Employees")){
+				r.setEmployees((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("EnergyLost")){
+				r.setEnergyIncrease((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else{
+				r.setSpendLevel((int)Double.parseDouble(attributes[i + 1]));
+			}
+		}
 	}
 
 	public void setStoreAttribute(Store s, String allAttributes){
-		// similar to setCrowdAttribute()
+		String regex = ":";
+		String[] attributes = allAttributes.split(regex);
+
+		for(int i = 1; i < attributes.length; i+=2){
+			if(attributes[i].equalsIgnoreCase("Capacity")){
+				s.setCapacity((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase(attributes[i + 1])){
+				s.setCost(Double.parseDouble(attributes[i + 1]));
+			}
+			else if(attributes[i].equalsIgnoreCase("Employees")){
+				s.setEmployees((int)Double.parseDouble(attributes[i + 1]));
+			}
+			else {
+				s.setSpendLevel((int)Double.parseDouble(attributes[i + 1]));
+			}
+		}
+	}
+
+	public Hashtable<String, Object> getThrillObjects() {
+		return thrillObjects;
 	}
 
 	public static void main(String args[]) throws IOException {
@@ -672,8 +735,11 @@ empty: ;
 			interactive = true;
 			yyparser = new Parser(new InputStreamReader(System.in));
 		}
-
+		
 		yyparser.yyparse();
+		
+		Hashtable<String, Object> objects = yyparser.getThrillObjects();
+		System.out.println("No .of objects = " + objects.size());
 
 		System.out.println();
 		System.out.println("Have a nice day");
