@@ -1,0 +1,36 @@
+Create a directory in C called thrill.
+
+From C:\thrill, issue the command - 
+
+C:\thrill\svn checkout https://thrll.googlecode.com/svn/trunk/ --username <your gmail id>
+
+This will download the entire code from repository. You can see that the structure on the code repository and your file system is the same. This folder is your working copy. Any changes, add to trunk/versions folder on your system. If you want to upload any file to the repository, either use
+
+1) svn add filename
+
+OR
+
+2) svn update filename
+
+then commit this using the command
+svn commit -m "message"
+
+Some other commands that can be used are below (but we would mainly need the ones already mentioned)
+
+svn import -m "windows makefile" https://thrll.googlecode.com/svn/trunk/makefile/windows --username hcmurthy
+
+svn import -m "linux makefile" https://thrll.googlecode.com/svn/trunk/makefile/linux --username hcmurthy
+
+svn import -m "makefile" https://thrll.googlecode.com/svn/trunk/makefile --username hcmurthy
+
+svn import -m "working" https://thrll.googlecode.com/svn/trunk/working --username hcmurthy
+
+svn import -m "version" https://thrll.googlecode.com/svn/trunk/versions --username hcmurthy
+
+svn mkdir -m "Linux Makefile" https://thrll.googlecode.com/svn/trunk/makefile
+
+svn mkdir -m "Linux Makefile" https://thrll.googlecode.com/svn/trunk/makefile/linux
+
+svn mkdir https://thrll.googlecode.com/svn/trunk/working
+
+svn mkdir https://thrll.googlecode.com/svn/trunk/versions
