@@ -5,6 +5,7 @@ public class Land {
 	String landName = null;
 	private int locationVal = 1;
 	double location = 0;
+	Park park = null;
 	// other attributes
 
 	ArrayList<Store> attractionList = new ArrayList<Store>();
@@ -26,7 +27,11 @@ public class Land {
 	public double getLocation() {
 		return location;
 	}
-
+	
+	public Park getPark() {
+		return park;
+	}
+	
 	public void setLandName(String landName) {
 		this.landName = landName;
 	}
@@ -34,7 +39,11 @@ public class Land {
 	public void setLocation(double location) {
 		this.location = location;
 	}
-	
+
+	public void setPark(Park park) {
+		this.park = park;
+	}
+
 	public void addStore(Store s){
 		storeList.add(s);
 	}

@@ -8,7 +8,7 @@ import java.util.Hashtable;
 /* YACC Declarations */
 %token EMPTY            /* newline  */
 %token <dval> NUMBER    /* a number */
-%token ID               /* a string */
+%token <sval> ID        /* a string */
 %token WP               /* whitespace */
 %token SEMICOLON        /* semicolon */
 %token COMMA            /* comma separator */
@@ -31,34 +31,34 @@ import java.util.Hashtable;
 %token Quote            /* " */
 
 /* Keywords */
-%token Admission        /* Admission keyword        */
-%token Attraction       /* Attraction keyword       */
-%token Capacity         /* Capacity keyword         */
-%token Crowd            /* Crowd keyword            */
-%token Cost             /* Cost keyword             */
-%token Duration         /* Duration keyword         */
-%token Else             /* Else keyword             */
-%token Employees        /* Employees keyword        */
+%token Admission        	 /* Admission keyword        */
+%token Attraction       	 /* Attraction keyword       */
+%token <dval> Capacity         /* Capacity keyword         */
+%token Crowd            	 /* Crowd keyword            */
+%token <dval> Cost             /* Cost keyword             */
+%token Duration         	 /* Duration keyword         */
+%token Else             	 /* Else keyword             */
+%token Employees        	 /* Employees keyword        */
 %token EnergyIncrease   /* EnergyIncrease keyword   */
-%token EnergyLevel      /* EnergyLevel keyword      */
+%token <dval>EnergyLevel      /* EnergyLevel keyword      */
 %token EnergyLost       /* EnergyLost keyword       */
-%token If               /* If keyword               */
-%token In               /* In keyword               */
-%token Iterate          /* Iterate keyword          */
-%token Land             /* Land keyword             */
-%token Location         /* Location keyword         */
-%token Number           /* Number keyword           */
-%token Park             /* Park keyword             */
-%token Restaurant       /* Restaurant keyword       */
-%token Return           /* Return keyword           */
-%token Set              /* Set keyword              */
-%token Size             /* Size keyword             */
+%token If               	 /* If keyword               */
+%token In               	 /* In keyword               */
+%token Iterate          	 /* Iterate keyword          */
+%token Land             	 /* Land keyword             */
+%token Location         	 /* Location keyword         */
+%token <dval> Number   	 	 /* Number keyword           */
+%token Park             	 /* Park keyword             */
+%token Restaurant       	 /* Restaurant keyword       */
+%token Return           	 /* Return keyword           */
+%token Set              	 /* Set keyword              */
+%token <dval>Size             /* Size keyword             */
 %token SpendLevel       /* SpendLevel keyword       */
-%token SpendingCapacity /* SpendingCapacity keyword */
+%token <dval> SpendingCapacity /* SpendingCapacity keyword */
 %token Start            /* Start keyword            */
 %token Store            /* Store keyword            */
 %token String           /* String keyword           */
-%token ThrillLevel      /* ThrillLevel keyword      */
+%token <dval> ThrillLevel      /* ThrillLevel keyword      */
 %token Until            /* Until keyword            */
 
 /* Functions */
@@ -76,78 +76,93 @@ import java.util.Hashtable;
 %left MINUS PLUS
 %left MUL DIV
 %nonassoc EQUAL NOTEQUAL LESSEQUAL GREATEQUAL ISEQUAL LESS GREAT
-          
+
+%type <sval> attraction_name
+%type <sval> crowd_name
+%type <sval> function_name
+%type <sval> land_name
+%type <sval> park_name
+%type <sval> restaurant_name
+%type <sval> store_name
+%type <sval> variable_name
+%type <sval> crowd_attributes
+%type <sval> crowd_attribute
+%type <sval> crowd_elements
+%type <sval> c1
+%type <sval> c2
+%type <sval> c3
+%type <sval> c4
+%type <sval> park_attributes
+%type <sval> park_attribute
+%type <sval> park_elements
+%type <sval> p1
+%type <sval> p2
+%type <sval> p3
+
 %%
 
 program: definitions usercode;
 
 definitions: crowd_definitions park_definition crowd_definitions;
-crowd_definitions: crowd_definitions crowd_definition   
+crowd_definitions: crowd_definitions crowd_definition
                  | empty
                  ;
 
 usercode: start; 
 
-crowd_definition: Crowd crowd_name crowd_elements;
+crowd_definition: Crowd  { createObj = true; }
+			crowd_name { try { createObject($3); } catch(Exception ex) {} }
+			crowd_elements { try{ setAttribute($3, $5);}catch(Exception ex){} };
                 
-crowd_elements: SEMICOLON 
-              | crowd_attributes
+crowd_elements: SEMICOLON {}
+              | crowd_attributes { $$ = $1; }
               ;
               
-crowd_attributes: crowd_attributes crowd_attribute
-                | empty
+crowd_attributes: crowd_attributes crowd_attribute { $$ = $$ + $2;}
+                | empty	{}
                 ;
                 
-crowd_attribute: c1
-               | c2
-               | c3 
-               | c4 
+crowd_attribute: c1 { $$ = $1; }
+               | c2 { $$ = $1; }
+               | c3 { $$ = $1; }
+               | c4 { $$ = $1; }
                ;
 
-c1: Set SpendingCapacity NUMBER SEMICOLON;
-c2: Set Size NUMBER SEMICOLON;
-c3: Set EnergyLevel NUMBER SEMICOLON;            
-c4: Set ThrillLevel NUMBER SEMICOLON;
+c1: Set SpendingCapacity NUMBER SEMICOLON { $$ = ":SpendingCapacity:" + $3;};
+c2: Set Size NUMBER SEMICOLON 		{ $$ = ":Size:" + $3; };
+c3: Set EnergyLevel NUMBER SEMICOLON	{ $$ = ":EnergyLevel:" + $3;};
+c4: Set ThrillLevel NUMBER SEMICOLON   	{ $$ = ":ThrillLevel:" + $3;};
 
 park_definition: Park { createObj = true; }
-		     park_name { try { createObject(); } catch(Exception ex) {} }
-		     park_elements 
+		     park_name { try { createObject($3); } catch(Exception ex) {} }
+		     park_elements { try{ setAttribute($3, $5);}catch(Exception ex){} };
    	 	     land_definitions
 
-park_elements: SEMICOLON 
-             | park_attributes 
+park_elements: SEMICOLON {}
+             | park_attributes { $$ = $1; System.out.println($$); }
              ;
              
-park_attributes: park_attributes park_attribute 
-               | empty
+park_attributes: park_attributes park_attribute { $$ = $$ + $2; }
+               | empty {}
                ;
                
-park_attribute: p1 
-              | p2 
-              | p3               
+park_attribute: p1 { $$ = $1; }
+              | p2 { $$ = $1; }
+              | p3 { $$ = $1; }              
               ;
                
-p1: Set Admission NUMBER { parkObj.setAdmission(yylval.dval); } SEMICOLON;
-p2: Set Capacity NUMBER { parkObj.setCapacity(yylval.dval); } SEMICOLON;
-p3: Set Cost NUMBER { parkObj.setCost(yylval.dval); } SEMICOLON;
+p1: Set Admission NUMBER SEMICOLON { $$ = ":Admission:" + $3;};
+p2: Set Capacity NUMBER SEMICOLON { $$ = ":Capacity:" + $3;};
+p3: Set Cost NUMBER SEMICOLON { $$ = ":Cost:" + $3;};
 
 land_definitions: land_definitions land_definition
                 | empty
 		    ;
 land_definition: Land { createObj = true; }
-		     land_name { try { createObject(); } catch(Exception ex) {} }
-		     land_attributes land_elements;
-land_attributes: SEMICOLON
-		   | Set Location 
-		     NUMBER { 
-				  Land land = (Land)thrillObjects.get(identifier);
-				  if(land == null) 
-				  { 
-					// grrrr.. this land has not been defined! throw an exception 
-				  }
-				  land.setLocation(yylval.dval);
-				} 
-		     SEMICOLON;
+		     land_name { try { createObject($3); } catch(Exception ex) {} }
+		     land_attributes land_elements { /*setLocation($3, $5);*/ } ;
+land_attributes: SEMICOLON {}
+		   | Set Location NUMBER SEMICOLON { /*$$ = $3;*/ };
 land_elements: land_elements land_element
              | empty;
 land_element: attraction_definition 
@@ -190,21 +205,9 @@ r4: Set SpendLevel NUMBER SEMICOLON;
 r5: Set EnergyIncrease NUMBER SEMICOLON;
 
 store_definition: Store  { createObj = true; }
-			store_name { try { storeName = identifier; createObject(); } catch(Exception ex) {} }
+			store_name { try { createObject($3); } catch(Exception ex) {} }
 			In 
-		      land_name 
-			{ 
-				Land land = (Land)thrillObjects.get(identifier);
-				if(land == null) 
-				{ 
-					// grrrr.. this land has not been defined! throw an exception 
-				}
-				// Now we need to make sure that this store is add to the list of stores in
-				// in the land object
-				Store s = (Store)thrillObjects.get(storeName);
-				s.setLand(land);
-				land.addStore(s);
-			} 			
+		      land_name { createStoreDefinition($6, $3); }
 			store_attributes;
 store_attributes: SEMICOLON
 		    | store_attributes store_attribute
@@ -364,103 +367,251 @@ variable_name: ID;
 empty: ;
 
 %%
-  private Yylex lexer;
-  private Hashtable<String, Object> thrillObjects;
-  Park parkObj = null;
-  int noOfParks = 0, noOfLands = 0;
-  public String identifier = null;
-  String storeName = null;
-  String attractionName = null;
-  String restaurantName = null;
-  boolean createObj = false;
-  short keywordType = 0;
-  
-  private int yylex () {
-    int yyl_return = -1;
-    try {
-      yylval = new ParserVal(0);
-      yyl_return = lexer.yylex();
-    }
-    catch (IOException e) {
-      System.err.println("IO error:" +e);
-    }
-    return yyl_return;
-  }
-  
-  public void yyerror (String error) {
-    System.err.println ("Error: " + error);
-  }
+	private Yylex lexer;
+	private Hashtable<String, Object> thrillObjects = new Hashtable<String, Object>();
+	Park parkObj = null;
+	int noOfParks = 0, noOfLands = 0;
+	boolean createObj = false;
+	short keywordType = 0, attributeType = 0;
 
-  public Parser(Reader r) {
-    //yydebug = true;
-    System.out.println("yydebug = " + yydebug);
-    lexer = new Yylex(r, this);
-  }
-  
-  static boolean interactive;
+	private int yylex () {
+		int yyl_return = -1;
+		try {
+			yylval = new ParserVal(0);
+			yyl_return = lexer.yylex();
+		}
+		catch (IOException e) {
+			System.err.println("IO error:" +e);
+		}
+		return yyl_return;
+	}
 
-  public void setKeywordType(short val){
-	keywordType = val;
-  }
+	public void yyerror (String error) {
+		System.err.println ("Error: " + error);
+	}
 
-  public short getKeywordType(){
-  	return keywordType;
-  }
+	public Parser(Reader r) {
+		//yydebug = true;
+		System.out.println("yydebug = " + yydebug);
+		lexer = new Yylex(r, this);
+	}
 
- public void createObject() throws Exception{
-	  if(createObj){
-		  switch(keywordType){
-		  case Park: 			 
-			  // We can have only one park object in the entire program
-			  if(noOfParks > 1)
-				throw new Exception("Number of parks > 1");
+	static boolean interactive;
 
-			  parkObj = new Park();
-			  parkObj.setParkName(identifier);
-			  // check for redefinition
-			  if(thrillObjects.containsKey("Park"))
-				  throw new Exception("Already defined");
-			  thrillObjects.put(identifier, parkObj);
+	public void setAttributeType(short val){
+		attributeType = val;
+	}
 
-			  break;
-			  
-		  case Land:
-			  if(noOfLands > 6)
-				throw new Exception("Number of lands > 6");
+	public short getAttributeType(){
+		return attributeType;
+	}
 
-			  Land land = new Land();
-			  land.setLandName(identifier);
-			  // check for redefinition
-			  if(thrillObjects.containsKey(identifier))
-				  throw new Exception("Already defined");
-			  thrillObjects.put(identifier, land);
+	public void setKeywordType(short val){
+		keywordType = val;
+	}
 
-			  break;
-			  
-		  case Crowd:
-			  //crowdObj = new Crowd();
-			  break;
-			  
-		  case Duration:
-			  //durationObj = new Duration();
-			  break;
+	public short getKeywordType(){
+		return keywordType;
+	}
 
-		  case Store:
-			  Store obj = new Store();
-			  obj.setStoreName(identifier);
-			  if(thrillObjects.containsKey(identifier))
-				  throw new Exception(identifier + " already defined");
-			  break;
+	public void createObject(String identifier) throws Exception{
+		if(createObj){
+			switch(keywordType){
+			case Park: 			 
+				// We can have only one park object in the entire program
+				if(noOfParks > 1)
+					throw new Exception("Number of parks > 1");
+				
+				Park park = new Park();
+				park.setParkName(identifier);
+				// check for redefinition
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, park);
+				parkObj = park;
 
-		  case Attraction:
-			  // Attraction obj = new Store;
-			  break;
-		  }
-	  createObj = false;
-	  }
-  }
+				break;
 
-  public static void main(String args[]) throws IOException {
+			case Land:
+				if(noOfLands > 6)
+					throw new Exception("Number of lands > 6");
+
+				Land land = new Land();
+				land.setLandName(identifier);
+				// check for redefinition
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, land);
+				parkObj.addLand(land);
+				land.setPark(parkObj);
+
+				break;
+
+			case Crowd:
+				Crowd crowd = new Crowd();
+				crowd.setCrowdName(identifier);
+				// check for redefinition
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, crowd);
+				
+				break;
+
+			case Duration:
+				//Duration duration = new Duration();
+				break;
+
+			case Store:
+				Store store = new Store();
+				store .setStoreName(identifier);
+				if(thrillObjects.containsKey(identifier))
+					ThrillException.redefinitionException(identifier);
+				thrillObjects.put(identifier, store);
+				break;
+
+			case Attraction:
+				// Attraction attraction = new Attraction();
+				break;
+			}
+			createObj = false;
+		}
+	}
+
+	public void setLocation(String landName, double location){
+		Land land = (Land)thrillObjects.get(landName);
+		if(land == null) 
+		{ 
+			// grrrr.. this land has not been defined! throw an exception 
+		}
+		land.setLocation(location);
+	}
+
+	public void createAttractionDefinition() { 
+		// add code similar to createStoreDefinition
+	}
+	
+	public void createRestaurantDefinition() { 
+		// add code similar to createStoreDefinition
+	}
+
+	public void createStoreDefinition(String landName, String storeName) { 
+		Land land = (Land)thrillObjects.get(landName);
+		if(land == null) 
+		{ 
+			// grrrr.. this land has not been defined! throw an exception 
+		}
+		// Now we need to make sure that this store is add to the list of stores in
+		// in the land object
+		Store s = (Store)thrillObjects.get(storeName);
+		s.setLand(land);
+		land.addStore(s);
+	}	
+
+ 	public void setAttribute(String identifier, String allAttributes) throws ThrillException{
+ 		Object obj = thrillObjects.get(identifier);
+		if(obj instanceof Attraction){
+			Attraction a = (Attraction)obj;
+			setAttractionAttribute(a, allAttributes);
+		}		
+		else if(obj instanceof Crowd){
+			Crowd c = (Crowd)obj;
+			if(c == null)
+				ThrillException.objectNotFoundException(identifier);
+			// set the attribute in the crowd object
+			setCrowdAttribute(c, allAttributes);
+		}
+		else if(obj instanceof Land){
+			// similar to Crowd			
+		}
+		else if(obj instanceof Park){
+			Park p = (Park)obj;
+			if(p == null)
+				ThrillException.objectNotFoundException(identifier);
+			// set the attribute in the crowd object
+			setParkAttribute(p, allAttributes);
+		}
+		else if(obj instanceof Restaurant){
+			// similar to Crowd
+		}
+		else if(obj instanceof Store){
+			// similar to Crowd
+		}
+ 	}
+ 	
+ 	public void setAttractionAttribute(Attraction a, String allAttributes){
+ 		String regex = ":";
+ 		String[] attributes = allAttributes.split(regex);
+ 		
+ 		for(int i = 1; i < attributes.length; i+=2){
+ 			if(attributes[i].equalsIgnoreCase("Cost")){ 				 
+ 				a.setCost(Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else if(attributes[i].equalsIgnoreCase("Capacity")){
+ 				a.setCapacity((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else if(attributes[i].equalsIgnoreCase("Employees")){
+ 				a.setEmployees((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else if(attributes[i].equalsIgnoreCase("EnergyLost")){
+ 				a.setEnergyLost((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else{
+ 				a.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 		}
+ 	}
+ 	
+ 	public void setCrowdAttribute(Crowd c, String allAttributes)
+ 	{		
+ 		String regex = ":";
+ 		String[] attributes = allAttributes.split(regex);
+ 		
+ 		for(int i = 1; i < attributes.length; i+=2){
+ 			if(attributes[i].equalsIgnoreCase("EnergyLevel")){ 				 
+ 				c.setEnergyLevel((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else if(attributes[i].equalsIgnoreCase("Size")){
+ 				c.setSize((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else if(attributes[i].equalsIgnoreCase("SpendingCapacity")){
+ 				c.setSpendingCapacity(Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else{
+ 				c.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 		}	
+	}
+ 	
+ 	public void setLandAttribute(Land a, String allAttributes){
+ 		// similar to setCrowdAttribute()
+ 	}
+ 	
+ 	public void setParkAttribute(Park p, String allAttributes){
+ 		String regex = ":";
+ 		String[] attributes = allAttributes.split(regex);
+ 		
+ 		for(int i = 1; i < attributes.length; i+=2){
+ 			if(attributes[i].equalsIgnoreCase("Admission")){ 				 
+ 				p.setAdmission((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else if(attributes[i].equalsIgnoreCase("Capacity")){
+ 				p.setCapacity((int)Double.parseDouble(attributes[i + 1]));
+ 			}
+ 			else{
+ 				p.setCost(Double.parseDouble(attributes[i + 1]));
+ 			}
+ 		}
+ 	}
+ 	
+ 	public void setRestaurantAttribute(Restaurant r, String allAttributes){
+ 		// similar to setCrowdAttribute()
+ 	}
+ 	
+ 	public void setStoreAttribute(Store s, String allAttributes){
+ 		// similar to setCrowdAttribute()
+ 	}
+
+ 	public static void main(String args[]) throws IOException {
     System.out.println("THRLL programming language");
 
     Parser yyparser;

@@ -17,9 +17,8 @@ build: clean Parser.class
 clean: 
 	del *.*~ Parser.class Yylex.class ParserTokens.class ParserVal.class Parser.java Yylex.java ParserTokens.java ParserVal.java
 
-Parser.class: Yylex.java Park.java Land.java Store.java Parser.java
+Parser.class: Yylex.java Park.java Land.java Store.java ThrillException.java Parser.java
 	$(JAVAC) Parser.java
-
 	
 Yylex.java: thrill_lexer.flex
 	$(JFLEX) thrill_lexer.flex
@@ -32,6 +31,9 @@ Land.class: Land.java
 
 Store.class: Store.java
 	$(JAVAC) Store.java
+
+ThrillException.class: ThrillException.java
+	$(JAVAC) ThrillException.java
 
 Parser.java: thrill_grammar.y
 	$(BYACCJ) thrill_grammar.y

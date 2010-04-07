@@ -1,43 +1,14 @@
+Crowd MyCrowdThree
+    Set ThrillLevel 10.7;
+    Set SpendingCapacity 26.5;
+    Set Size 300.2;
+    Set EnergyLevel 7.4;
+
 Crowd MyCrowdOne
-    Set Size 100;
-    Set EnergyLevel 10;
+    Set SpendingCapacity 25.6;
 
 Park ParkOne
-    Set Admission 100;
-    Set Capacity  1000;
-    Set Cost      10;
-    Land LandOne
-        Set Location 1;
-	Attraction GiantWheel In LandOne
-	Set Cost 10;
-	Set Capacity 1000;
-	Set Employees 5;
-	Set ThrillLevel 10;
-	Set EnergyLost 5;
-	Store KidsStuff In LandOne
-	Restaurant Marriot In LandOne
-	Set Cost 200 ; 
-	Set Capacity 1000 ;
-	Set Employees 10 ;
-	Set SpendLevel  15;
-	Set EnergyIncrease 3;	
-    Land LandOne
-        Set Location 1;
+    Set Admission 2100.5;
+    Set Capacity  21000.5;
+    Set Cost      210.5;
     Land LandOne;
-
-Crowd MyCrowdTwo
-    Set Size 100;
-    Set EnergyLevel 10;
-
-Start:
-{
-    Number a = 0;
-    variable = a + bi + (5 + 1) + ((4 - result) * (4 / 1));
-    Number result = 0, newvar = 100.0;
-    Number decl, init, sooper;
-    String name = "Hemanth", nwstring = "string";
-    a = 10;
-    resut = calculateRevenue: MyCrowdTwo, day;
-    resut = calculateRevenue: ;
-    calculateRevenue: ;
-}

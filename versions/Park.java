@@ -2,56 +2,75 @@
 import java.util.ArrayList;
 
 public class Park {
-	String parkName = null;
-	double admission;
-	double capacity;
-	double cost;
+	private String parkName = null;
+	private double admission;
+	private int capacity;
+	private double cost;
 	
 	// internal list of land objects
-	private ArrayList<Land> landObjs = null;
-	
-	private void setParkAttributeValues(double admission, double capacity, double cost){
-		this.admission = admission;
-		this.capacity = capacity;
-		this.cost = cost;
-	}
-	
-	public Park(){
-		setParkAttributeValues(100, 100, 10000);
-	}
+	private ArrayList<Land> landObjs = new ArrayList<Land>();
 
+	public Park(){
+		admission = 20.0;
+		capacity = 1000;
+		cost = 10000;
+	}
+	
 	public String getParkName() {
 		return parkName;
 	}
+
 
 	public double getAdmission() {
 		return admission;
 	}
 
-	public double getCapacity() {
+
+	public int getCapacity() {
 		return capacity;
 	}
+
 
 	public double getCost() {
 		return cost;
 	}
 
+
 	public void setParkName(String parkName) {
 		this.parkName = parkName;
 	}
+
 
 	public void setAdmission(double admission) {
 		this.admission = admission;
 	}
 
-	public void setCapacity(double capacity) {
+
+	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
+
 	public void setCost(double cost) {
 		this.cost = cost;
-	}	
-	
+	}
+
+
+	public void setLandObjs(ArrayList<Land> landObjs) {
+		this.landObjs = landObjs;
+	}
+
+
+	public ArrayList<Land> getLandObjs() {
+		return landObjs;
+	}
+
+	public void addLand(Land land) throws ThrillException{
+		if(landObjs.contains(land))
+			ThrillException.redefinitionException(land.getLandName());
+		landObjs.add(land);
+	}
+
 	public double calculateRevenue(Crowd c, Duration d){
 		double result = 0;
 		
