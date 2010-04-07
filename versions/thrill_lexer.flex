@@ -18,23 +18,23 @@ NL  	 = \n | \r | \r\n
 %%
 
 /* keywords */
-Admission           { yyparser.setAttributeType(Parser.Admission); return Parser.Admission;      }
+Admission           { return Parser.Admission;      }
 Attraction          { yyparser.setKeywordType(Parser.Attraction); return Parser.Attraction;     }
-Capacity            { yyparser.setAttributeType(Parser.Capacity); return Parser.Capacity;       }
-Cost                { yyparser.setAttributeType(Parser.Cost); return Parser.Cost;           }
+Capacity            { return Parser.Capacity;       }
+Cost                { return Parser.Cost;           }
 Crowd               { yyparser.setKeywordType(Parser.Crowd); return Parser.Crowd;          }
 Days                { return Parser.Days;           }
 Duration            { return Parser.Duration;       }
 Else                { return Parser.Else;           }
 Employees           { return Parser.Employees;      }
-EnergyIncrease      { yyparser.setAttributeType(Parser.EnergyIncrease); return Parser.EnergyIncrease; }
-EnergyLevel         { yyparser.setAttributeType(Parser.EnergyLevel); return Parser.EnergyLevel;    }
-EnergyLost          { yyparser.setAttributeType(Parser.EnergyLost); return Parser.EnergyLost;     }
+EnergyIncrease      { return Parser.EnergyIncrease; }
+EnergyLevel         { return Parser.EnergyLevel;    }
+EnergyLost          { return Parser.EnergyLost;     }
 If                  { return Parser.If;             }
 In                  { return Parser.In;             }
 Iterate             { return Parser.Iterate;        }
 Land                { yyparser.noOfLands++; yyparser.setKeywordType(Parser.Land); return Parser.Land; }
-Location            { yyparser.setAttributeType(Parser.Location); return Parser.Location;       }
+Location            { return Parser.Location;       }
 Months              { return Parser.Months;         }
 Number              { return Parser.Number;         }
 Park                { yyparser.noOfParks++; yyparser.setKeywordType(Parser.Park); return Parser.Park; }
@@ -43,13 +43,13 @@ Restaurant          { yyparser.setKeywordType(Parser.Restaurant); return Parser.
 Return              { return Parser.Return;         }
 Set                 { return Parser.Set;            }
 Simulate            { return Parser.Simulate;       }
-Size                { yyparser.setAttributeType(Parser.Size); return Parser.Size;           }
-SpendingCapacity    { yyparser.setAttributeType(Parser.SpendingCapacity); return Parser.SpendingCapacity; }
-SpendLevel          { yyparser.setAttributeType(Parser.SpendLevel); return Parser.SpendLevel;     }
+Size                { return Parser.Size;           }
+SpendingCapacity    { return Parser.SpendingCapacity; }
+SpendLevel          { return Parser.SpendLevel;     }
 Start               { return Parser.Start;          }
 Store               { yyparser.noOfLands++; yyparser.setKeywordType(Parser.Store); return Parser.Store; }
 String              { return Parser.String;         }
-ThrillLevel         { yyparser.setAttributeType(Parser.ThrillLevel); return Parser.ThrillLevel;    }
+ThrillLevel         { return Parser.ThrillLevel;    }
 Until               { return Parser.Until;          }
 Weeks               { return Parser.Weeks;          }
 Years               { return Parser.Years;          }
