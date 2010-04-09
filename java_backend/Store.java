@@ -8,7 +8,7 @@
  *
  */
 public class Store implements LandElement {
-	
+	private String storeName; //Name of the store
 	private double sales;  //the amount of money made in one day due to sales.
 	private int employees;  //the number of employees required to operate the store
 	private int capacity;  //the capacity of the store
@@ -16,6 +16,7 @@ public class Store implements LandElement {
 	private int spendLevel;  //the spending level associated with the store
 	private int currentAttendance;  //the current number of people in the store
 	private double price;  //the average purchase price of the store
+	private Land land; //the land object to which this store belongs to
 	
 	public Store(){
 		//set default values
@@ -33,7 +34,7 @@ public class Store implements LandElement {
 	 * @return The revenue from the day.
 	 */
 	public double calculateRevenue(Park park) {
-		double revenue = sales - park.hours * employees * park.salary;
+		double revenue = sales - park.getHours() * employees * park.getSalary();
 		return revenue;
 	}
 
@@ -64,6 +65,14 @@ public class Store implements LandElement {
 	 */
 	public void exit(Person p) {
 		currentAttendance--;
+	}
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
 	}
 
 	/**
@@ -142,5 +151,12 @@ public class Store implements LandElement {
 	public int getCurrentAttendance() {
 		return currentAttendance;
 	}
-
+	
+	public void setLand(Land land){
+		this.land = land;
+	}
+	
+	public Land getLand(){
+		return land;
+	}
 }

@@ -2,13 +2,13 @@
 import java.util.ArrayList;
 
 public class Park {
-	String parkName = null;
-	double admission;
-	double capacity;
-	double cost;
-	int hours;  //the number of hours the park operates in a day.
-	double salary;  //the average salary of park employees
-	
+	private String parkName = null;
+	private double admission;
+	private double capacity;
+	private double cost;
+	private int hours;  //the number of hours the park operates in a day.
+	private double salary;  //the average salary of park employees
+		
 	// internal list of land objects
 	private ArrayList<Land> landObjs = null;
 	
@@ -54,7 +54,17 @@ public class Park {
 
 	public void setCost(double cost) {
 		this.cost = cost;
-	}	
+	}
+	
+	public ArrayList<Land> getLandObjs() {
+		return landObjs;
+	}
+
+	public void addLand(Land land) throws ThrillException{
+		if(landObjs.contains(land))
+			ThrillException.RedefinitionException(land.getLandName());
+		landObjs.add(land);
+	}
 	
 	public double calculateRevenue(Crowd c, Duration d){
 		double result = 0;
