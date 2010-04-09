@@ -1,6 +1,22 @@
-// this class implements the Park type
+/*
+ * Park.java
+ * Team THRLL
+ * This file represents Theme Park.
+ */
+
 import java.util.ArrayList;
 
+<<<<<<< .mine
+public class Park 
+{
+	private String ParkName;
+	private double admission;
+	private double capacity;
+	private double cost;
+	public int hours;  		//the number of hours the park operates in a day.
+	public double salary;  	//the salary of park employees
+	
+=======
 public class Park {
 	private String parkName = null;
 	private double admission;
@@ -9,52 +25,67 @@ public class Park {
 	private int hours;  //the number of hours the park operates in a day.
 	private double salary;  //the average salary of park employees
 		
+>>>>>>> .r47
 	// internal list of land objects
-	private ArrayList<Land> landObjs = null;
+	private ArrayList<Land> LandObjs = null;
 	
-	private void setParkAttributeValues(double admission, double capacity, double cost){
-		this.admission = admission;
-		this.capacity = capacity;
-		this.cost = cost;
-	}
-	
-	public Park(){
-		setParkAttributeValues(100, 10000, 10);
-		hours = 12;  //default value
-		salary = 15.0; //default value
+	/*	Constructor
+	 *	to set default values of the members
+	 */
+	public Park()
+	{
+		//Set default Values
+		admission = 100;
+		capacity = 1000;
+		cost = 100000;
+		hours = 12;  	
+		salary = 15.0;
 	}
 
-	public String getParkName() {
-		return parkName;
+	public String getParkName() 
+	{
+		return ParkName;
 	}
 
-	public double getAdmission() {
+	public double getAdmission() 
+	{
 		return admission;
 	}
 
-	public double getCapacity() {
+	public double getCapacity() 
+	{
 		return capacity;
 	}
 
-	public double getCost() {
+	public double getCost() 
+	{
 		return cost;
 	}
 
-	public void setParkName(String parkName) {
-		this.parkName = parkName;
+	public void setParkName(String ParkName) 
+	{
+		this.ParkName = ParkName;
 	}
 
-	public void setAdmission(double admission) {
+	public void setAdmission(double admission) 
+	{
 		this.admission = admission;
 	}
 
-	public void setCapacity(double capacity) {
+	public void setCapacity(double capacity) 
+	{
 		this.capacity = capacity;
 	}
 
-	public void setCost(double cost) {
+	public void setCost(double cost) 
+	{
 		this.cost = cost;
 	}
+<<<<<<< .mine
+
+	public double calculateRevenue(Crowd c, Duration d)
+	{
+=======
 	
 	public ArrayList<Land> getLandObjs() {
 		return landObjs;
@@ -67,6 +98,7 @@ public class Park {
 	}
 	
 	public double calculateRevenue(Crowd c, Duration d){
+>>>>>>> .r47
 		double result = 0;
 		
 		// write the revenue logic here. This function should be able to 
@@ -77,19 +109,29 @@ public class Park {
 		return result;
 	}
 	
-	public int getHours(){
-		return hours;
+	public int getHours()
+	{
+		return hours;					
 	}
 	
-	public void setHours(int hours){
+	public void setHours(int hours)
+	{
 		this.hours = hours;
 	}
 	
-	public double getSalary(){
+	public double getSalary()
+	{
 		return salary;
 	}
 	
-	public void setSalary(double salary){
+	public void setSalary(double salary)
+	{
 		this.salary = salary;
 	}
+	
+	public void add(Land t)
+	{
+		LandObjs.add(t);
+	}
+	
 }

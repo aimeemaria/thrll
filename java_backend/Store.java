@@ -9,6 +9,7 @@
  */
 public class Store implements LandElement {
 	private String storeName; //Name of the store
+	private String StoreName; 
 	private double sales;  //the amount of money made in one day due to sales.
 	private int employees;  //the number of employees required to operate the store
 	private int capacity;  //the capacity of the store
@@ -16,10 +17,15 @@ public class Store implements LandElement {
 	private int spendLevel;  //the spending level associated with the store
 	private int currentAttendance;  //the current number of people in the store
 	private double price;  //the average purchase price of the store
+<<<<<<< .mine
+	private Land land;
+=======
 	private Land land; //the land object to which this store belongs to
+>>>>>>> .r47
 	
 	public Store(){
 		//set default values
+		StoreName = "Main Store";
 		capacity = 100;
 		cost = 0;
 		spendLevel = 5;
@@ -67,6 +73,23 @@ public class Store implements LandElement {
 		currentAttendance--;
 	}
 
+<<<<<<< .mine
+	/*
+	 * @return The name of the store 
+	 */
+	public String getStoreName() 
+	{ 
+		return StoreName; 
+	} 
+	/*
+	 *  @param The name of the store
+	 */
+	public void setStoreName(String StoreName) 
+	{ 
+		this.StoreName = StoreName; 
+	} 
+	
+=======
 	public String getStoreName() {
 		return storeName;
 	}
@@ -75,6 +98,7 @@ public class Store implements LandElement {
 		this.storeName = storeName;
 	}
 
+>>>>>>> .r47
 	/**
 	 * @return The employees required to operate the store
 	 */
@@ -139,7 +163,7 @@ public class Store implements LandElement {
 	}
 
 	/**
-	 * @param price The average purchase price of teh store
+	 * @param price The average purchase price of the store
 	 */
 	public void setPrice(int price) {
 		this.price = price;
@@ -151,6 +175,18 @@ public class Store implements LandElement {
 	public int getCurrentAttendance() {
 		return currentAttendance;
 	}
+<<<<<<< .mine
+	
+	public void setLand(Land land)
+	{ 
+		this.land = land; 
+	} 
+	  
+	public Land getLand()
+	{ 
+		return land; 
+	} 
+=======
 	
 	public void setLand(Land land){
 		this.land = land;
@@ -159,4 +195,5 @@ public class Store implements LandElement {
 	public Land getLand(){
 		return land;
 	}
+>>>>>>> .r47
 }
