@@ -42,7 +42,7 @@ public class Store implements LandElement {
 	 * @return A boolean determining if the person can enter the store
 	 */
 	public boolean canEnter(Person p) {
-		if (p.spendLevel >= this.spendLevel && currentAttendance < capacity)
+		if (p.getSpendingCapacity() >= this.spendLevel && currentAttendance < capacity)
 			return true;
 		else
 			return false;

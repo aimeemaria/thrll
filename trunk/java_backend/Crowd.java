@@ -19,13 +19,16 @@ public class Crowd {
 	public Crowd(){
 		people=new ArrayList<Person>();
 		//crowdName = "";
-		setattributes(1000,5,5,100.);//default values?
+		setattributes(1000,5,5,100.);
+	}
+	
+	public void createpeople(){
+		//people = null; ????
 		for(int i = 0; i<size;i++){
 			//TODO:set attributes of each created person in a normal distribution of crowd attributes
 			people.add(new Person());
 		}
 	}
-
 	public int getEnergyLevel(){
 		return energyLevel;
 	}
@@ -37,6 +40,10 @@ public class Crowd {
 	public double getSpendingCapacity(){
 		return spendingCapacity;
 	}
+	public int getSize(){
+		return size;
+	}
+	
 	public void setCrowdName(String crowdName) {
 		this.crowdName = crowdName;
 	}
