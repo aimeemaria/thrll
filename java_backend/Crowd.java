@@ -2,38 +2,59 @@
 import java.util.ArrayList;
 
 public class Crowd {
-	int Size;
-	int EnergyLevel;
-	int ThrillLevel;
-	int SpendingCapacity;
+	private String crowdName;
+	private int size;
+	private int energyLevel;
+	private int thrillLevel;
+	private double spendingCapacity;
 	ArrayList<Person> people;
 	
-	private void setattributes(int size,int energy,int thrill,int spend){
-		Size = size;
-		EnergyLevel = energy;
-		ThrillLevel = thrill;
-		SpendingCapacity = spend;
+	private void setattributes(int size,int energy,int thrill,double spend){
+		this.size = size;
+		energyLevel = energy;
+		thrillLevel = thrill;
+		spendingCapacity = spend;
 	}
 	
 	public Crowd(){
 		people=new ArrayList<Person>();
-		setattributes(10,10,5,50);//default values?
-		for(int i = 0; i<Size;i++){
+		//crowdName = "";
+		setattributes(1000,5,5,100.);//default values?
+		for(int i = 0; i<size;i++){
 			//TODO:set attributes of each created person in a normal distribution of crowd attributes
 			people.add(new Person());
 		}
 	}
 
 	public int getEnergyLevel(){
-		return EnergyLevel;
+		return energyLevel;
 	}
 	
-	public int getThrillLevel(){
-		return ThrillLevel;
+	public int geThrillLevel(){
+		return thrillLevel;
 	}
 	
-	public int getSpendingCapacity(){
-		return SpendingCapacity;
+	public double getSpendingCapacity(){
+		return spendingCapacity;
+	}
+	public void setCrowdName(String crowdName) {
+		this.crowdName = crowdName;
+	}
+
+	public void setSpendingCapacity(double spendingCapacity) {
+		this.spendingCapacity = spendingCapacity;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public void setEnergyLevel(int energyLevel) {
+		this.energyLevel = energyLevel;
+	}
+
+	public void setThrillLevel(int thrillLevel) {
+		this.thrillLevel = thrillLevel;
 	}
 	
 }

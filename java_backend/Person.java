@@ -1,41 +1,52 @@
 import java.util.Random;
 public class Person {
-	private int EnergyLevel;
-	private int ThrillLevel;
-	private int SpendingCapacity;
+	private int energyLevel;
+	private int thrillLevel;
+	private double spendingCapacity;
 	private double x,y; //position
 	private int tick; //time
 	
-	private void setattributes(int energy,int thrill, int spend){
-		EnergyLevel = energy;
-		ThrillLevel = thrill;
-		SpendingCapacity = spend;
+	private void setattributes(int energy,int thrill, double spend){
+		energyLevel = energy;
+		thrillLevel = thrill;
+		spendingCapacity = spend;
 	}
 	
 	public Person(){
-		setattributes(10,5,50);//what are the default values?
+		setattributes(5,5,100);//what are the default values?
 		x=0;
 		y=0;
 		tick = 600;
 	}
 	
 	public int getEnergyLevel(){
-		return EnergyLevel;
+		return energyLevel;
 	}
 	
 	public int getThrillLevel(){
-		return ThrillLevel;
+		return thrillLevel;
 	}
 	
-	public int getSpendingCapacity(){
-		return SpendingCapacity;
+	public double getSpendingCapacity(){
+		return spendingCapacity;
 	}
 	
 	public double[] getposition(){
 		double pos[]={x,y};
 		return pos;
 	}
-	
+
+	public void setSpendingCapacity(double spendingCapacity) {
+		this.spendingCapacity = spendingCapacity;
+	}
+
+	public void setEnergyLevel(int energyLevel) {
+		this.energyLevel = energyLevel;
+	}
+
+	public void setThrillLevel(int thrillLevel) {
+		this.thrillLevel = thrillLevel;
+	}
 	public void decide(){
 		//randomly select attribute store or restaurant
 		Random generator = new Random();
