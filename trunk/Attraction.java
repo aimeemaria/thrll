@@ -1,4 +1,4 @@
-/**Attraction.java
+/** Attraction.java
  * 4/6/2010
  * This class represents an Attraction in the theme park.
  */
