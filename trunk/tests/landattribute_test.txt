@@ -1,0 +1,36 @@
+Create Crowd MyCrowdOne
+Set Size 100;
+Set EnergyLevel 10;  
+
+Create Crowd MyCrowdTwo     
+Set Size 100;     
+Set ThrillLevel 10;      
+
+Create Park ThrillPark      
+Set Admission 100;     
+Set Capacity  1000;     
+Set Cost      10;          
+
+Create Land ParkLand         
+Set Location 100;         
+
+Create Attraction GiantWheel In Park;                
+
+Create Restaurant Hotel In ParkLand;           
+
+Create Store KidsStuff In ParkLand;                    
+
+Create Crowd MyCrowdThree     
+Set Size 100;     
+Set SpendingCapacity 10;
+Set ThrillLevel 10;
+Set EnergyLevel 10;
+      
+Create Crowd MyCrowdFour     
+Set Size 100;     
+Set SpendingCapacity 10;      
+
+Start:
+{
+Set Cost 100 in GiantWheel;
+}
