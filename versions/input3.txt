@@ -37,9 +37,11 @@ Park ParkOne
 
 Start:
 {   
-    Set EnergyLevel 5 In MyCrowdOne;
-    Set ThrillLevel 10 In MyCrowdOne;
+    Number a = 10.5;
+    Set EnergyLevel 5.5 In MyCrowdOne;    
+    Set ThrillLevel 10 In GiantWheel;
     Set Size 10 In MyCrowdOne;
+    Set SpendingCapacity 10 In MyCrowdOne;
 
     Number a, b, c;
     Number a = 100.5, b = 10;
@@ -48,6 +50,8 @@ Start:
     Print d;
     Print 10, n2, 10, c;
     Simulate: MyCrowdTwo;
+
+    Set ThrillLevel 5.0 In MyCrowdOne;
 
     Number result;
     result = CalculateRevenue: c, d;
@@ -82,6 +86,7 @@ Number MyFunction: Number a, String b
 {
 	a = b;
 	b = c;
+	Return a;
 }
 
 Number MyFunction: 

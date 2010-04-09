@@ -181,142 +181,131 @@
  108  statements : statements statement
  109             | empty
 
- 110  statement : add_attraction_attribute
- 111            | add_crowd_attribute
- 112            | add_restaurant_attribute
- 113            | add_store_attribute
- 114            | assignment
- 115            | condition
- 116            | declaration
- 117            | function_call
- 118            | initialization
- 119            | loop
- 120            | thrill_functions
+ 110  statement : add_attribute
+ 111            | assignment
+ 112            | condition
+ 113            | declaration
+ 114            | function_call
+ 115            | initialization
+ 116            | loop
+ 117            | return
+ 118            | thrill_functions
 
- 121  add_attraction_attribute : Set Cost value In attraction_name SEMICOLON
- 122                           | Set Capacity value In attraction_name SEMICOLON
- 123                           | Set Employees value In attraction_name SEMICOLON
- 124                           | Set ThrillLevel value In attraction_name SEMICOLON
- 125                           | Set EnergyLost value In attraction_name SEMICOLON
+ 119  add_attribute : Set Capacity value In variable_name SEMICOLON
+ 120                | Set Cost value In variable_name SEMICOLON
+ 121                | Set Employees value In variable_name SEMICOLON
+ 122                | Set EnergyIncrease value In variable_name SEMICOLON
+ 123                | Set EnergyLevel value In variable_name SEMICOLON
+ 124                | Set EnergyLost value In variable_name SEMICOLON
+ 125                | Set Size value In variable_name SEMICOLON
+ 126                | Set SpendingCapacity value In variable_name SEMICOLON
+ 127                | Set SpendLevel value In variable_name SEMICOLON
+ 128                | Set ThrillLevel value In variable_name SEMICOLON
 
- 126  add_crowd_attribute : Set Size value In crowd_name SEMICOLON
- 127                      | Set EnergyLevel value In crowd_name SEMICOLON
- 128                      | Set ThrillLevel value In crowd_name SEMICOLON
- 129                      | Set SpendingCapacity value In crowd_name SEMICOLON
+ 129  assignment : left_side EQUAL right_side
 
- 130  add_restaurant_attribute : Set Cost value In restaurant_name SEMICOLON
- 131                           | Set Capacity value In restaurant_name SEMICOLON
- 132                           | Set Employees value In restaurant_name SEMICOLON
- 133                           | Set SpendLevel value In restaurant_name SEMICOLON
- 134                           | Set EnergyIncrease value In restaurant_name SEMICOLON
+ 130  left_side : variable_name
 
- 135  add_store_attribute : Set Cost value In store_name SEMICOLON
- 136                      | Set Capacity value In store_name SEMICOLON
- 137                      | Set Employees value In store_name SEMICOLON
- 138                      | Set SpendLevel value In store_name SEMICOLON
+ 131  right_side : arithmetic_expression SEMICOLON
+ 132             | function_call
+ 133             | calculate_revenue
 
- 139  assignment : left_side EQUAL right_side
+ 134  arithmetic_expression : arithmetic_expression PLUS arithmetic_expression
+ 135                        | arithmetic_expression MINUS arithmetic_expression
+ 136                        | arithmetic_expression MUL arithmetic_expression
+ 137                        | arithmetic_expression DIV arithmetic_expression
+ 138                        | OPEN arithmetic_expression CLOSE
+ 139                        | variable_name
+ 140                        | constant
 
- 140  left_side : variable_name
+ 141  condition : If OPEN relational_expression CLOSE block
+ 142            | If OPEN relational_expression CLOSE block Else block
 
- 141  right_side : arithmetic_expression SEMICOLON
- 142             | function_call
- 143             | calculate_revenue
+ 143  relational_expression : variable_name LESSEQUAL constant_or_variable
+ 144                        | variable_name GREATEQUAL constant_or_variable
+ 145                        | variable_name NOTEQUAL constant_or_variable
+ 146                        | variable_name LESS constant_or_variable
+ 147                        | variable_name GREAT constant_or_variable
 
- 144  arithmetic_expression : arithmetic_expression PLUS arithmetic_expression
- 145                        | arithmetic_expression MINUS arithmetic_expression
- 146                        | arithmetic_expression MUL arithmetic_expression
- 147                        | arithmetic_expression DIV arithmetic_expression
- 148                        | OPEN arithmetic_expression CLOSE
- 149                        | variable_name
- 150                        | constant
+ 148  declaration : primitive_type declaration_list SEMICOLON
 
- 151  condition : If OPEN relational_expression CLOSE block
- 152            | If OPEN relational_expression CLOSE block Else block
+ 149  declaration_list : declaration_list COMMA variable_name
+ 150                   | variable_name
 
- 153  relational_expression : variable_name LESSEQUAL constant_or_variable
- 154                        | variable_name GREATEQUAL constant_or_variable
- 155                        | variable_name NOTEQUAL constant_or_variable
- 156                        | variable_name LESS constant_or_variable
- 157                        | variable_name GREAT constant_or_variable
+ 151  function_call : function_name COLON formal_parameters SEMICOLON
 
- 158  declaration : primitive_type declaration_list SEMICOLON
+ 152  formal_parameters : formal_parameters COMMA variable_name
+ 153                    | variable_name
+ 154                    | empty
 
- 159  declaration_list : declaration_list COMMA variable_name
- 160                   | variable_name
+ 155  initialization : primitive_type initialization_list SEMICOLON
 
- 161  function_call : function_name COLON formal_parameters SEMICOLON
+ 156  initialization_list : initialization_list COMMA variable_name EQUAL constant
+ 157                      | variable_name EQUAL constant
 
- 162  formal_parameters : formal_parameters COMMA variable_name
- 163                    | variable_name
- 164                    | empty
+ 158  loop : Iterate block Until OPEN relational_expression CLOSE SEMICOLON
 
- 165  initialization : primitive_type initialization_list SEMICOLON
+ 159  return : Return constant_or_variable SEMICOLON
 
- 166  initialization_list : initialization_list COMMA variable_name EQUAL constant
- 167                      | variable_name EQUAL constant
+ 160  thrill_functions : calculate_revenue
+ 161                   | output
+ 162                   | simulate
 
- 168  loop : Iterate block Until OPEN relational_expression CLOSE SEMICOLON
+ 163  calculate_revenue : CalculateRevenue COLON crowd_name COMMA duration_name SEMICOLON
 
- 169  thrill_functions : calculate_revenue
- 170                   | output
- 171                   | simulate
+ 164  output : Print constant_variable_chain SEMICOLON
 
- 172  calculate_revenue : CalculateRevenue COLON crowd_name COMMA duration_name SEMICOLON
+ 165  simulate : Simulate COLON crowd_name SEMICOLON
 
- 173  output : Print constant_variable_chain SEMICOLON
+ 166  constant_variable_chain : constant_variable_chain COMMA constant_or_variable
+ 167                          | constant_or_variable
 
- 174  simulate : Simulate COLON crowd_name SEMICOLON
+ 168  constant_or_variable : constant
+ 169                       | variable_name
 
- 175  constant_variable_chain : constant_variable_chain COMMA constant_or_variable
- 176                          | constant_or_variable
+ 170  data_type : Crowd
+ 171            | primitive_type
 
- 177  constant_or_variable : constant
- 178                       | variable_name
+ 172  primitive_type : Number
+ 173                 | String
+ 174                 | duration_type
 
- 179  data_type : Crowd
- 180            | primitive_type
+ 175  duration_type : Days
+ 176                | Weeks
+ 177                | Months
+ 178                | Years
 
- 181  primitive_type : Number
- 182                 | String
- 183                 | duration_type
+ 179  constant : NUMBER
+ 180           | Quote ID Quote
 
- 184  duration_type : Days
- 185                | Weeks
- 186                | Months
- 187                | Years
+ 181  value : NUMBER
+ 182        | variable_name
 
- 188  constant : NUMBER
- 189           | Quote ID Quote
+ 183  attraction_name : variable_name
 
- 190  value : NUMBER
- 191        | variable_name
+ 184  crowd_name : variable_name
 
- 192  attraction_name : variable_name
+ 185  duration_name : variable_name
 
- 193  crowd_name : variable_name
+ 186  function_name : variable_name
 
- 194  duration_name : variable_name
+ 187  land_name : variable_name
 
- 195  function_name : variable_name
+ 188  park_name : variable_name
 
- 196  land_name : variable_name
+ 189  restaurant_name : variable_name
 
- 197  park_name : variable_name
+ 190  store_name : variable_name
 
- 198  restaurant_name : variable_name
+ 191  variable_name : ID
 
- 199  store_name : variable_name
-
- 200  variable_name : ID
-
- 201  empty :
+ 192  empty :
 
 state 0
 	$accept : . program $end  (0)
-	empty : .  (201)
+	empty : .  (192)
 
-	.  reduce 201
+	.  reduce 192
 
 	program  goto 1
 	definitions  goto 2
@@ -367,9 +356,9 @@ state 5
 
 state 6
 	usercode : start . functions  (5)
-	empty : .  (201)
+	empty : .  (192)
 
-	.  reduce 201
+	.  reduce 192
 
 	functions  goto 13
 	empty  goto 14
@@ -401,9 +390,9 @@ state 9
 
 state 10
 	definitions : crowd_definitions park_definition . crowd_definitions  (2)
-	empty : .  (201)
+	empty : .  (192)
 
-	.  reduce 201
+	.  reduce 192
 
 	crowd_definitions  goto 17
 	empty  goto 4
@@ -428,12 +417,12 @@ state 12
 state 13
 	usercode : start functions .  (5)
 	functions : functions . function  (96)
-	empty : .  (201)
+	empty : .  (192)
 
 	Number  shift 21
 	String  shift 22
 	$end  reduce 5
-	ID  reduce 201
+	ID  reduce 192
 
 	return_type  goto 23
 	function  goto 24
@@ -484,9 +473,9 @@ state 18
 
 state 19
 	block : start_block . statements end_block  (105)
-	empty : .  (201)
+	empty : .  (192)
 
-	.  reduce 201
+	.  reduce 192
 
 	statements  goto 31
 	empty  goto 32
@@ -533,9 +522,9 @@ state 25
 
 
 state 26
-	variable_name : ID .  (200)
+	variable_name : ID .  (191)
 
-	.  reduce 200
+	.  reduce 191
 
 
 state 27
@@ -548,9 +537,9 @@ state 27
 
 
 state 28
-	crowd_name : variable_name .  (193)
+	crowd_name : variable_name .  (184)
 
-	.  reduce 193
+	.  reduce 184
 
 
 state 29
@@ -563,9 +552,9 @@ state 29
 
 
 state 30
-	park_name : variable_name .  (197)
+	park_name : variable_name .  (188)
 
-	.  reduce 197
+	.  reduce 188
 
 
 state 31
@@ -577,38 +566,37 @@ state 31
 	If  shift 38
 	Iterate  shift 39
 	Number  shift 40
-	Set  shift 41
-	String  shift 42
-	CalculateRevenue  shift 43
-	Print  shift 44
-	Simulate  shift 45
-	Days  shift 46
-	Months  shift 47
-	Weeks  shift 48
-	Years  shift 49
+	Return  shift 41
+	Set  shift 42
+	String  shift 43
+	CalculateRevenue  shift 44
+	Print  shift 45
+	Simulate  shift 46
+	Days  shift 47
+	Months  shift 48
+	Weeks  shift 49
+	Years  shift 50
 	.  error
 
-	function_name  goto 50
-	variable_name  goto 51
-	primitive_type  goto 52
-	simulate  goto 53
-	output  goto 54
-	duration_type  goto 55
-	calculate_revenue  goto 56
-	thrill_functions  goto 57
-	initialization  goto 58
-	function_call  goto 59
-	declaration  goto 60
-	left_side  goto 61
-	assignment  goto 62
-	add_store_attribute  goto 63
-	add_restaurant_attribute  goto 64
-	add_crowd_attribute  goto 65
-	add_attraction_attribute  goto 66
-	statement  goto 67
-	end_block  goto 68
-	loop  goto 69
-	condition  goto 70
+	function_name  goto 51
+	variable_name  goto 52
+	primitive_type  goto 53
+	simulate  goto 54
+	output  goto 55
+	duration_type  goto 56
+	calculate_revenue  goto 57
+	thrill_functions  goto 58
+	initialization  goto 59
+	function_call  goto 60
+	declaration  goto 61
+	left_side  goto 62
+	assignment  goto 63
+	add_attribute  goto 64
+	statement  goto 65
+	end_block  goto 66
+	loop  goto 67
+	condition  goto 68
+	return  goto 69
 
 
 state 32
@@ -620,44 +608,44 @@ state 32
 state 33
 	function : return_type function_name . COLON actual_parameters block  (98)
 
-	COLON  shift 71
+	COLON  shift 70
 	.  error
 
 
 state 34
-	function_name : variable_name .  (195)
+	function_name : variable_name .  (186)
 
-	.  reduce 195
+	.  reduce 186
 
 
 state 35
 	crowd_definition : Crowd $$1 crowd_name $$2 . crowd_elements  (8)
-	empty : .  (201)
+	empty : .  (192)
 
-	SEMICOLON  shift 72
-	Crowd  reduce 201
-	Park  reduce 201
-	Set  reduce 201
-	Start  reduce 201
+	SEMICOLON  shift 71
+	Crowd  reduce 192
+	Park  reduce 192
+	Set  reduce 192
+	Start  reduce 192
 
-	crowd_attributes  goto 73
-	crowd_elements  goto 74
-	empty  goto 75
+	crowd_attributes  goto 72
+	crowd_elements  goto 73
+	empty  goto 74
 
 
 state 36
 	park_definition : Park $$3 park_name $$4 . park_elements $$5 land_definitions  (24)
-	empty : .  (201)
+	empty : .  (192)
 
-	SEMICOLON  shift 76
-	Crowd  reduce 201
-	Land  reduce 201
-	Set  reduce 201
-	Start  reduce 201
+	SEMICOLON  shift 75
+	Crowd  reduce 192
+	Land  reduce 192
+	Set  reduce 192
+	Start  reduce 192
 
-	park_attributes  goto 77
-	park_elements  goto 78
-	empty  goto 79
+	park_attributes  goto 76
+	park_elements  goto 77
+	empty  goto 78
 
 
 state 37
@@ -667,138 +655,143 @@ state 37
 
 
 state 38
-	condition : If . OPEN relational_expression CLOSE block  (151)
-	condition : If . OPEN relational_expression CLOSE block Else block  (152)
+	condition : If . OPEN relational_expression CLOSE block  (141)
+	condition : If . OPEN relational_expression CLOSE block Else block  (142)
 
-	OPEN  shift 80
+	OPEN  shift 79
 	.  error
 
 
 state 39
-	loop : Iterate . block Until OPEN relational_expression CLOSE SEMICOLON  (168)
+	loop : Iterate . block Until OPEN relational_expression CLOSE SEMICOLON  (158)
 
 	OPEN_PARAN  shift 18
 	.  error
 
 	start_block  goto 19
-	block  goto 81
+	block  goto 80
 
 
 state 40
-	primitive_type : Number .  (181)
+	primitive_type : Number .  (172)
 
-	.  reduce 181
+	.  reduce 172
 
 
 state 41
-	add_attraction_attribute : Set . Cost value In attraction_name SEMICOLON  (121)
-	add_attraction_attribute : Set . Capacity value In attraction_name SEMICOLON  (122)
-	add_attraction_attribute : Set . Employees value In attraction_name SEMICOLON  (123)
-	add_attraction_attribute : Set . ThrillLevel value In attraction_name SEMICOLON  (124)
-	add_attraction_attribute : Set . EnergyLost value In attraction_name SEMICOLON  (125)
-	add_crowd_attribute : Set . Size value In crowd_name SEMICOLON  (126)
-	add_crowd_attribute : Set . EnergyLevel value In crowd_name SEMICOLON  (127)
-	add_crowd_attribute : Set . ThrillLevel value In crowd_name SEMICOLON  (128)
-	add_crowd_attribute : Set . SpendingCapacity value In crowd_name SEMICOLON  (129)
-	add_restaurant_attribute : Set . Cost value In restaurant_name SEMICOLON  (130)
-	add_restaurant_attribute : Set . Capacity value In restaurant_name SEMICOLON  (131)
-	add_restaurant_attribute : Set . Employees value In restaurant_name SEMICOLON  (132)
-	add_restaurant_attribute : Set . SpendLevel value In restaurant_name SEMICOLON  (133)
-	add_restaurant_attribute : Set . EnergyIncrease value In restaurant_name SEMICOLON  (134)
-	add_store_attribute : Set . Cost value In store_name SEMICOLON  (135)
-	add_store_attribute : Set . Capacity value In store_name SEMICOLON  (136)
-	add_store_attribute : Set . Employees value In store_name SEMICOLON  (137)
-	add_store_attribute : Set . SpendLevel value In store_name SEMICOLON  (138)
+	return : Return . constant_or_variable SEMICOLON  (159)
 
-	Capacity  shift 82
-	Cost  shift 83
-	Employees  shift 84
-	EnergyIncrease  shift 85
-	EnergyLevel  shift 86
-	EnergyLost  shift 87
-	Size  shift 88
-	SpendLevel  shift 89
-	SpendingCapacity  shift 90
-	ThrillLevel  shift 91
+	NUMBER  shift 81
+	ID  shift 26
+	Quote  shift 82
 	.  error
+
+	variable_name  goto 83
+	constant  goto 84
+	constant_or_variable  goto 85
 
 
 state 42
-	primitive_type : String .  (182)
+	add_attribute : Set . Capacity value In variable_name SEMICOLON  (119)
+	add_attribute : Set . Cost value In variable_name SEMICOLON  (120)
+	add_attribute : Set . Employees value In variable_name SEMICOLON  (121)
+	add_attribute : Set . EnergyIncrease value In variable_name SEMICOLON  (122)
+	add_attribute : Set . EnergyLevel value In variable_name SEMICOLON  (123)
+	add_attribute : Set . EnergyLost value In variable_name SEMICOLON  (124)
+	add_attribute : Set . Size value In variable_name SEMICOLON  (125)
+	add_attribute : Set . SpendingCapacity value In variable_name SEMICOLON  (126)
+	add_attribute : Set . SpendLevel value In variable_name SEMICOLON  (127)
+	add_attribute : Set . ThrillLevel value In variable_name SEMICOLON  (128)
 
-	.  reduce 182
+	Capacity  shift 86
+	Cost  shift 87
+	Employees  shift 88
+	EnergyIncrease  shift 89
+	EnergyLevel  shift 90
+	EnergyLost  shift 91
+	Size  shift 92
+	SpendLevel  shift 93
+	SpendingCapacity  shift 94
+	ThrillLevel  shift 95
+	.  error
 
 
 state 43
-	calculate_revenue : CalculateRevenue . COLON crowd_name COMMA duration_name SEMICOLON  (172)
+	primitive_type : String .  (173)
 
-	COLON  shift 92
-	.  error
+	.  reduce 173
 
 
 state 44
-	output : Print . constant_variable_chain SEMICOLON  (173)
+	calculate_revenue : CalculateRevenue . COLON crowd_name COMMA duration_name SEMICOLON  (163)
 
-	NUMBER  shift 93
-	ID  shift 26
-	Quote  shift 94
+	COLON  shift 96
 	.  error
 
-	variable_name  goto 95
-	constant  goto 96
+
+state 45
+	output : Print . constant_variable_chain SEMICOLON  (164)
+
+	NUMBER  shift 81
+	ID  shift 26
+	Quote  shift 82
+	.  error
+
+	variable_name  goto 83
+	constant  goto 84
 	constant_or_variable  goto 97
 	constant_variable_chain  goto 98
 
 
-state 45
-	simulate : Simulate . COLON crowd_name SEMICOLON  (174)
+state 46
+	simulate : Simulate . COLON crowd_name SEMICOLON  (165)
 
 	COLON  shift 99
 	.  error
 
 
-state 46
-	duration_type : Days .  (184)
-
-	.  reduce 184
-
-
 state 47
-	duration_type : Months .  (186)
+	duration_type : Days .  (175)
 
-	.  reduce 186
+	.  reduce 175
 
 
 state 48
-	duration_type : Weeks .  (185)
+	duration_type : Months .  (177)
 
-	.  reduce 185
+	.  reduce 177
 
 
 state 49
-	duration_type : Years .  (187)
+	duration_type : Weeks .  (176)
 
-	.  reduce 187
+	.  reduce 176
 
 
 state 50
-	function_call : function_name . COLON formal_parameters SEMICOLON  (161)
+	duration_type : Years .  (178)
+
+	.  reduce 178
+
+
+state 51
+	function_call : function_name . COLON formal_parameters SEMICOLON  (151)
 
 	COLON  shift 100
 	.  error
 
 
-state 51
-	left_side : variable_name .  (140)
-	function_name : variable_name .  (195)
-
-	COLON  reduce 195
-	EQUAL  reduce 140
-
-
 state 52
-	declaration : primitive_type . declaration_list SEMICOLON  (158)
-	initialization : primitive_type . initialization_list SEMICOLON  (165)
+	left_side : variable_name .  (130)
+	function_name : variable_name .  (186)
+
+	COLON  reduce 186
+	EQUAL  reduce 130
+
+
+state 53
+	declaration : primitive_type . declaration_list SEMICOLON  (148)
+	initialization : primitive_type . initialization_list SEMICOLON  (155)
 
 	ID  shift 26
 	.  error
@@ -808,143 +801,131 @@ state 52
 	declaration_list  goto 103
 
 
-state 53
-	thrill_functions : simulate .  (171)
-
-	.  reduce 171
-
-
 state 54
-	thrill_functions : output .  (170)
+	thrill_functions : simulate .  (162)
 
-	.  reduce 170
+	.  reduce 162
 
 
 state 55
-	primitive_type : duration_type .  (183)
+	thrill_functions : output .  (161)
 
-	.  reduce 183
+	.  reduce 161
 
 
 state 56
-	thrill_functions : calculate_revenue .  (169)
+	primitive_type : duration_type .  (174)
 
-	.  reduce 169
+	.  reduce 174
 
 
 state 57
-	statement : thrill_functions .  (120)
+	thrill_functions : calculate_revenue .  (160)
 
-	.  reduce 120
+	.  reduce 160
 
 
 state 58
-	statement : initialization .  (118)
+	statement : thrill_functions .  (118)
 
 	.  reduce 118
 
 
 state 59
-	statement : function_call .  (117)
+	statement : initialization .  (115)
 
-	.  reduce 117
+	.  reduce 115
 
 
 state 60
-	statement : declaration .  (116)
+	statement : function_call .  (114)
 
-	.  reduce 116
+	.  reduce 114
 
 
 state 61
-	assignment : left_side . EQUAL right_side  (139)
+	statement : declaration .  (113)
+
+	.  reduce 113
+
+
+state 62
+	assignment : left_side . EQUAL right_side  (129)
 
 	EQUAL  shift 104
 	.  error
 
 
-state 62
-	statement : assignment .  (114)
-
-	.  reduce 114
-
-
 state 63
-	statement : add_store_attribute .  (113)
-
-	.  reduce 113
-
-
-state 64
-	statement : add_restaurant_attribute .  (112)
-
-	.  reduce 112
-
-
-state 65
-	statement : add_crowd_attribute .  (111)
+	statement : assignment .  (111)
 
 	.  reduce 111
 
 
-state 66
-	statement : add_attraction_attribute .  (110)
+state 64
+	statement : add_attribute .  (110)
 
 	.  reduce 110
 
 
-state 67
+state 65
 	statements : statements statement .  (108)
 
 	.  reduce 108
 
 
-state 68
+state 66
 	block : start_block statements end_block .  (105)
 
 	.  reduce 105
 
 
-state 69
-	statement : loop .  (119)
+state 67
+	statement : loop .  (116)
 
-	.  reduce 119
+	.  reduce 116
+
+
+state 68
+	statement : condition .  (112)
+
+	.  reduce 112
+
+
+state 69
+	statement : return .  (117)
+
+	.  reduce 117
 
 
 state 70
-	statement : condition .  (115)
-
-	.  reduce 115
-
-
-state 71
 	function : return_type function_name COLON . actual_parameters block  (98)
-	empty : .  (201)
+	empty : .  (192)
 
 	Crowd  shift 105
 	Number  shift 40
-	String  shift 42
-	Days  shift 46
-	Months  shift 47
-	Weeks  shift 48
-	Years  shift 49
-	COMMA  reduce 201
-	OPEN_PARAN  reduce 201
+	String  shift 43
+	Days  shift 47
+	Months  shift 48
+	Weeks  shift 49
+	Years  shift 50
+	COMMA  reduce 192
+	OPEN_PARAN  reduce 192
 
 	primitive_type  goto 106
 	data_type  goto 107
-	duration_type  goto 55
+	duration_type  goto 56
 	actual_parameters  goto 108
 	empty  goto 109
 
 
-state 72
+state 71
 	crowd_elements : SEMICOLON .  (9)
 
 	.  reduce 9
 
 
-state 73
+state 72
 	crowd_elements : crowd_attributes .  (10)
 	crowd_attributes : crowd_attributes . crowd_attribute  (11)
 
@@ -960,25 +941,25 @@ state 73
 	c4  goto 115
 
 
-state 74
+state 73
 	crowd_definition : Crowd $$1 crowd_name $$2 crowd_elements .  (8)
 
 	.  reduce 8
 
 
-state 75
+state 74
 	crowd_attributes : empty .  (12)
 
 	.  reduce 12
 
 
-state 76
+state 75
 	park_elements : SEMICOLON .  (25)
 
 	.  reduce 25
 
 
-state 77
+state 76
 	park_elements : park_attributes .  (26)
 	park_attributes : park_attributes . park_attribute  (27)
 
@@ -993,7 +974,7 @@ state 77
 	p3  goto 120
 
 
-state 78
+state 77
 	park_definition : Park $$3 park_name $$4 park_elements . $$5 land_definitions  (24)
 	$$5 : .  (23)
 
@@ -1002,15 +983,15 @@ state 78
 	$$5  goto 121
 
 
-state 79
+state 78
 	park_attributes : empty .  (28)
 
 	.  reduce 28
 
 
-state 80
-	condition : If OPEN . relational_expression CLOSE block  (151)
-	condition : If OPEN . relational_expression CLOSE block Else block  (152)
+state 79
+	condition : If OPEN . relational_expression CLOSE block  (141)
+	condition : If OPEN . relational_expression CLOSE block Else block  (142)
 
 	ID  shift 26
 	.  error
@@ -1019,260 +1000,259 @@ state 80
 	relational_expression  goto 123
 
 
-state 81
-	loop : Iterate block . Until OPEN relational_expression CLOSE SEMICOLON  (168)
+state 80
+	loop : Iterate block . Until OPEN relational_expression CLOSE SEMICOLON  (158)
 
 	Until  shift 124
 	.  error
 
 
-state 82
-	add_attraction_attribute : Set Capacity . value In attraction_name SEMICOLON  (122)
-	add_restaurant_attribute : Set Capacity . value In restaurant_name SEMICOLON  (131)
-	add_store_attribute : Set Capacity . value In store_name SEMICOLON  (136)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 127
-
-
-state 83
-	add_attraction_attribute : Set Cost . value In attraction_name SEMICOLON  (121)
-	add_restaurant_attribute : Set Cost . value In restaurant_name SEMICOLON  (130)
-	add_store_attribute : Set Cost . value In store_name SEMICOLON  (135)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 128
-
-
-state 84
-	add_attraction_attribute : Set Employees . value In attraction_name SEMICOLON  (123)
-	add_restaurant_attribute : Set Employees . value In restaurant_name SEMICOLON  (132)
-	add_store_attribute : Set Employees . value In store_name SEMICOLON  (137)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 129
-
-
-state 85
-	add_restaurant_attribute : Set EnergyIncrease . value In restaurant_name SEMICOLON  (134)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 130
-
-
-state 86
-	add_crowd_attribute : Set EnergyLevel . value In crowd_name SEMICOLON  (127)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 131
-
-
-state 87
-	add_attraction_attribute : Set EnergyLost . value In attraction_name SEMICOLON  (125)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 132
-
-
-state 88
-	add_crowd_attribute : Set Size . value In crowd_name SEMICOLON  (126)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 133
-
-
-state 89
-	add_restaurant_attribute : Set SpendLevel . value In restaurant_name SEMICOLON  (133)
-	add_store_attribute : Set SpendLevel . value In store_name SEMICOLON  (138)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 134
-
-
-state 90
-	add_crowd_attribute : Set SpendingCapacity . value In crowd_name SEMICOLON  (129)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 135
-
-
-state 91
-	add_attraction_attribute : Set ThrillLevel . value In attraction_name SEMICOLON  (124)
-	add_crowd_attribute : Set ThrillLevel . value In crowd_name SEMICOLON  (128)
-
-	NUMBER  shift 125
-	ID  shift 26
-	.  error
-
-	variable_name  goto 126
-	value  goto 136
-
-
-state 92
-	calculate_revenue : CalculateRevenue COLON . crowd_name COMMA duration_name SEMICOLON  (172)
-
-	ID  shift 26
-	.  error
-
-	crowd_name  goto 137
-	variable_name  goto 28
-
-
-state 93
-	constant : NUMBER .  (188)
-
-	.  reduce 188
-
-
-state 94
-	constant : Quote . ID Quote  (189)
-
-	ID  shift 138
-	.  error
-
-
-state 95
-	constant_or_variable : variable_name .  (178)
-
-	.  reduce 178
-
-
-state 96
-	constant_or_variable : constant .  (177)
-
-	.  reduce 177
-
-
-state 97
-	constant_variable_chain : constant_or_variable .  (176)
-
-	.  reduce 176
-
-
-state 98
-	output : Print constant_variable_chain . SEMICOLON  (173)
-	constant_variable_chain : constant_variable_chain . COMMA constant_or_variable  (175)
-
-	SEMICOLON  shift 139
-	COMMA  shift 140
-	.  error
-
-
-state 99
-	simulate : Simulate COLON . crowd_name SEMICOLON  (174)
-
-	ID  shift 26
-	.  error
-
-	crowd_name  goto 141
-	variable_name  goto 28
-
-
-state 100
-	function_call : function_name COLON . formal_parameters SEMICOLON  (161)
-	empty : .  (201)
-
-	ID  shift 26
-	SEMICOLON  reduce 201
-	COMMA  reduce 201
-
-	variable_name  goto 142
-	formal_parameters  goto 143
-	empty  goto 144
-
-
-state 101
-	declaration_list : variable_name .  (160)
-	initialization_list : variable_name . EQUAL constant  (167)
-
-	EQUAL  shift 145
-	SEMICOLON  reduce 160
-	COMMA  reduce 160
-
-
-state 102
-	initialization : primitive_type initialization_list . SEMICOLON  (165)
-	initialization_list : initialization_list . COMMA variable_name EQUAL constant  (166)
-
-	SEMICOLON  shift 146
-	COMMA  shift 147
-	.  error
-
-
-state 103
-	declaration : primitive_type declaration_list . SEMICOLON  (158)
-	declaration_list : declaration_list . COMMA variable_name  (159)
-
-	SEMICOLON  shift 148
-	COMMA  shift 149
-	.  error
-
-
-state 104
-	assignment : left_side EQUAL . right_side  (139)
-
-	NUMBER  shift 93
-	ID  shift 26
-	OPEN  shift 150
-	Quote  shift 94
-	CalculateRevenue  shift 43
-	.  error
-
-	function_name  goto 50
-	variable_name  goto 151
-	constant  goto 152
-	calculate_revenue  goto 153
-	function_call  goto 154
-	arithmetic_expression  goto 155
-	right_side  goto 156
-
-
-state 105
-	data_type : Crowd .  (179)
+state 81
+	constant : NUMBER .  (179)
 
 	.  reduce 179
 
 
-state 106
-	data_type : primitive_type .  (180)
+state 82
+	constant : Quote . ID Quote  (180)
 
-	.  reduce 180
+	ID  shift 125
+	.  error
+
+
+state 83
+	constant_or_variable : variable_name .  (169)
+
+	.  reduce 169
+
+
+state 84
+	constant_or_variable : constant .  (168)
+
+	.  reduce 168
+
+
+state 85
+	return : Return constant_or_variable . SEMICOLON  (159)
+
+	SEMICOLON  shift 126
+	.  error
+
+
+state 86
+	add_attribute : Set Capacity . value In variable_name SEMICOLON  (119)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 129
+
+
+state 87
+	add_attribute : Set Cost . value In variable_name SEMICOLON  (120)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 130
+
+
+state 88
+	add_attribute : Set Employees . value In variable_name SEMICOLON  (121)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 131
+
+
+state 89
+	add_attribute : Set EnergyIncrease . value In variable_name SEMICOLON  (122)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 132
+
+
+state 90
+	add_attribute : Set EnergyLevel . value In variable_name SEMICOLON  (123)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 133
+
+
+state 91
+	add_attribute : Set EnergyLost . value In variable_name SEMICOLON  (124)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 134
+
+
+state 92
+	add_attribute : Set Size . value In variable_name SEMICOLON  (125)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 135
+
+
+state 93
+	add_attribute : Set SpendLevel . value In variable_name SEMICOLON  (127)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 136
+
+
+state 94
+	add_attribute : Set SpendingCapacity . value In variable_name SEMICOLON  (126)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 137
+
+
+state 95
+	add_attribute : Set ThrillLevel . value In variable_name SEMICOLON  (128)
+
+	NUMBER  shift 127
+	ID  shift 26
+	.  error
+
+	variable_name  goto 128
+	value  goto 138
+
+
+state 96
+	calculate_revenue : CalculateRevenue COLON . crowd_name COMMA duration_name SEMICOLON  (163)
+
+	ID  shift 26
+	.  error
+
+	crowd_name  goto 139
+	variable_name  goto 28
+
+
+state 97
+	constant_variable_chain : constant_or_variable .  (167)
+
+	.  reduce 167
+
+
+state 98
+	output : Print constant_variable_chain . SEMICOLON  (164)
+	constant_variable_chain : constant_variable_chain . COMMA constant_or_variable  (166)
+
+	SEMICOLON  shift 140
+	COMMA  shift 141
+	.  error
+
+
+state 99
+	simulate : Simulate COLON . crowd_name SEMICOLON  (165)
+
+	ID  shift 26
+	.  error
+
+	crowd_name  goto 142
+	variable_name  goto 28
+
+
+state 100
+	function_call : function_name COLON . formal_parameters SEMICOLON  (151)
+	empty : .  (192)
+
+	ID  shift 26
+	SEMICOLON  reduce 192
+	COMMA  reduce 192
+
+	variable_name  goto 143
+	formal_parameters  goto 144
+	empty  goto 145
+
+
+state 101
+	declaration_list : variable_name .  (150)
+	initialization_list : variable_name . EQUAL constant  (157)
+
+	EQUAL  shift 146
+	SEMICOLON  reduce 150
+	COMMA  reduce 150
+
+
+state 102
+	initialization : primitive_type initialization_list . SEMICOLON  (155)
+	initialization_list : initialization_list . COMMA variable_name EQUAL constant  (156)
+
+	SEMICOLON  shift 147
+	COMMA  shift 148
+	.  error
+
+
+state 103
+	declaration : primitive_type declaration_list . SEMICOLON  (148)
+	declaration_list : declaration_list . COMMA variable_name  (149)
+
+	SEMICOLON  shift 149
+	COMMA  shift 150
+	.  error
+
+
+state 104
+	assignment : left_side EQUAL . right_side  (129)
+
+	NUMBER  shift 81
+	ID  shift 26
+	OPEN  shift 151
+	Quote  shift 82
+	CalculateRevenue  shift 44
+	.  error
+
+	function_name  goto 51
+	variable_name  goto 152
+	constant  goto 153
+	calculate_revenue  goto 154
+	function_call  goto 155
+	arithmetic_expression  goto 156
+	right_side  goto 157
+
+
+state 105
+	data_type : Crowd .  (170)
+
+	.  reduce 170
+
+
+state 106
+	data_type : primitive_type .  (171)
+
+	.  reduce 171
 
 
 state 107
@@ -1281,19 +1261,19 @@ state 107
 	ID  shift 26
 	.  error
 
-	variable_name  goto 157
+	variable_name  goto 158
 
 
 state 108
 	function : return_type function_name COLON actual_parameters . block  (98)
 	actual_parameters : actual_parameters . COMMA data_type variable_name  (102)
 
-	COMMA  shift 158
+	COMMA  shift 159
 	OPEN_PARAN  shift 18
 	.  error
 
 	start_block  goto 19
-	block  goto 159
+	block  goto 160
 
 
 state 109
@@ -1308,10 +1288,10 @@ state 110
 	c3 : Set . EnergyLevel NUMBER SEMICOLON  (19)
 	c4 : Set . ThrillLevel NUMBER SEMICOLON  (20)
 
-	EnergyLevel  shift 160
-	Size  shift 161
-	SpendingCapacity  shift 162
-	ThrillLevel  shift 163
+	EnergyLevel  shift 161
+	Size  shift 162
+	SpendingCapacity  shift 163
+	ThrillLevel  shift 164
 	.  error
 
 
@@ -1350,9 +1330,9 @@ state 116
 	p2 : Set . Capacity NUMBER SEMICOLON  (33)
 	p3 : Set . Cost NUMBER SEMICOLON  (34)
 
-	Admission  shift 164
-	Capacity  shift 165
-	Cost  shift 166
+	Admission  shift 165
+	Capacity  shift 166
+	Cost  shift 167
 	.  error
 
 
@@ -1382,228 +1362,211 @@ state 120
 
 state 121
 	park_definition : Park $$3 park_name $$4 park_elements $$5 . land_definitions  (24)
-	empty : .  (201)
+	empty : .  (192)
 
-	.  reduce 201
+	.  reduce 192
 
-	empty  goto 167
-	land_definitions  goto 168
+	empty  goto 168
+	land_definitions  goto 169
 
 
 state 122
-	relational_expression : variable_name . LESSEQUAL constant_or_variable  (153)
-	relational_expression : variable_name . GREATEQUAL constant_or_variable  (154)
-	relational_expression : variable_name . NOTEQUAL constant_or_variable  (155)
-	relational_expression : variable_name . LESS constant_or_variable  (156)
-	relational_expression : variable_name . GREAT constant_or_variable  (157)
+	relational_expression : variable_name . LESSEQUAL constant_or_variable  (143)
+	relational_expression : variable_name . GREATEQUAL constant_or_variable  (144)
+	relational_expression : variable_name . NOTEQUAL constant_or_variable  (145)
+	relational_expression : variable_name . LESS constant_or_variable  (146)
+	relational_expression : variable_name . GREAT constant_or_variable  (147)
 
-	NOTEQUAL  shift 169
-	LESSEQUAL  shift 170
-	GREATEQUAL  shift 171
-	LESS  shift 172
-	GREAT  shift 173
+	NOTEQUAL  shift 170
+	LESSEQUAL  shift 171
+	GREATEQUAL  shift 172
+	LESS  shift 173
+	GREAT  shift 174
 	.  error
 
 
 state 123
-	condition : If OPEN relational_expression . CLOSE block  (151)
-	condition : If OPEN relational_expression . CLOSE block Else block  (152)
+	condition : If OPEN relational_expression . CLOSE block  (141)
+	condition : If OPEN relational_expression . CLOSE block Else block  (142)
 
-	CLOSE  shift 174
+	CLOSE  shift 175
 	.  error
 
 
 state 124
-	loop : Iterate block Until . OPEN relational_expression CLOSE SEMICOLON  (168)
+	loop : Iterate block Until . OPEN relational_expression CLOSE SEMICOLON  (158)
 
-	OPEN  shift 175
+	OPEN  shift 176
 	.  error
 
 
 state 125
-	value : NUMBER .  (190)
+	constant : Quote ID . Quote  (180)
 
-	.  reduce 190
+	Quote  shift 177
+	.  error
 
 
 state 126
-	value : variable_name .  (191)
+	return : Return constant_or_variable SEMICOLON .  (159)
 
-	.  reduce 191
+	.  reduce 159
 
 
 state 127
-	add_attraction_attribute : Set Capacity value . In attraction_name SEMICOLON  (122)
-	add_restaurant_attribute : Set Capacity value . In restaurant_name SEMICOLON  (131)
-	add_store_attribute : Set Capacity value . In store_name SEMICOLON  (136)
+	value : NUMBER .  (181)
 
-	In  shift 176
-	.  error
+	.  reduce 181
 
 
 state 128
-	add_attraction_attribute : Set Cost value . In attraction_name SEMICOLON  (121)
-	add_restaurant_attribute : Set Cost value . In restaurant_name SEMICOLON  (130)
-	add_store_attribute : Set Cost value . In store_name SEMICOLON  (135)
+	value : variable_name .  (182)
 
-	In  shift 177
-	.  error
+	.  reduce 182
 
 
 state 129
-	add_attraction_attribute : Set Employees value . In attraction_name SEMICOLON  (123)
-	add_restaurant_attribute : Set Employees value . In restaurant_name SEMICOLON  (132)
-	add_store_attribute : Set Employees value . In store_name SEMICOLON  (137)
+	add_attribute : Set Capacity value . In variable_name SEMICOLON  (119)
 
 	In  shift 178
 	.  error
 
 
 state 130
-	add_restaurant_attribute : Set EnergyIncrease value . In restaurant_name SEMICOLON  (134)
+	add_attribute : Set Cost value . In variable_name SEMICOLON  (120)
 
 	In  shift 179
 	.  error
 
 
 state 131
-	add_crowd_attribute : Set EnergyLevel value . In crowd_name SEMICOLON  (127)
+	add_attribute : Set Employees value . In variable_name SEMICOLON  (121)
 
 	In  shift 180
 	.  error
 
 
 state 132
-	add_attraction_attribute : Set EnergyLost value . In attraction_name SEMICOLON  (125)
+	add_attribute : Set EnergyIncrease value . In variable_name SEMICOLON  (122)
 
 	In  shift 181
 	.  error
 
 
 state 133
-	add_crowd_attribute : Set Size value . In crowd_name SEMICOLON  (126)
+	add_attribute : Set EnergyLevel value . In variable_name SEMICOLON  (123)
 
 	In  shift 182
 	.  error
 
 
 state 134
-	add_restaurant_attribute : Set SpendLevel value . In restaurant_name SEMICOLON  (133)
-	add_store_attribute : Set SpendLevel value . In store_name SEMICOLON  (138)
+	add_attribute : Set EnergyLost value . In variable_name SEMICOLON  (124)
 
 	In  shift 183
 	.  error
 
 
 state 135
-	add_crowd_attribute : Set SpendingCapacity value . In crowd_name SEMICOLON  (129)
+	add_attribute : Set Size value . In variable_name SEMICOLON  (125)
 
 	In  shift 184
 	.  error
 
 
 state 136
-	add_attraction_attribute : Set ThrillLevel value . In attraction_name SEMICOLON  (124)
-	add_crowd_attribute : Set ThrillLevel value . In crowd_name SEMICOLON  (128)
+	add_attribute : Set SpendLevel value . In variable_name SEMICOLON  (127)
 
 	In  shift 185
 	.  error
 
 
 state 137
-	calculate_revenue : CalculateRevenue COLON crowd_name . COMMA duration_name SEMICOLON  (172)
+	add_attribute : Set SpendingCapacity value . In variable_name SEMICOLON  (126)
 
-	COMMA  shift 186
+	In  shift 186
 	.  error
 
 
 state 138
-	constant : Quote ID . Quote  (189)
+	add_attribute : Set ThrillLevel value . In variable_name SEMICOLON  (128)
 
-	Quote  shift 187
+	In  shift 187
 	.  error
 
 
 state 139
-	output : Print constant_variable_chain SEMICOLON .  (173)
+	calculate_revenue : CalculateRevenue COLON crowd_name . COMMA duration_name SEMICOLON  (163)
 
-	.  reduce 173
+	COMMA  shift 188
+	.  error
 
 
 state 140
-	constant_variable_chain : constant_variable_chain COMMA . constant_or_variable  (175)
-
-	NUMBER  shift 93
-	ID  shift 26
-	Quote  shift 94
-	.  error
-
-	variable_name  goto 95
-	constant  goto 96
-	constant_or_variable  goto 188
-
-
-state 141
-	simulate : Simulate COLON crowd_name . SEMICOLON  (174)
-
-	SEMICOLON  shift 189
-	.  error
-
-
-state 142
-	formal_parameters : variable_name .  (163)
-
-	.  reduce 163
-
-
-state 143
-	function_call : function_name COLON formal_parameters . SEMICOLON  (161)
-	formal_parameters : formal_parameters . COMMA variable_name  (162)
-
-	SEMICOLON  shift 190
-	COMMA  shift 191
-	.  error
-
-
-state 144
-	formal_parameters : empty .  (164)
+	output : Print constant_variable_chain SEMICOLON .  (164)
 
 	.  reduce 164
 
 
-state 145
-	initialization_list : variable_name EQUAL . constant  (167)
+state 141
+	constant_variable_chain : constant_variable_chain COMMA . constant_or_variable  (166)
 
-	NUMBER  shift 93
-	Quote  shift 94
+	NUMBER  shift 81
+	ID  shift 26
+	Quote  shift 82
 	.  error
 
-	constant  goto 192
+	variable_name  goto 83
+	constant  goto 84
+	constant_or_variable  goto 189
+
+
+state 142
+	simulate : Simulate COLON crowd_name . SEMICOLON  (165)
+
+	SEMICOLON  shift 190
+	.  error
+
+
+state 143
+	formal_parameters : variable_name .  (153)
+
+	.  reduce 153
+
+
+state 144
+	function_call : function_name COLON formal_parameters . SEMICOLON  (151)
+	formal_parameters : formal_parameters . COMMA variable_name  (152)
+
+	SEMICOLON  shift 191
+	COMMA  shift 192
+	.  error
+
+
+state 145
+	formal_parameters : empty .  (154)
+
+	.  reduce 154
 
 
 state 146
-	initialization : primitive_type initialization_list SEMICOLON .  (165)
+	initialization_list : variable_name EQUAL . constant  (157)
 
-	.  reduce 165
+	NUMBER  shift 81
+	Quote  shift 82
+	.  error
+
+	constant  goto 193
 
 
 state 147
-	initialization_list : initialization_list COMMA . variable_name EQUAL constant  (166)
+	initialization : primitive_type initialization_list SEMICOLON .  (155)
 
-	ID  shift 26
-	.  error
-
-	variable_name  goto 193
+	.  reduce 155
 
 
 state 148
-	declaration : primitive_type declaration_list SEMICOLON .  (158)
-
-	.  reduce 158
-
-
-state 149
-	declaration_list : declaration_list COMMA . variable_name  (159)
+	initialization_list : initialization_list COMMA . variable_name EQUAL constant  (156)
 
 	ID  shift 26
 	.  error
@@ -1611,1438 +1574,1298 @@ state 149
 	variable_name  goto 194
 
 
-state 150
-	arithmetic_expression : OPEN . arithmetic_expression CLOSE  (148)
+state 149
+	declaration : primitive_type declaration_list SEMICOLON .  (148)
 
-	NUMBER  shift 93
+	.  reduce 148
+
+
+state 150
+	declaration_list : declaration_list COMMA . variable_name  (149)
+
 	ID  shift 26
-	OPEN  shift 150
-	Quote  shift 94
 	.  error
 
 	variable_name  goto 195
-	constant  goto 152
-	arithmetic_expression  goto 196
 
 
 state 151
-	arithmetic_expression : variable_name .  (149)
-	function_name : variable_name .  (195)
+	arithmetic_expression : OPEN . arithmetic_expression CLOSE  (138)
 
-	SEMICOLON  reduce 149
-	COLON  reduce 195
-	PLUS  reduce 149
-	MINUS  reduce 149
-	MUL  reduce 149
-	DIV  reduce 149
+	NUMBER  shift 81
+	ID  shift 26
+	OPEN  shift 151
+	Quote  shift 82
+	.  error
+
+	variable_name  goto 196
+	constant  goto 153
+	arithmetic_expression  goto 197
 
 
 state 152
-	arithmetic_expression : constant .  (150)
+	arithmetic_expression : variable_name .  (139)
+	function_name : variable_name .  (186)
 
-	.  reduce 150
+	SEMICOLON  reduce 139
+	COLON  reduce 186
+	PLUS  reduce 139
+	MINUS  reduce 139
+	MUL  reduce 139
+	DIV  reduce 139
 
 
 state 153
-	right_side : calculate_revenue .  (143)
+	arithmetic_expression : constant .  (140)
 
-	.  reduce 143
+	.  reduce 140
 
 
 state 154
-	right_side : function_call .  (142)
+	right_side : calculate_revenue .  (133)
 
-	.  reduce 142
+	.  reduce 133
 
 
 state 155
-	right_side : arithmetic_expression . SEMICOLON  (141)
-	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (144)
-	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (145)
-	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (146)
-	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (147)
+	right_side : function_call .  (132)
 
-	SEMICOLON  shift 197
-	PLUS  shift 198
-	MINUS  shift 199
-	MUL  shift 200
-	DIV  shift 201
-	.  error
+	.  reduce 132
 
 
 state 156
-	assignment : left_side EQUAL right_side .  (139)
+	right_side : arithmetic_expression . SEMICOLON  (131)
+	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (134)
+	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (135)
+	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (136)
+	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (137)
 
-	.  reduce 139
+	SEMICOLON  shift 198
+	PLUS  shift 199
+	MINUS  shift 200
+	MUL  shift 201
+	DIV  shift 202
+	.  error
 
 
 state 157
+	assignment : left_side EQUAL right_side .  (129)
+
+	.  reduce 129
+
+
+state 158
 	actual_parameters : data_type variable_name .  (103)
 
 	.  reduce 103
 
 
-state 158
+state 159
 	actual_parameters : actual_parameters COMMA . data_type variable_name  (102)
 
 	Crowd  shift 105
 	Number  shift 40
-	String  shift 42
-	Days  shift 46
-	Months  shift 47
-	Weeks  shift 48
-	Years  shift 49
+	String  shift 43
+	Days  shift 47
+	Months  shift 48
+	Weeks  shift 49
+	Years  shift 50
 	.  error
 
 	primitive_type  goto 106
-	data_type  goto 202
-	duration_type  goto 55
+	data_type  goto 203
+	duration_type  goto 56
 
 
-state 159
+state 160
 	function : return_type function_name COLON actual_parameters block .  (98)
 
 	.  reduce 98
 
 
-state 160
-	c3 : Set EnergyLevel . NUMBER SEMICOLON  (19)
-
-	NUMBER  shift 203
-	.  error
-
-
 state 161
-	c2 : Set Size . NUMBER SEMICOLON  (18)
+	c3 : Set EnergyLevel . NUMBER SEMICOLON  (19)
 
 	NUMBER  shift 204
 	.  error
 
 
 state 162
-	c1 : Set SpendingCapacity . NUMBER SEMICOLON  (17)
+	c2 : Set Size . NUMBER SEMICOLON  (18)
 
 	NUMBER  shift 205
 	.  error
 
 
 state 163
-	c4 : Set ThrillLevel . NUMBER SEMICOLON  (20)
+	c1 : Set SpendingCapacity . NUMBER SEMICOLON  (17)
 
 	NUMBER  shift 206
 	.  error
 
 
 state 164
-	p1 : Set Admission . NUMBER SEMICOLON  (32)
+	c4 : Set ThrillLevel . NUMBER SEMICOLON  (20)
 
 	NUMBER  shift 207
 	.  error
 
 
 state 165
-	p2 : Set Capacity . NUMBER SEMICOLON  (33)
+	p1 : Set Admission . NUMBER SEMICOLON  (32)
 
 	NUMBER  shift 208
 	.  error
 
 
 state 166
-	p3 : Set Cost . NUMBER SEMICOLON  (34)
+	p2 : Set Capacity . NUMBER SEMICOLON  (33)
 
 	NUMBER  shift 209
 	.  error
 
 
 state 167
+	p3 : Set Cost . NUMBER SEMICOLON  (34)
+
+	NUMBER  shift 210
+	.  error
+
+
+state 168
 	land_definitions : empty .  (36)
 
 	.  reduce 36
 
 
-state 168
+state 169
 	park_definition : Park $$3 park_name $$4 park_elements $$5 land_definitions .  (24)
 	land_definitions : land_definitions . land_definition  (35)
 
-	Land  shift 210
+	Land  shift 211
 	Crowd  reduce 24
 	Start  reduce 24
 
-	land_definition  goto 211
-
-
-state 169
-	relational_expression : variable_name NOTEQUAL . constant_or_variable  (155)
-
-	NUMBER  shift 93
-	ID  shift 26
-	Quote  shift 94
-	.  error
-
-	variable_name  goto 95
-	constant  goto 96
-	constant_or_variable  goto 212
+	land_definition  goto 212
 
 
 state 170
-	relational_expression : variable_name LESSEQUAL . constant_or_variable  (153)
+	relational_expression : variable_name NOTEQUAL . constant_or_variable  (145)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	Quote  shift 94
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 95
-	constant  goto 96
+	variable_name  goto 83
+	constant  goto 84
 	constant_or_variable  goto 213
 
 
 state 171
-	relational_expression : variable_name GREATEQUAL . constant_or_variable  (154)
+	relational_expression : variable_name LESSEQUAL . constant_or_variable  (143)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	Quote  shift 94
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 95
-	constant  goto 96
+	variable_name  goto 83
+	constant  goto 84
 	constant_or_variable  goto 214
 
 
 state 172
-	relational_expression : variable_name LESS . constant_or_variable  (156)
+	relational_expression : variable_name GREATEQUAL . constant_or_variable  (144)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	Quote  shift 94
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 95
-	constant  goto 96
+	variable_name  goto 83
+	constant  goto 84
 	constant_or_variable  goto 215
 
 
 state 173
-	relational_expression : variable_name GREAT . constant_or_variable  (157)
+	relational_expression : variable_name LESS . constant_or_variable  (146)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	Quote  shift 94
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 95
-	constant  goto 96
+	variable_name  goto 83
+	constant  goto 84
 	constant_or_variable  goto 216
 
 
 state 174
-	condition : If OPEN relational_expression CLOSE . block  (151)
-	condition : If OPEN relational_expression CLOSE . block Else block  (152)
+	relational_expression : variable_name GREAT . constant_or_variable  (147)
+
+	NUMBER  shift 81
+	ID  shift 26
+	Quote  shift 82
+	.  error
+
+	variable_name  goto 83
+	constant  goto 84
+	constant_or_variable  goto 217
+
+
+state 175
+	condition : If OPEN relational_expression CLOSE . block  (141)
+	condition : If OPEN relational_expression CLOSE . block Else block  (142)
 
 	OPEN_PARAN  shift 18
 	.  error
 
 	start_block  goto 19
-	block  goto 217
+	block  goto 218
 
 
-state 175
-	loop : Iterate block Until OPEN . relational_expression CLOSE SEMICOLON  (168)
+state 176
+	loop : Iterate block Until OPEN . relational_expression CLOSE SEMICOLON  (158)
 
 	ID  shift 26
 	.  error
 
 	variable_name  goto 122
-	relational_expression  goto 218
-
-
-state 176
-	add_attraction_attribute : Set Capacity value In . attraction_name SEMICOLON  (122)
-	add_restaurant_attribute : Set Capacity value In . restaurant_name SEMICOLON  (131)
-	add_store_attribute : Set Capacity value In . store_name SEMICOLON  (136)
-
-	ID  shift 26
-	.  error
-
-	attraction_name  goto 219
-	restaurant_name  goto 220
-	store_name  goto 221
-	variable_name  goto 222
+	relational_expression  goto 219
 
 
 state 177
-	add_attraction_attribute : Set Cost value In . attraction_name SEMICOLON  (121)
-	add_restaurant_attribute : Set Cost value In . restaurant_name SEMICOLON  (130)
-	add_store_attribute : Set Cost value In . store_name SEMICOLON  (135)
+	constant : Quote ID Quote .  (180)
 
-	ID  shift 26
-	.  error
-
-	attraction_name  goto 223
-	restaurant_name  goto 224
-	store_name  goto 225
-	variable_name  goto 222
+	.  reduce 180
 
 
 state 178
-	add_attraction_attribute : Set Employees value In . attraction_name SEMICOLON  (123)
-	add_restaurant_attribute : Set Employees value In . restaurant_name SEMICOLON  (132)
-	add_store_attribute : Set Employees value In . store_name SEMICOLON  (137)
+	add_attribute : Set Capacity value In . variable_name SEMICOLON  (119)
 
 	ID  shift 26
 	.  error
 
-	attraction_name  goto 226
-	restaurant_name  goto 227
-	store_name  goto 228
-	variable_name  goto 222
+	variable_name  goto 220
 
 
 state 179
-	add_restaurant_attribute : Set EnergyIncrease value In . restaurant_name SEMICOLON  (134)
+	add_attribute : Set Cost value In . variable_name SEMICOLON  (120)
 
 	ID  shift 26
 	.  error
 
-	restaurant_name  goto 229
-	variable_name  goto 230
+	variable_name  goto 221
 
 
 state 180
-	add_crowd_attribute : Set EnergyLevel value In . crowd_name SEMICOLON  (127)
+	add_attribute : Set Employees value In . variable_name SEMICOLON  (121)
 
 	ID  shift 26
 	.  error
 
-	crowd_name  goto 231
-	variable_name  goto 28
+	variable_name  goto 222
 
 
 state 181
-	add_attraction_attribute : Set EnergyLost value In . attraction_name SEMICOLON  (125)
+	add_attribute : Set EnergyIncrease value In . variable_name SEMICOLON  (122)
 
 	ID  shift 26
 	.  error
 
-	attraction_name  goto 232
-	variable_name  goto 233
+	variable_name  goto 223
 
 
 state 182
-	add_crowd_attribute : Set Size value In . crowd_name SEMICOLON  (126)
+	add_attribute : Set EnergyLevel value In . variable_name SEMICOLON  (123)
 
 	ID  shift 26
 	.  error
 
-	crowd_name  goto 234
-	variable_name  goto 28
+	variable_name  goto 224
 
 
 state 183
-	add_restaurant_attribute : Set SpendLevel value In . restaurant_name SEMICOLON  (133)
-	add_store_attribute : Set SpendLevel value In . store_name SEMICOLON  (138)
+	add_attribute : Set EnergyLost value In . variable_name SEMICOLON  (124)
 
 	ID  shift 26
 	.  error
 
-	restaurant_name  goto 235
-	store_name  goto 236
-	variable_name  goto 237
+	variable_name  goto 225
 
 
 state 184
-	add_crowd_attribute : Set SpendingCapacity value In . crowd_name SEMICOLON  (129)
+	add_attribute : Set Size value In . variable_name SEMICOLON  (125)
 
 	ID  shift 26
 	.  error
 
-	crowd_name  goto 238
-	variable_name  goto 28
+	variable_name  goto 226
 
 
 state 185
-	add_attraction_attribute : Set ThrillLevel value In . attraction_name SEMICOLON  (124)
-	add_crowd_attribute : Set ThrillLevel value In . crowd_name SEMICOLON  (128)
+	add_attribute : Set SpendLevel value In . variable_name SEMICOLON  (127)
 
 	ID  shift 26
 	.  error
 
-	attraction_name  goto 239
-	crowd_name  goto 240
-	variable_name  goto 241
+	variable_name  goto 227
 
 
 state 186
-	calculate_revenue : CalculateRevenue COLON crowd_name COMMA . duration_name SEMICOLON  (172)
+	add_attribute : Set SpendingCapacity value In . variable_name SEMICOLON  (126)
 
 	ID  shift 26
 	.  error
 
-	variable_name  goto 242
-	duration_name  goto 243
+	variable_name  goto 228
 
 
 state 187
-	constant : Quote ID Quote .  (189)
-
-	.  reduce 189
-
-
-state 188
-	constant_variable_chain : constant_variable_chain COMMA constant_or_variable .  (175)
-
-	.  reduce 175
-
-
-state 189
-	simulate : Simulate COLON crowd_name SEMICOLON .  (174)
-
-	.  reduce 174
-
-
-state 190
-	function_call : function_name COLON formal_parameters SEMICOLON .  (161)
-
-	.  reduce 161
-
-
-state 191
-	formal_parameters : formal_parameters COMMA . variable_name  (162)
+	add_attribute : Set ThrillLevel value In . variable_name SEMICOLON  (128)
 
 	ID  shift 26
 	.  error
 
-	variable_name  goto 244
+	variable_name  goto 229
+
+
+state 188
+	calculate_revenue : CalculateRevenue COLON crowd_name COMMA . duration_name SEMICOLON  (163)
+
+	ID  shift 26
+	.  error
+
+	variable_name  goto 230
+	duration_name  goto 231
+
+
+state 189
+	constant_variable_chain : constant_variable_chain COMMA constant_or_variable .  (166)
+
+	.  reduce 166
+
+
+state 190
+	simulate : Simulate COLON crowd_name SEMICOLON .  (165)
+
+	.  reduce 165
+
+
+state 191
+	function_call : function_name COLON formal_parameters SEMICOLON .  (151)
+
+	.  reduce 151
 
 
 state 192
-	initialization_list : variable_name EQUAL constant .  (167)
+	formal_parameters : formal_parameters COMMA . variable_name  (152)
 
-	.  reduce 167
+	ID  shift 26
+	.  error
+
+	variable_name  goto 232
 
 
 state 193
-	initialization_list : initialization_list COMMA variable_name . EQUAL constant  (166)
+	initialization_list : variable_name EQUAL constant .  (157)
 
-	EQUAL  shift 245
-	.  error
+	.  reduce 157
 
 
 state 194
-	declaration_list : declaration_list COMMA variable_name .  (159)
+	initialization_list : initialization_list COMMA variable_name . EQUAL constant  (156)
 
-	.  reduce 159
+	EQUAL  shift 233
+	.  error
 
 
 state 195
-	arithmetic_expression : variable_name .  (149)
+	declaration_list : declaration_list COMMA variable_name .  (149)
 
 	.  reduce 149
 
 
 state 196
-	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (144)
-	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (145)
-	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (146)
-	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (147)
-	arithmetic_expression : OPEN arithmetic_expression . CLOSE  (148)
+	arithmetic_expression : variable_name .  (139)
 
-	PLUS  shift 198
-	MINUS  shift 199
-	MUL  shift 200
-	DIV  shift 201
-	CLOSE  shift 246
-	.  error
+	.  reduce 139
 
 
 state 197
-	right_side : arithmetic_expression SEMICOLON .  (141)
+	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (134)
+	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (135)
+	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (136)
+	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (137)
+	arithmetic_expression : OPEN arithmetic_expression . CLOSE  (138)
 
-	.  reduce 141
+	PLUS  shift 199
+	MINUS  shift 200
+	MUL  shift 201
+	DIV  shift 202
+	CLOSE  shift 234
+	.  error
 
 
 state 198
-	arithmetic_expression : arithmetic_expression PLUS . arithmetic_expression  (144)
+	right_side : arithmetic_expression SEMICOLON .  (131)
 
-	NUMBER  shift 93
-	ID  shift 26
-	OPEN  shift 150
-	Quote  shift 94
-	.  error
-
-	variable_name  goto 195
-	constant  goto 152
-	arithmetic_expression  goto 247
+	.  reduce 131
 
 
 state 199
-	arithmetic_expression : arithmetic_expression MINUS . arithmetic_expression  (145)
+	arithmetic_expression : arithmetic_expression PLUS . arithmetic_expression  (134)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	OPEN  shift 150
-	Quote  shift 94
+	OPEN  shift 151
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 195
-	constant  goto 152
-	arithmetic_expression  goto 248
+	variable_name  goto 196
+	constant  goto 153
+	arithmetic_expression  goto 235
 
 
 state 200
-	arithmetic_expression : arithmetic_expression MUL . arithmetic_expression  (146)
+	arithmetic_expression : arithmetic_expression MINUS . arithmetic_expression  (135)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	OPEN  shift 150
-	Quote  shift 94
+	OPEN  shift 151
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 195
-	constant  goto 152
-	arithmetic_expression  goto 249
+	variable_name  goto 196
+	constant  goto 153
+	arithmetic_expression  goto 236
 
 
 state 201
-	arithmetic_expression : arithmetic_expression DIV . arithmetic_expression  (147)
+	arithmetic_expression : arithmetic_expression MUL . arithmetic_expression  (136)
 
-	NUMBER  shift 93
+	NUMBER  shift 81
 	ID  shift 26
-	OPEN  shift 150
-	Quote  shift 94
+	OPEN  shift 151
+	Quote  shift 82
 	.  error
 
-	variable_name  goto 195
-	constant  goto 152
-	arithmetic_expression  goto 250
+	variable_name  goto 196
+	constant  goto 153
+	arithmetic_expression  goto 237
 
 
 state 202
+	arithmetic_expression : arithmetic_expression DIV . arithmetic_expression  (137)
+
+	NUMBER  shift 81
+	ID  shift 26
+	OPEN  shift 151
+	Quote  shift 82
+	.  error
+
+	variable_name  goto 196
+	constant  goto 153
+	arithmetic_expression  goto 238
+
+
+state 203
 	actual_parameters : actual_parameters COMMA data_type . variable_name  (102)
 
 	ID  shift 26
 	.  error
 
-	variable_name  goto 251
-
-
-state 203
-	c3 : Set EnergyLevel NUMBER . SEMICOLON  (19)
-
-	SEMICOLON  shift 252
-	.  error
+	variable_name  goto 239
 
 
 state 204
-	c2 : Set Size NUMBER . SEMICOLON  (18)
+	c3 : Set EnergyLevel NUMBER . SEMICOLON  (19)
 
-	SEMICOLON  shift 253
+	SEMICOLON  shift 240
 	.  error
 
 
 state 205
-	c1 : Set SpendingCapacity NUMBER . SEMICOLON  (17)
+	c2 : Set Size NUMBER . SEMICOLON  (18)
 
-	SEMICOLON  shift 254
+	SEMICOLON  shift 241
 	.  error
 
 
 state 206
-	c4 : Set ThrillLevel NUMBER . SEMICOLON  (20)
+	c1 : Set SpendingCapacity NUMBER . SEMICOLON  (17)
 
-	SEMICOLON  shift 255
+	SEMICOLON  shift 242
 	.  error
 
 
 state 207
-	p1 : Set Admission NUMBER . SEMICOLON  (32)
+	c4 : Set ThrillLevel NUMBER . SEMICOLON  (20)
 
-	SEMICOLON  shift 256
+	SEMICOLON  shift 243
 	.  error
 
 
 state 208
-	p2 : Set Capacity NUMBER . SEMICOLON  (33)
+	p1 : Set Admission NUMBER . SEMICOLON  (32)
 
-	SEMICOLON  shift 257
+	SEMICOLON  shift 244
 	.  error
 
 
 state 209
-	p3 : Set Cost NUMBER . SEMICOLON  (34)
+	p2 : Set Capacity NUMBER . SEMICOLON  (33)
 
-	SEMICOLON  shift 258
+	SEMICOLON  shift 245
 	.  error
 
 
 state 210
+	p3 : Set Cost NUMBER . SEMICOLON  (34)
+
+	SEMICOLON  shift 246
+	.  error
+
+
+state 211
 	land_definition : Land . $$6 land_name $$7 land_attributes land_elements  (39)
 	$$6 : .  (37)
 
 	.  reduce 37
 
-	$$6  goto 259
+	$$6  goto 247
 
 
-state 211
+state 212
 	land_definitions : land_definitions land_definition .  (35)
 
 	.  reduce 35
 
 
-state 212
-	relational_expression : variable_name NOTEQUAL constant_or_variable .  (155)
-
-	.  reduce 155
-
-
 state 213
-	relational_expression : variable_name LESSEQUAL constant_or_variable .  (153)
+	relational_expression : variable_name NOTEQUAL constant_or_variable .  (145)
 
-	.  reduce 153
+	.  reduce 145
 
 
 state 214
-	relational_expression : variable_name GREATEQUAL constant_or_variable .  (154)
+	relational_expression : variable_name LESSEQUAL constant_or_variable .  (143)
 
-	.  reduce 154
+	.  reduce 143
 
 
 state 215
-	relational_expression : variable_name LESS constant_or_variable .  (156)
+	relational_expression : variable_name GREATEQUAL constant_or_variable .  (144)
 
-	.  reduce 156
+	.  reduce 144
 
 
 state 216
-	relational_expression : variable_name GREAT constant_or_variable .  (157)
-
-	.  reduce 157
-
-
-state 217
-	condition : If OPEN relational_expression CLOSE block .  (151)
-	condition : If OPEN relational_expression CLOSE block . Else block  (152)
-
-	Else  shift 260
-	ID  reduce 151
-	CLOSE_PARAN  reduce 151
-	If  reduce 151
-	Iterate  reduce 151
-	Number  reduce 151
-	Set  reduce 151
-	String  reduce 151
-	CalculateRevenue  reduce 151
-	Print  reduce 151
-	Simulate  reduce 151
-	Days  reduce 151
-	Months  reduce 151
-	Weeks  reduce 151
-	Years  reduce 151
-
-
-state 218
-	loop : Iterate block Until OPEN relational_expression . CLOSE SEMICOLON  (168)
-
-	CLOSE  shift 261
-	.  error
-
-
-state 219
-	add_attraction_attribute : Set Capacity value In attraction_name . SEMICOLON  (122)
-
-	SEMICOLON  shift 262
-	.  error
-
-
-state 220
-	add_restaurant_attribute : Set Capacity value In restaurant_name . SEMICOLON  (131)
-
-	SEMICOLON  shift 263
-	.  error
-
-
-state 221
-	add_store_attribute : Set Capacity value In store_name . SEMICOLON  (136)
-
-	SEMICOLON  shift 264
-	.  error
-
-
-222: reduce/reduce conflict (reduce 192, reduce 198) on SEMICOLON
-222: reduce/reduce conflict (reduce 192, reduce 199) on SEMICOLON
-state 222
-	attraction_name : variable_name .  (192)
-	restaurant_name : variable_name .  (198)
-	store_name : variable_name .  (199)
-
-	.  reduce 192
-
-
-state 223
-	add_attraction_attribute : Set Cost value In attraction_name . SEMICOLON  (121)
-
-	SEMICOLON  shift 265
-	.  error
-
-
-state 224
-	add_restaurant_attribute : Set Cost value In restaurant_name . SEMICOLON  (130)
-
-	SEMICOLON  shift 266
-	.  error
-
-
-state 225
-	add_store_attribute : Set Cost value In store_name . SEMICOLON  (135)
-
-	SEMICOLON  shift 267
-	.  error
-
-
-state 226
-	add_attraction_attribute : Set Employees value In attraction_name . SEMICOLON  (123)
-
-	SEMICOLON  shift 268
-	.  error
-
-
-state 227
-	add_restaurant_attribute : Set Employees value In restaurant_name . SEMICOLON  (132)
-
-	SEMICOLON  shift 269
-	.  error
-
-
-state 228
-	add_store_attribute : Set Employees value In store_name . SEMICOLON  (137)
-
-	SEMICOLON  shift 270
-	.  error
-
-
-state 229
-	add_restaurant_attribute : Set EnergyIncrease value In restaurant_name . SEMICOLON  (134)
-
-	SEMICOLON  shift 271
-	.  error
-
-
-state 230
-	restaurant_name : variable_name .  (198)
-
-	.  reduce 198
-
-
-state 231
-	add_crowd_attribute : Set EnergyLevel value In crowd_name . SEMICOLON  (127)
-
-	SEMICOLON  shift 272
-	.  error
-
-
-state 232
-	add_attraction_attribute : Set EnergyLost value In attraction_name . SEMICOLON  (125)
-
-	SEMICOLON  shift 273
-	.  error
-
-
-state 233
-	attraction_name : variable_name .  (192)
-
-	.  reduce 192
-
-
-state 234
-	add_crowd_attribute : Set Size value In crowd_name . SEMICOLON  (126)
-
-	SEMICOLON  shift 274
-	.  error
-
-
-state 235
-	add_restaurant_attribute : Set SpendLevel value In restaurant_name . SEMICOLON  (133)
-
-	SEMICOLON  shift 275
-	.  error
-
-
-state 236
-	add_store_attribute : Set SpendLevel value In store_name . SEMICOLON  (138)
-
-	SEMICOLON  shift 276
-	.  error
-
-
-237: reduce/reduce conflict (reduce 198, reduce 199) on SEMICOLON
-state 237
-	restaurant_name : variable_name .  (198)
-	store_name : variable_name .  (199)
-
-	.  reduce 198
-
-
-state 238
-	add_crowd_attribute : Set SpendingCapacity value In crowd_name . SEMICOLON  (129)
-
-	SEMICOLON  shift 277
-	.  error
-
-
-state 239
-	add_attraction_attribute : Set ThrillLevel value In attraction_name . SEMICOLON  (124)
-
-	SEMICOLON  shift 278
-	.  error
-
-
-state 240
-	add_crowd_attribute : Set ThrillLevel value In crowd_name . SEMICOLON  (128)
-
-	SEMICOLON  shift 279
-	.  error
-
-
-241: reduce/reduce conflict (reduce 192, reduce 193) on SEMICOLON
-state 241
-	attraction_name : variable_name .  (192)
-	crowd_name : variable_name .  (193)
-
-	.  reduce 192
-
-
-state 242
-	duration_name : variable_name .  (194)
-
-	.  reduce 194
-
-
-state 243
-	calculate_revenue : CalculateRevenue COLON crowd_name COMMA duration_name . SEMICOLON  (172)
-
-	SEMICOLON  shift 280
-	.  error
-
-
-state 244
-	formal_parameters : formal_parameters COMMA variable_name .  (162)
-
-	.  reduce 162
-
-
-state 245
-	initialization_list : initialization_list COMMA variable_name EQUAL . constant  (166)
-
-	NUMBER  shift 93
-	Quote  shift 94
-	.  error
-
-	constant  goto 281
-
-
-state 246
-	arithmetic_expression : OPEN arithmetic_expression CLOSE .  (148)
-
-	.  reduce 148
-
-
-state 247
-	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (144)
-	arithmetic_expression : arithmetic_expression PLUS arithmetic_expression .  (144)
-	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (145)
-	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (146)
-	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (147)
-
-	MUL  shift 200
-	DIV  shift 201
-	SEMICOLON  reduce 144
-	PLUS  reduce 144
-	MINUS  reduce 144
-	CLOSE  reduce 144
-
-
-state 248
-	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (144)
-	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (145)
-	arithmetic_expression : arithmetic_expression MINUS arithmetic_expression .  (145)
-	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (146)
-	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (147)
-
-	MUL  shift 200
-	DIV  shift 201
-	SEMICOLON  reduce 145
-	PLUS  reduce 145
-	MINUS  reduce 145
-	CLOSE  reduce 145
-
-
-state 249
-	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (144)
-	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (145)
-	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (146)
-	arithmetic_expression : arithmetic_expression MUL arithmetic_expression .  (146)
-	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (147)
+	relational_expression : variable_name LESS constant_or_variable .  (146)
 
 	.  reduce 146
 
 
-state 250
-	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (144)
-	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (145)
-	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (146)
-	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (147)
-	arithmetic_expression : arithmetic_expression DIV arithmetic_expression .  (147)
+state 217
+	relational_expression : variable_name GREAT constant_or_variable .  (147)
 
 	.  reduce 147
 
 
-state 251
+state 218
+	condition : If OPEN relational_expression CLOSE block .  (141)
+	condition : If OPEN relational_expression CLOSE block . Else block  (142)
+
+	Else  shift 248
+	ID  reduce 141
+	CLOSE_PARAN  reduce 141
+	If  reduce 141
+	Iterate  reduce 141
+	Number  reduce 141
+	Return  reduce 141
+	Set  reduce 141
+	String  reduce 141
+	CalculateRevenue  reduce 141
+	Print  reduce 141
+	Simulate  reduce 141
+	Days  reduce 141
+	Months  reduce 141
+	Weeks  reduce 141
+	Years  reduce 141
+
+
+state 219
+	loop : Iterate block Until OPEN relational_expression . CLOSE SEMICOLON  (158)
+
+	CLOSE  shift 249
+	.  error
+
+
+state 220
+	add_attribute : Set Capacity value In variable_name . SEMICOLON  (119)
+
+	SEMICOLON  shift 250
+	.  error
+
+
+state 221
+	add_attribute : Set Cost value In variable_name . SEMICOLON  (120)
+
+	SEMICOLON  shift 251
+	.  error
+
+
+state 222
+	add_attribute : Set Employees value In variable_name . SEMICOLON  (121)
+
+	SEMICOLON  shift 252
+	.  error
+
+
+state 223
+	add_attribute : Set EnergyIncrease value In variable_name . SEMICOLON  (122)
+
+	SEMICOLON  shift 253
+	.  error
+
+
+state 224
+	add_attribute : Set EnergyLevel value In variable_name . SEMICOLON  (123)
+
+	SEMICOLON  shift 254
+	.  error
+
+
+state 225
+	add_attribute : Set EnergyLost value In variable_name . SEMICOLON  (124)
+
+	SEMICOLON  shift 255
+	.  error
+
+
+state 226
+	add_attribute : Set Size value In variable_name . SEMICOLON  (125)
+
+	SEMICOLON  shift 256
+	.  error
+
+
+state 227
+	add_attribute : Set SpendLevel value In variable_name . SEMICOLON  (127)
+
+	SEMICOLON  shift 257
+	.  error
+
+
+state 228
+	add_attribute : Set SpendingCapacity value In variable_name . SEMICOLON  (126)
+
+	SEMICOLON  shift 258
+	.  error
+
+
+state 229
+	add_attribute : Set ThrillLevel value In variable_name . SEMICOLON  (128)
+
+	SEMICOLON  shift 259
+	.  error
+
+
+state 230
+	duration_name : variable_name .  (185)
+
+	.  reduce 185
+
+
+state 231
+	calculate_revenue : CalculateRevenue COLON crowd_name COMMA duration_name . SEMICOLON  (163)
+
+	SEMICOLON  shift 260
+	.  error
+
+
+state 232
+	formal_parameters : formal_parameters COMMA variable_name .  (152)
+
+	.  reduce 152
+
+
+state 233
+	initialization_list : initialization_list COMMA variable_name EQUAL . constant  (156)
+
+	NUMBER  shift 81
+	Quote  shift 82
+	.  error
+
+	constant  goto 261
+
+
+state 234
+	arithmetic_expression : OPEN arithmetic_expression CLOSE .  (138)
+
+	.  reduce 138
+
+
+state 235
+	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (134)
+	arithmetic_expression : arithmetic_expression PLUS arithmetic_expression .  (134)
+	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (135)
+	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (136)
+	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (137)
+
+	MUL  shift 201
+	DIV  shift 202
+	SEMICOLON  reduce 134
+	PLUS  reduce 134
+	MINUS  reduce 134
+	CLOSE  reduce 134
+
+
+state 236
+	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (134)
+	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (135)
+	arithmetic_expression : arithmetic_expression MINUS arithmetic_expression .  (135)
+	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (136)
+	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (137)
+
+	MUL  shift 201
+	DIV  shift 202
+	SEMICOLON  reduce 135
+	PLUS  reduce 135
+	MINUS  reduce 135
+	CLOSE  reduce 135
+
+
+state 237
+	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (134)
+	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (135)
+	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (136)
+	arithmetic_expression : arithmetic_expression MUL arithmetic_expression .  (136)
+	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (137)
+
+	.  reduce 136
+
+
+state 238
+	arithmetic_expression : arithmetic_expression . PLUS arithmetic_expression  (134)
+	arithmetic_expression : arithmetic_expression . MINUS arithmetic_expression  (135)
+	arithmetic_expression : arithmetic_expression . MUL arithmetic_expression  (136)
+	arithmetic_expression : arithmetic_expression . DIV arithmetic_expression  (137)
+	arithmetic_expression : arithmetic_expression DIV arithmetic_expression .  (137)
+
+	.  reduce 137
+
+
+state 239
 	actual_parameters : actual_parameters COMMA data_type variable_name .  (102)
 
 	.  reduce 102
 
 
-state 252
+state 240
 	c3 : Set EnergyLevel NUMBER SEMICOLON .  (19)
 
 	.  reduce 19
 
 
-state 253
+state 241
 	c2 : Set Size NUMBER SEMICOLON .  (18)
 
 	.  reduce 18
 
 
-state 254
+state 242
 	c1 : Set SpendingCapacity NUMBER SEMICOLON .  (17)
 
 	.  reduce 17
 
 
-state 255
+state 243
 	c4 : Set ThrillLevel NUMBER SEMICOLON .  (20)
 
 	.  reduce 20
 
 
-state 256
+state 244
 	p1 : Set Admission NUMBER SEMICOLON .  (32)
 
 	.  reduce 32
 
 
-state 257
+state 245
 	p2 : Set Capacity NUMBER SEMICOLON .  (33)
 
 	.  reduce 33
 
 
-state 258
+state 246
 	p3 : Set Cost NUMBER SEMICOLON .  (34)
 
 	.  reduce 34
 
 
-state 259
+state 247
 	land_definition : Land $$6 . land_name $$7 land_attributes land_elements  (39)
 
 	ID  shift 26
 	.  error
 
-	land_name  goto 282
-	variable_name  goto 283
+	land_name  goto 262
+	variable_name  goto 263
 
 
-state 260
-	condition : If OPEN relational_expression CLOSE block Else . block  (152)
+state 248
+	condition : If OPEN relational_expression CLOSE block Else . block  (142)
 
 	OPEN_PARAN  shift 18
 	.  error
 
 	start_block  goto 19
-	block  goto 284
+	block  goto 264
 
 
-state 261
-	loop : Iterate block Until OPEN relational_expression CLOSE . SEMICOLON  (168)
+state 249
+	loop : Iterate block Until OPEN relational_expression CLOSE . SEMICOLON  (158)
 
-	SEMICOLON  shift 285
+	SEMICOLON  shift 265
 	.  error
 
 
-state 262
-	add_attraction_attribute : Set Capacity value In attraction_name SEMICOLON .  (122)
+state 250
+	add_attribute : Set Capacity value In variable_name SEMICOLON .  (119)
 
-	.  reduce 122
-
-
-state 263
-	add_restaurant_attribute : Set Capacity value In restaurant_name SEMICOLON .  (131)
-
-	.  reduce 131
+	.  reduce 119
 
 
-state 264
-	add_store_attribute : Set Capacity value In store_name SEMICOLON .  (136)
+state 251
+	add_attribute : Set Cost value In variable_name SEMICOLON .  (120)
 
-	.  reduce 136
+	.  reduce 120
 
 
-state 265
-	add_attraction_attribute : Set Cost value In attraction_name SEMICOLON .  (121)
+state 252
+	add_attribute : Set Employees value In variable_name SEMICOLON .  (121)
 
 	.  reduce 121
 
 
-state 266
-	add_restaurant_attribute : Set Cost value In restaurant_name SEMICOLON .  (130)
+state 253
+	add_attribute : Set EnergyIncrease value In variable_name SEMICOLON .  (122)
 
-	.  reduce 130
-
-
-state 267
-	add_store_attribute : Set Cost value In store_name SEMICOLON .  (135)
-
-	.  reduce 135
+	.  reduce 122
 
 
-state 268
-	add_attraction_attribute : Set Employees value In attraction_name SEMICOLON .  (123)
+state 254
+	add_attribute : Set EnergyLevel value In variable_name SEMICOLON .  (123)
 
 	.  reduce 123
 
 
-state 269
-	add_restaurant_attribute : Set Employees value In restaurant_name SEMICOLON .  (132)
-
-	.  reduce 132
-
-
-state 270
-	add_store_attribute : Set Employees value In store_name SEMICOLON .  (137)
-
-	.  reduce 137
-
-
-state 271
-	add_restaurant_attribute : Set EnergyIncrease value In restaurant_name SEMICOLON .  (134)
-
-	.  reduce 134
-
-
-state 272
-	add_crowd_attribute : Set EnergyLevel value In crowd_name SEMICOLON .  (127)
-
-	.  reduce 127
-
-
-state 273
-	add_attraction_attribute : Set EnergyLost value In attraction_name SEMICOLON .  (125)
-
-	.  reduce 125
-
-
-state 274
-	add_crowd_attribute : Set Size value In crowd_name SEMICOLON .  (126)
-
-	.  reduce 126
-
-
-state 275
-	add_restaurant_attribute : Set SpendLevel value In restaurant_name SEMICOLON .  (133)
-
-	.  reduce 133
-
-
-state 276
-	add_store_attribute : Set SpendLevel value In store_name SEMICOLON .  (138)
-
-	.  reduce 138
-
-
-state 277
-	add_crowd_attribute : Set SpendingCapacity value In crowd_name SEMICOLON .  (129)
-
-	.  reduce 129
-
-
-state 278
-	add_attraction_attribute : Set ThrillLevel value In attraction_name SEMICOLON .  (124)
+state 255
+	add_attribute : Set EnergyLost value In variable_name SEMICOLON .  (124)
 
 	.  reduce 124
 
 
-state 279
-	add_crowd_attribute : Set ThrillLevel value In crowd_name SEMICOLON .  (128)
+state 256
+	add_attribute : Set Size value In variable_name SEMICOLON .  (125)
+
+	.  reduce 125
+
+
+state 257
+	add_attribute : Set SpendLevel value In variable_name SEMICOLON .  (127)
+
+	.  reduce 127
+
+
+state 258
+	add_attribute : Set SpendingCapacity value In variable_name SEMICOLON .  (126)
+
+	.  reduce 126
+
+
+state 259
+	add_attribute : Set ThrillLevel value In variable_name SEMICOLON .  (128)
 
 	.  reduce 128
 
 
-state 280
-	calculate_revenue : CalculateRevenue COLON crowd_name COMMA duration_name SEMICOLON .  (172)
+state 260
+	calculate_revenue : CalculateRevenue COLON crowd_name COMMA duration_name SEMICOLON .  (163)
 
-	.  reduce 172
-
-
-state 281
-	initialization_list : initialization_list COMMA variable_name EQUAL constant .  (166)
-
-	.  reduce 166
+	.  reduce 163
 
 
-state 282
+state 261
+	initialization_list : initialization_list COMMA variable_name EQUAL constant .  (156)
+
+	.  reduce 156
+
+
+state 262
 	land_definition : Land $$6 land_name . $$7 land_attributes land_elements  (39)
 	$$7 : .  (38)
 
 	.  reduce 38
 
-	$$7  goto 286
+	$$7  goto 266
 
 
-state 283
-	land_name : variable_name .  (196)
+state 263
+	land_name : variable_name .  (187)
 
-	.  reduce 196
-
-
-state 284
-	condition : If OPEN relational_expression CLOSE block Else block .  (152)
-
-	.  reduce 152
+	.  reduce 187
 
 
-state 285
-	loop : Iterate block Until OPEN relational_expression CLOSE SEMICOLON .  (168)
+state 264
+	condition : If OPEN relational_expression CLOSE block Else block .  (142)
 
-	.  reduce 168
+	.  reduce 142
 
 
-state 286
+state 265
+	loop : Iterate block Until OPEN relational_expression CLOSE SEMICOLON .  (158)
+
+	.  reduce 158
+
+
+state 266
 	land_definition : Land $$6 land_name $$7 . land_attributes land_elements  (39)
 
-	Set  shift 287
+	Set  shift 267
 	.  error
 
-	land_attributes  goto 288
+	land_attributes  goto 268
 
 
-state 287
+state 267
 	land_attributes : Set . Location NUMBER SEMICOLON  (40)
 
-	Location  shift 289
+	Location  shift 269
 	.  error
 
 
-state 288
+state 268
 	land_definition : Land $$6 land_name $$7 land_attributes . land_elements  (39)
-	empty : .  (201)
+	empty : .  (192)
 
-	.  reduce 201
+	.  reduce 192
 
-	empty  goto 290
-	land_elements  goto 291
+	empty  goto 270
+	land_elements  goto 271
 
 
-state 289
+state 269
 	land_attributes : Set Location . NUMBER SEMICOLON  (40)
 
-	NUMBER  shift 292
+	NUMBER  shift 272
 	.  error
 
 
-state 290
+state 270
 	land_elements : empty .  (42)
 
 	.  reduce 42
 
 
-state 291
+state 271
 	land_definition : Land $$6 land_name $$7 land_attributes land_elements .  (39)
 	land_elements : land_elements . land_element  (41)
 
-	Attraction  shift 293
-	Restaurant  shift 294
-	Store  shift 295
+	Attraction  shift 273
+	Restaurant  shift 274
+	Store  shift 275
 	Crowd  reduce 39
 	Land  reduce 39
 	Start  reduce 39
 
-	land_element  goto 296
-	attraction_definition  goto 297
-	restaurant_definition  goto 298
-	store_definition  goto 299
+	land_element  goto 276
+	attraction_definition  goto 277
+	restaurant_definition  goto 278
+	store_definition  goto 279
 
 
-state 292
+state 272
 	land_attributes : Set Location NUMBER . SEMICOLON  (40)
 
-	SEMICOLON  shift 300
+	SEMICOLON  shift 280
 	.  error
 
 
-state 293
+state 273
 	attraction_definition : Attraction . $$8 attraction_name $$9 In land_name $$10 attraction_attributes  (49)
 	$$8 : .  (46)
 
 	.  reduce 46
 
-	$$8  goto 301
+	$$8  goto 281
 
 
-state 294
+state 274
 	restaurant_definition : Restaurant . $$11 restaurant_name $$12 In land_name $$13 restaurant_attributes  (66)
 	$$11 : .  (63)
 
 	.  reduce 63
 
-	$$11  goto 302
+	$$11  goto 282
 
 
-state 295
+state 275
 	store_definition : Store . $$14 store_name $$15 In land_name $$16 store_attributes  (83)
 	$$14 : .  (80)
 
 	.  reduce 80
 
-	$$14  goto 303
+	$$14  goto 283
 
 
-state 296
+state 276
 	land_elements : land_elements land_element .  (41)
 
 	.  reduce 41
 
 
-state 297
+state 277
 	land_element : attraction_definition .  (43)
 
 	.  reduce 43
 
 
-state 298
+state 278
 	land_element : restaurant_definition .  (44)
 
 	.  reduce 44
 
 
-state 299
+state 279
 	land_element : store_definition .  (45)
 
 	.  reduce 45
 
 
-state 300
+state 280
 	land_attributes : Set Location NUMBER SEMICOLON .  (40)
 
 	.  reduce 40
 
 
-state 301
+state 281
 	attraction_definition : Attraction $$8 . attraction_name $$9 In land_name $$10 attraction_attributes  (49)
 
 	ID  shift 26
 	.  error
 
-	attraction_name  goto 304
-	variable_name  goto 233
+	attraction_name  goto 284
+	variable_name  goto 285
 
 
-state 302
+state 282
 	restaurant_definition : Restaurant $$11 . restaurant_name $$12 In land_name $$13 restaurant_attributes  (66)
 
 	ID  shift 26
 	.  error
 
-	restaurant_name  goto 305
-	variable_name  goto 230
+	restaurant_name  goto 286
+	variable_name  goto 287
 
 
-state 303
+state 283
 	store_definition : Store $$14 . store_name $$15 In land_name $$16 store_attributes  (83)
 
 	ID  shift 26
 	.  error
 
-	store_name  goto 306
-	variable_name  goto 307
+	store_name  goto 288
+	variable_name  goto 289
 
 
-state 304
+state 284
 	attraction_definition : Attraction $$8 attraction_name . $$9 In land_name $$10 attraction_attributes  (49)
 	$$9 : .  (47)
 
 	.  reduce 47
 
-	$$9  goto 308
+	$$9  goto 290
 
 
-state 305
+state 285
+	attraction_name : variable_name .  (183)
+
+	.  reduce 183
+
+
+state 286
 	restaurant_definition : Restaurant $$11 restaurant_name . $$12 In land_name $$13 restaurant_attributes  (66)
 	$$12 : .  (64)
 
 	.  reduce 64
 
-	$$12  goto 309
+	$$12  goto 291
 
 
-state 306
+state 287
+	restaurant_name : variable_name .  (189)
+
+	.  reduce 189
+
+
+state 288
 	store_definition : Store $$14 store_name . $$15 In land_name $$16 store_attributes  (83)
 	$$15 : .  (81)
 
 	.  reduce 81
 
-	$$15  goto 310
+	$$15  goto 292
 
 
-state 307
-	store_name : variable_name .  (199)
+state 289
+	store_name : variable_name .  (190)
 
-	.  reduce 199
+	.  reduce 190
 
 
-state 308
+state 290
 	attraction_definition : Attraction $$8 attraction_name $$9 . In land_name $$10 attraction_attributes  (49)
 
-	In  shift 311
+	In  shift 293
 	.  error
 
 
-state 309
+state 291
 	restaurant_definition : Restaurant $$11 restaurant_name $$12 . In land_name $$13 restaurant_attributes  (66)
 
-	In  shift 312
+	In  shift 294
 	.  error
 
 
-state 310
+state 292
 	store_definition : Store $$14 store_name $$15 . In land_name $$16 store_attributes  (83)
 
-	In  shift 313
+	In  shift 295
 	.  error
 
 
-state 311
+state 293
 	attraction_definition : Attraction $$8 attraction_name $$9 In . land_name $$10 attraction_attributes  (49)
 
 	ID  shift 26
 	.  error
 
-	land_name  goto 314
-	variable_name  goto 283
+	land_name  goto 296
+	variable_name  goto 263
 
 
-state 312
+state 294
 	restaurant_definition : Restaurant $$11 restaurant_name $$12 In . land_name $$13 restaurant_attributes  (66)
 
 	ID  shift 26
 	.  error
 
-	land_name  goto 315
-	variable_name  goto 283
+	land_name  goto 297
+	variable_name  goto 263
 
 
-state 313
+state 295
 	store_definition : Store $$14 store_name $$15 In . land_name $$16 store_attributes  (83)
 
 	ID  shift 26
 	.  error
 
-	land_name  goto 316
-	variable_name  goto 283
+	land_name  goto 298
+	variable_name  goto 263
 
 
-state 314
+state 296
 	attraction_definition : Attraction $$8 attraction_name $$9 In land_name . $$10 attraction_attributes  (49)
 	$$10 : .  (48)
 
 	.  reduce 48
 
-	$$10  goto 317
+	$$10  goto 299
 
 
-state 315
+state 297
 	restaurant_definition : Restaurant $$11 restaurant_name $$12 In land_name . $$13 restaurant_attributes  (66)
 	$$13 : .  (65)
 
 	.  reduce 65
 
-	$$13  goto 318
+	$$13  goto 300
 
 
-state 316
+state 298
 	store_definition : Store $$14 store_name $$15 In land_name . $$16 store_attributes  (83)
 	$$16 : .  (82)
 
 	.  reduce 82
 
-	$$16  goto 319
+	$$16  goto 301
 
 
-state 317
+state 299
 	attraction_definition : Attraction $$8 attraction_name $$9 In land_name $$10 . attraction_attributes  (49)
-	empty : .  (201)
+	empty : .  (192)
 
-	SEMICOLON  shift 320
-	Attraction  reduce 201
-	Crowd  reduce 201
-	Land  reduce 201
-	Restaurant  reduce 201
-	Set  reduce 201
-	Start  reduce 201
-	Store  reduce 201
+	SEMICOLON  shift 302
+	Attraction  reduce 192
+	Crowd  reduce 192
+	Land  reduce 192
+	Restaurant  reduce 192
+	Set  reduce 192
+	Start  reduce 192
+	Store  reduce 192
 
-	attraction_attributes  goto 321
-	empty  goto 322
+	attraction_attributes  goto 303
+	empty  goto 304
 
 
-state 318
+state 300
 	restaurant_definition : Restaurant $$11 restaurant_name $$12 In land_name $$13 . restaurant_attributes  (66)
-	empty : .  (201)
+	empty : .  (192)
 
-	SEMICOLON  shift 323
-	Attraction  reduce 201
-	Crowd  reduce 201
-	Land  reduce 201
-	Restaurant  reduce 201
-	Set  reduce 201
-	Start  reduce 201
-	Store  reduce 201
+	SEMICOLON  shift 305
+	Attraction  reduce 192
+	Crowd  reduce 192
+	Land  reduce 192
+	Restaurant  reduce 192
+	Set  reduce 192
+	Start  reduce 192
+	Store  reduce 192
 
-	restaurant_attributes  goto 324
-	empty  goto 325
+	restaurant_attributes  goto 306
+	empty  goto 307
 
 
-state 319
+state 301
 	store_definition : Store $$14 store_name $$15 In land_name $$16 . store_attributes  (83)
-	empty : .  (201)
+	empty : .  (192)
 
-	SEMICOLON  shift 326
-	Attraction  reduce 201
-	Crowd  reduce 201
-	Land  reduce 201
-	Restaurant  reduce 201
-	Set  reduce 201
-	Start  reduce 201
-	Store  reduce 201
+	SEMICOLON  shift 308
+	Attraction  reduce 192
+	Crowd  reduce 192
+	Land  reduce 192
+	Restaurant  reduce 192
+	Set  reduce 192
+	Start  reduce 192
+	Store  reduce 192
 
-	store_attributes  goto 327
-	empty  goto 328
+	store_attributes  goto 309
+	empty  goto 310
 
 
-state 320
+state 302
 	attraction_attributes : SEMICOLON .  (50)
 
 	.  reduce 50
 
 
-state 321
+state 303
 	attraction_definition : Attraction $$8 attraction_name $$9 In land_name $$10 attraction_attributes .  (49)
 	attraction_attributes : attraction_attributes . attraction_attribute  (51)
 
-	Set  shift 329
+	Set  shift 311
 	Attraction  reduce 49
 	Crowd  reduce 49
 	Land  reduce 49
@@ -3050,31 +2873,31 @@ state 321
 	Start  reduce 49
 	Store  reduce 49
 
-	attraction_attribute  goto 330
-	a1  goto 331
-	a2  goto 332
-	a3  goto 333
-	a4  goto 334
-	a5  goto 335
+	attraction_attribute  goto 312
+	a1  goto 313
+	a2  goto 314
+	a3  goto 315
+	a4  goto 316
+	a5  goto 317
 
 
-state 322
+state 304
 	attraction_attributes : empty .  (52)
 
 	.  reduce 52
 
 
-state 323
+state 305
 	restaurant_attributes : SEMICOLON .  (67)
 
 	.  reduce 67
 
 
-state 324
+state 306
 	restaurant_definition : Restaurant $$11 restaurant_name $$12 In land_name $$13 restaurant_attributes .  (66)
 	restaurant_attributes : restaurant_attributes . restaurant_attribute  (68)
 
-	Set  shift 336
+	Set  shift 318
 	Attraction  reduce 66
 	Crowd  reduce 66
 	Land  reduce 66
@@ -3082,31 +2905,31 @@ state 324
 	Start  reduce 66
 	Store  reduce 66
 
-	restaurant_attribute  goto 337
-	r1  goto 338
-	r2  goto 339
-	r3  goto 340
-	r4  goto 341
-	r5  goto 342
+	restaurant_attribute  goto 319
+	r1  goto 320
+	r2  goto 321
+	r3  goto 322
+	r4  goto 323
+	r5  goto 324
 
 
-state 325
+state 307
 	restaurant_attributes : empty .  (69)
 
 	.  reduce 69
 
 
-state 326
+state 308
 	store_attributes : SEMICOLON .  (84)
 
 	.  reduce 84
 
 
-state 327
+state 309
 	store_definition : Store $$14 store_name $$15 In land_name $$16 store_attributes .  (83)
 	store_attributes : store_attributes . store_attribute  (85)
 
-	Set  shift 343
+	Set  shift 325
 	Attraction  reduce 83
 	Crowd  reduce 83
 	Land  reduce 83
@@ -3114,448 +2937,443 @@ state 327
 	Start  reduce 83
 	Store  reduce 83
 
-	store_attribute  goto 344
-	s1  goto 345
-	s2  goto 346
-	s3  goto 347
-	s4  goto 348
+	store_attribute  goto 326
+	s1  goto 327
+	s2  goto 328
+	s3  goto 329
+	s4  goto 330
 
 
-state 328
+state 310
 	store_attributes : empty .  (86)
 
 	.  reduce 86
 
 
-state 329
+state 311
 	a1 : Set . Cost NUMBER SEMICOLON  (58)
 	a2 : Set . Capacity NUMBER SEMICOLON  (59)
 	a3 : Set . Employees NUMBER SEMICOLON  (60)
 	a4 : Set . ThrillLevel NUMBER SEMICOLON  (61)
 	a5 : Set . EnergyLost NUMBER SEMICOLON  (62)
 
-	Capacity  shift 349
-	Cost  shift 350
-	Employees  shift 351
-	EnergyLost  shift 352
-	ThrillLevel  shift 353
+	Capacity  shift 331
+	Cost  shift 332
+	Employees  shift 333
+	EnergyLost  shift 334
+	ThrillLevel  shift 335
 	.  error
 
 
-state 330
+state 312
 	attraction_attributes : attraction_attributes attraction_attribute .  (51)
 
 	.  reduce 51
 
 
-state 331
+state 313
 	attraction_attribute : a1 .  (53)
 
 	.  reduce 53
 
 
-state 332
+state 314
 	attraction_attribute : a2 .  (54)
 
 	.  reduce 54
 
 
-state 333
+state 315
 	attraction_attribute : a3 .  (55)
 
 	.  reduce 55
 
 
-state 334
+state 316
 	attraction_attribute : a4 .  (56)
 
 	.  reduce 56
 
 
-state 335
+state 317
 	attraction_attribute : a5 .  (57)
 
 	.  reduce 57
 
 
-state 336
+state 318
 	r1 : Set . Cost NUMBER SEMICOLON  (75)
 	r2 : Set . Capacity NUMBER SEMICOLON  (76)
 	r3 : Set . Employees NUMBER SEMICOLON  (77)
 	r4 : Set . SpendLevel NUMBER SEMICOLON  (78)
 	r5 : Set . EnergyIncrease NUMBER SEMICOLON  (79)
 
-	Capacity  shift 354
-	Cost  shift 355
-	Employees  shift 356
-	EnergyIncrease  shift 357
-	SpendLevel  shift 358
+	Capacity  shift 336
+	Cost  shift 337
+	Employees  shift 338
+	EnergyIncrease  shift 339
+	SpendLevel  shift 340
 	.  error
 
 
-state 337
+state 319
 	restaurant_attributes : restaurant_attributes restaurant_attribute .  (68)
 
 	.  reduce 68
 
 
-state 338
+state 320
 	restaurant_attribute : r1 .  (70)
 
 	.  reduce 70
 
 
-state 339
+state 321
 	restaurant_attribute : r2 .  (71)
 
 	.  reduce 71
 
 
-state 340
+state 322
 	restaurant_attribute : r3 .  (72)
 
 	.  reduce 72
 
 
-state 341
+state 323
 	restaurant_attribute : r4 .  (73)
 
 	.  reduce 73
 
 
-state 342
+state 324
 	restaurant_attribute : r5 .  (74)
 
 	.  reduce 74
 
 
-state 343
+state 325
 	s1 : Set . Cost NUMBER SEMICOLON  (91)
 	s2 : Set . Capacity NUMBER SEMICOLON  (92)
 	s3 : Set . Employees NUMBER SEMICOLON  (93)
 	s4 : Set . SpendLevel NUMBER SEMICOLON  (94)
 
-	Capacity  shift 359
-	Cost  shift 360
-	Employees  shift 361
-	SpendLevel  shift 362
+	Capacity  shift 341
+	Cost  shift 342
+	Employees  shift 343
+	SpendLevel  shift 344
 	.  error
 
 
-state 344
+state 326
 	store_attributes : store_attributes store_attribute .  (85)
 
 	.  reduce 85
 
 
-state 345
+state 327
 	store_attribute : s1 .  (87)
 
 	.  reduce 87
 
 
-state 346
+state 328
 	store_attribute : s2 .  (88)
 
 	.  reduce 88
 
 
-state 347
+state 329
 	store_attribute : s3 .  (89)
 
 	.  reduce 89
 
 
-state 348
+state 330
 	store_attribute : s4 .  (90)
 
 	.  reduce 90
 
 
-state 349
+state 331
 	a2 : Set Capacity . NUMBER SEMICOLON  (59)
 
-	NUMBER  shift 363
+	NUMBER  shift 345
+	.  error
+
+
+state 332
+	a1 : Set Cost . NUMBER SEMICOLON  (58)
+
+	NUMBER  shift 346
+	.  error
+
+
+state 333
+	a3 : Set Employees . NUMBER SEMICOLON  (60)
+
+	NUMBER  shift 347
+	.  error
+
+
+state 334
+	a5 : Set EnergyLost . NUMBER SEMICOLON  (62)
+
+	NUMBER  shift 348
+	.  error
+
+
+state 335
+	a4 : Set ThrillLevel . NUMBER SEMICOLON  (61)
+
+	NUMBER  shift 349
+	.  error
+
+
+state 336
+	r2 : Set Capacity . NUMBER SEMICOLON  (76)
+
+	NUMBER  shift 350
+	.  error
+
+
+state 337
+	r1 : Set Cost . NUMBER SEMICOLON  (75)
+
+	NUMBER  shift 351
+	.  error
+
+
+state 338
+	r3 : Set Employees . NUMBER SEMICOLON  (77)
+
+	NUMBER  shift 352
+	.  error
+
+
+state 339
+	r5 : Set EnergyIncrease . NUMBER SEMICOLON  (79)
+
+	NUMBER  shift 353
+	.  error
+
+
+state 340
+	r4 : Set SpendLevel . NUMBER SEMICOLON  (78)
+
+	NUMBER  shift 354
+	.  error
+
+
+state 341
+	s2 : Set Capacity . NUMBER SEMICOLON  (92)
+
+	NUMBER  shift 355
+	.  error
+
+
+state 342
+	s1 : Set Cost . NUMBER SEMICOLON  (91)
+
+	NUMBER  shift 356
+	.  error
+
+
+state 343
+	s3 : Set Employees . NUMBER SEMICOLON  (93)
+
+	NUMBER  shift 357
+	.  error
+
+
+state 344
+	s4 : Set SpendLevel . NUMBER SEMICOLON  (94)
+
+	NUMBER  shift 358
+	.  error
+
+
+state 345
+	a2 : Set Capacity NUMBER . SEMICOLON  (59)
+
+	SEMICOLON  shift 359
+	.  error
+
+
+state 346
+	a1 : Set Cost NUMBER . SEMICOLON  (58)
+
+	SEMICOLON  shift 360
+	.  error
+
+
+state 347
+	a3 : Set Employees NUMBER . SEMICOLON  (60)
+
+	SEMICOLON  shift 361
+	.  error
+
+
+state 348
+	a5 : Set EnergyLost NUMBER . SEMICOLON  (62)
+
+	SEMICOLON  shift 362
+	.  error
+
+
+state 349
+	a4 : Set ThrillLevel NUMBER . SEMICOLON  (61)
+
+	SEMICOLON  shift 363
 	.  error
 
 
 state 350
-	a1 : Set Cost . NUMBER SEMICOLON  (58)
+	r2 : Set Capacity NUMBER . SEMICOLON  (76)
 
-	NUMBER  shift 364
+	SEMICOLON  shift 364
 	.  error
 
 
 state 351
-	a3 : Set Employees . NUMBER SEMICOLON  (60)
+	r1 : Set Cost NUMBER . SEMICOLON  (75)
 
-	NUMBER  shift 365
+	SEMICOLON  shift 365
 	.  error
 
 
 state 352
-	a5 : Set EnergyLost . NUMBER SEMICOLON  (62)
+	r3 : Set Employees NUMBER . SEMICOLON  (77)
 
-	NUMBER  shift 366
+	SEMICOLON  shift 366
 	.  error
 
 
 state 353
-	a4 : Set ThrillLevel . NUMBER SEMICOLON  (61)
+	r5 : Set EnergyIncrease NUMBER . SEMICOLON  (79)
 
-	NUMBER  shift 367
+	SEMICOLON  shift 367
 	.  error
 
 
 state 354
-	r2 : Set Capacity . NUMBER SEMICOLON  (76)
+	r4 : Set SpendLevel NUMBER . SEMICOLON  (78)
 
-	NUMBER  shift 368
+	SEMICOLON  shift 368
 	.  error
 
 
 state 355
-	r1 : Set Cost . NUMBER SEMICOLON  (75)
+	s2 : Set Capacity NUMBER . SEMICOLON  (92)
 
-	NUMBER  shift 369
+	SEMICOLON  shift 369
 	.  error
 
 
 state 356
-	r3 : Set Employees . NUMBER SEMICOLON  (77)
+	s1 : Set Cost NUMBER . SEMICOLON  (91)
 
-	NUMBER  shift 370
+	SEMICOLON  shift 370
 	.  error
 
 
 state 357
-	r5 : Set EnergyIncrease . NUMBER SEMICOLON  (79)
+	s3 : Set Employees NUMBER . SEMICOLON  (93)
 
-	NUMBER  shift 371
+	SEMICOLON  shift 371
 	.  error
 
 
 state 358
-	r4 : Set SpendLevel . NUMBER SEMICOLON  (78)
+	s4 : Set SpendLevel NUMBER . SEMICOLON  (94)
 
-	NUMBER  shift 372
+	SEMICOLON  shift 372
 	.  error
 
 
 state 359
-	s2 : Set Capacity . NUMBER SEMICOLON  (92)
-
-	NUMBER  shift 373
-	.  error
-
-
-state 360
-	s1 : Set Cost . NUMBER SEMICOLON  (91)
-
-	NUMBER  shift 374
-	.  error
-
-
-state 361
-	s3 : Set Employees . NUMBER SEMICOLON  (93)
-
-	NUMBER  shift 375
-	.  error
-
-
-state 362
-	s4 : Set SpendLevel . NUMBER SEMICOLON  (94)
-
-	NUMBER  shift 376
-	.  error
-
-
-state 363
-	a2 : Set Capacity NUMBER . SEMICOLON  (59)
-
-	SEMICOLON  shift 377
-	.  error
-
-
-state 364
-	a1 : Set Cost NUMBER . SEMICOLON  (58)
-
-	SEMICOLON  shift 378
-	.  error
-
-
-state 365
-	a3 : Set Employees NUMBER . SEMICOLON  (60)
-
-	SEMICOLON  shift 379
-	.  error
-
-
-state 366
-	a5 : Set EnergyLost NUMBER . SEMICOLON  (62)
-
-	SEMICOLON  shift 380
-	.  error
-
-
-state 367
-	a4 : Set ThrillLevel NUMBER . SEMICOLON  (61)
-
-	SEMICOLON  shift 381
-	.  error
-
-
-state 368
-	r2 : Set Capacity NUMBER . SEMICOLON  (76)
-
-	SEMICOLON  shift 382
-	.  error
-
-
-state 369
-	r1 : Set Cost NUMBER . SEMICOLON  (75)
-
-	SEMICOLON  shift 383
-	.  error
-
-
-state 370
-	r3 : Set Employees NUMBER . SEMICOLON  (77)
-
-	SEMICOLON  shift 384
-	.  error
-
-
-state 371
-	r5 : Set EnergyIncrease NUMBER . SEMICOLON  (79)
-
-	SEMICOLON  shift 385
-	.  error
-
-
-state 372
-	r4 : Set SpendLevel NUMBER . SEMICOLON  (78)
-
-	SEMICOLON  shift 386
-	.  error
-
-
-state 373
-	s2 : Set Capacity NUMBER . SEMICOLON  (92)
-
-	SEMICOLON  shift 387
-	.  error
-
-
-state 374
-	s1 : Set Cost NUMBER . SEMICOLON  (91)
-
-	SEMICOLON  shift 388
-	.  error
-
-
-state 375
-	s3 : Set Employees NUMBER . SEMICOLON  (93)
-
-	SEMICOLON  shift 389
-	.  error
-
-
-state 376
-	s4 : Set SpendLevel NUMBER . SEMICOLON  (94)
-
-	SEMICOLON  shift 390
-	.  error
-
-
-state 377
 	a2 : Set Capacity NUMBER SEMICOLON .  (59)
 
 	.  reduce 59
 
 
-state 378
+state 360
 	a1 : Set Cost NUMBER SEMICOLON .  (58)
 
 	.  reduce 58
 
 
-state 379
+state 361
 	a3 : Set Employees NUMBER SEMICOLON .  (60)
 
 	.  reduce 60
 
 
-state 380
+state 362
 	a5 : Set EnergyLost NUMBER SEMICOLON .  (62)
 
 	.  reduce 62
 
 
-state 381
+state 363
 	a4 : Set ThrillLevel NUMBER SEMICOLON .  (61)
 
 	.  reduce 61
 
 
-state 382
+state 364
 	r2 : Set Capacity NUMBER SEMICOLON .  (76)
 
 	.  reduce 76
 
 
-state 383
+state 365
 	r1 : Set Cost NUMBER SEMICOLON .  (75)
 
 	.  reduce 75
 
 
-state 384
+state 366
 	r3 : Set Employees NUMBER SEMICOLON .  (77)
 
 	.  reduce 77
 
 
-state 385
+state 367
 	r5 : Set EnergyIncrease NUMBER SEMICOLON .  (79)
 
 	.  reduce 79
 
 
-state 386
+state 368
 	r4 : Set SpendLevel NUMBER SEMICOLON .  (78)
 
 	.  reduce 78
 
 
-state 387
+state 369
 	s2 : Set Capacity NUMBER SEMICOLON .  (92)
 
 	.  reduce 92
 
 
-state 388
+state 370
 	s1 : Set Cost NUMBER SEMICOLON .  (91)
 
 	.  reduce 91
 
 
-state 389
+state 371
 	s3 : Set Employees NUMBER SEMICOLON .  (93)
 
 	.  reduce 93
 
 
-state 390
+state 372
 	s4 : Set SpendLevel NUMBER SEMICOLON .  (94)
 
 	.  reduce 94
 
 
-State 222 contains 2 reduce/reduce conflicts.
-State 237 contains 1 reduce/reduce conflict.
-State 241 contains 1 reduce/reduce conflict.
-
-
-61 terminals, 112 nonterminals
-202 grammar rules, 391 states
+61 terminals, 110 nonterminals
+193 grammar rules, 373 states
