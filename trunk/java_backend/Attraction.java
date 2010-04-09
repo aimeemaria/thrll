@@ -9,12 +9,16 @@
  */
 public class Attraction implements LandElement {
 
+	private String attractionName; //Name of the attraction
 	private int thrillLevel; //The thrill level of the Attraction
 	private int energyLoss; //The amount of energy it takes to ride the attraction
+	private double cost; //The cost of the attraction
 	private int capacity; //The capacity of the attraction
 	private int currentAttendance; //The current number of people in the attraction
 	private int employees; //The number of employees needed to operate the attraction
+	private int energyLost; //Energy Lost during this attraction
 	private int timeNeeded; //The amount of time it takes to experience the attraction
+	private Land land; //The land object to which this attraction belongs to
 	
 	/**The Constructor
 	 * Constructs an attraction with default values
@@ -72,8 +76,16 @@ public class Attraction implements LandElement {
 	 * @return The cost to operate this attraction for one day.
 	 */
 	public double calculateRevenue(Park park){
-		double revenue = -1 * park.hours * employees * park.salary;
+		double revenue = -1 * park.getHours() * employees * park.getSalary();
 		return revenue;
+	}
+	
+	public String getAttractionName() {
+		return attractionName;
+	}
+	
+	public void setAttractionName(String attractionName) {
+		this.attractionName = attractionName;
 	}
 	/**
 	 * @return the thrill level of the attraction
@@ -103,6 +115,12 @@ public class Attraction implements LandElement {
 		this.energyLoss = energyLoss;
 	}
 
+	public double getCost() {
+		return cost;
+	}
+	public void setCost(double cost) {
+		this.cost = cost;
+	}
 	/**
 	 * @return the capacity of the attraction
 	 */
@@ -131,6 +149,12 @@ public class Attraction implements LandElement {
 		this.employees = employees;
 	}
 
+	public int getEnergyLost() {
+		return energyLost;
+	}
+	public void setEnergyLost(int energyLost) {
+		this.energyLost = energyLost;
+	}
 	/**
 	 * @return the time needed to experience the attraction
 	 */
@@ -151,5 +175,17 @@ public class Attraction implements LandElement {
 		return currentAttendance;
 	}
 
-			
+	/**
+	 * @param the land to which the attraction belongs to
+	 */
+	public void setLand(Land land){
+		this.land = land;
+	}	
+
+	/**
+	 * @return the land to which the attraction belongs to
+	 */
+	public Land getLand(){
+		return land;
+	}	
 }
