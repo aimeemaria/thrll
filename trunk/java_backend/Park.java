@@ -6,7 +6,6 @@
 
 import java.util.ArrayList;
 
-<<<<<<< .mine
 public class Park 
 {
 	private String ParkName;
@@ -16,16 +15,6 @@ public class Park
 	public int hours;  		//the number of hours the park operates in a day.
 	public double salary;  	//the salary of park employees
 	
-=======
-public class Park {
-	private String parkName = null;
-	private double admission;
-	private double capacity;
-	private double cost;
-	private int hours;  //the number of hours the park operates in a day.
-	private double salary;  //the average salary of park employees
-		
->>>>>>> .r47
 	// internal list of land objects
 	private ArrayList<Land> LandObjs = null;
 	
@@ -80,25 +69,10 @@ public class Park {
 	public void setCost(double cost) 
 	{
 		this.cost = cost;
-	}
-<<<<<<< .mine
+	}	
 
 	public double calculateRevenue(Crowd c, Duration d)
 	{
-=======
-	
-	public ArrayList<Land> getLandObjs() {
-		return landObjs;
-	}
-
-	public void addLand(Land land) throws ThrillException{
-		if(landObjs.contains(land))
-			ThrillException.RedefinitionException(land.getLandName());
-		landObjs.add(land);
-	}
-	
-	public double calculateRevenue(Crowd c, Duration d){
->>>>>>> .r47
 		double result = 0;
 		
 		// write the revenue logic here. This function should be able to 
