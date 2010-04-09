@@ -36,14 +36,62 @@ Park ParkOne
 	Set EnergyIncrease 5;
 
 Start:
-{
-    Number a = 0;
-    variable = a + bi + (5 + 1) + ((4 - result) * (4 / 1));
-    Number result = 0, newvar = 100.0;
-    Number decl, init, sooper;
+{   
+    Set EnergyLevel 5 In MyCrowdOne;
+    Set ThrillLevel 10 In MyCrowdOne;
+    Set Size 10 In MyCrowdOne;
+
+    Number a, b, c;
+    Number a = 100.5, b = 10;
     String name = "Hemanth", nwstring = "string";
-    a = 10;
-    resut = calculateRevenue: MyCrowdTwo, day;
-    resut = calculateRevenue: ;
-    calculateRevenue: ;
+    String n2 = "a ";
+    Print d;
+    Print 10, n2, 10, c;
+    Simulate: MyCrowdTwo;
+
+    Number result;
+    result = CalculateRevenue: c, d;
+    result = a + b;
+    result = a + b - c;
+
+    Iterate
+    {
+	a = b;
+	b = c;
+
+    }Until(a < b);
+
+    If(a < b)
+    {
+	If(c < d)
+	{
+	    Print 10;
+	}	
+	Else
+	{
+		Print a;
+	}
+    }
+
+    result = MyFunction: a,b,c;
+    MyFunction: a;
+    MyFunction: ;
+}
+
+Number MyFunction: Number a, String b
+{
+	a = b;
+	b = c;
+}
+
+Number MyFunction: 
+{
+	a = b;
+	b = c;
+}
+
+MyFunction: Number a, String b
+{
+	a = b;
+	b = c;
 }
