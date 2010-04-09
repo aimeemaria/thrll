@@ -6,6 +6,8 @@ public class Park {
 	double admission;
 	double capacity;
 	double cost;
+	int hours;  //the number of hours the park operates in a day.
+	double salary;  //the average salary of park employees
 	
 	// internal list of land objects
 	private ArrayList<Land> landObjs = null;
@@ -18,6 +20,8 @@ public class Park {
 	
 	public Park(){
 		setParkAttributeValues(100, 10000, 10);
+		hours = 12;  //default value
+		salary = 15.0; //default value
 	}
 
 	public String getParkName() {
@@ -61,5 +65,21 @@ public class Park {
 		// objects
 		
 		return result;
+	}
+	
+	public int getHours(){
+		return hours;
+	}
+	
+	public void setHours(int hours){
+		this.hours = hours;
+	}
+	
+	public double getSalary(){
+		return salary;
+	}
+	
+	public void setSalary(double salary){
+		this.salary = salary;
 	}
 }
