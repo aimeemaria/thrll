@@ -151,24 +151,23 @@ import java.util.Hashtable;
 %type <sval> end_block
 %type <sval> start_block
 %type <sval> block
+%type <sval> actual_parameter
 %type <sval> actual_parameters
 %type <sval> return_type
 %type <sval> function
 %type <sval> start
 %type <sval> loop
 %type <sval> condition
-%type <sval> usercode
-%type <sval> functions
 %%
 
 program: definitions usercode;
 
 definitions: crowd_definitions park_definition crowd_definitions;
 crowd_definitions: crowd_definitions crowd_definition
-                 | empty {}
+                 | empty
                  ;
 
-usercode: start functions { $$ = $1 + $2; System.out.print($$); } ; 
+usercode: start; 
 
 crowd_definition: Crowd  { createObj = true; }
 			crowd_name { try { createObject($3); } catch(Exception ex) {} }
@@ -294,72 +293,68 @@ s2: Set Capacity NUMBER SEMICOLON;	 { $$ = ":Capacity:" + $3;};
 s3: Set Employees NUMBER SEMICOLON;	 { $$ = ":Employees:" + $3;};
 s4: Set SpendLevel NUMBER SEMICOLON; { $$ = ":SpendLevel:" + $3;}; 
 
-start: Start COLON block { $$ = "public static void main()\n" + $3; };
+start: Start COLON block;
 
-functions: functions function { $$ = $1 + $2; }
-	   | empty { $$ = ""; }
-	   ;
-
-function: return_type function_name COLON actual_parameters block 
-	  { $$ = "\n" + $1 + " " + $2 + "(" + $4 + ")\n" + $5; }
+function: return_type function_name COLON actual_parameters block function
+        | empty
         ;
-return_type: Number { $$ = "double"; }
-           | String { $$ = "String"; }
-           | empty {$$ = "void"; }
+return_type: Number
+           | String
+           | empty
            ;
-actual_parameters: actual_parameters COMMA data_type variable_name { $$ = $1 + ", " + $3 + " " + $4; }
-		     | data_type variable_name { $$ = $1 + " " + $2; }
-                 | empty { $$ = ""; }
-		     ;
+actual_parameters: data_type variable_name actual_parameter
+                 | empty;
+actual_parameter: COMMA actual_parameters
+                | empty;
 
-block: start_block statements end_block { $$ = "{" + $2 + "\n}"; }
+block: start_block statements end_block
      ;
 start_block: OPEN_PARAN;
 end_block: CLOSE_PARAN;
 
-statements: statements statement { $$ = $1 + "\n" +  $2; }
-          | empty { $$ = ""; }
+statements: statements statement 
+          | empty
 	    ;
-statement: add_attraction_attribute { $$ = $1; }
-	   | add_crowd_attribute { $$ = $1; }
-	   | add_restaurant_attribute { $$ = $1; }
-	   | add_store_attribute { $$ = $1; }
-	   | assignment { $$ = $1; }
-	   | condition { $$ = $1; }
-         | declaration { $$ = $1; }
-	   | function_call { $$ = $1; }
-         | initialization { $$ = $1; }
-	   | loop { $$ = $1; }
-	   | thrill_functions { $$ = $1; }
+statement: add_attraction_attribute { $$ = $1; System.out.print($$);}
+	   | add_crowd_attribute { $$ = $1; System.out.print($$);}
+	   | add_restaurant_attribute { $$ = $1; System.out.print($$);}
+	   | add_store_attribute { $$ = $1; System.out.print($$);}
+	   | assignment { $$ = $1; System.out.print($$);}
+	   | condition { $$ = $1; System.out.print($$);}
+         | declaration { $$ = $1; System.out.print($$);}
+	   | function_call { $$ = $1; System.out.print($$);}
+         | initialization { $$ = $1; System.out.print($$);}
+	   | loop { $$ = $1; System.out.print($$);}
+	   | thrill_functions { $$ = $1; System.out.print($$);}
          ;
 
-add_attraction_attribute: Set Cost value In attraction_name SEMICOLON 	     { $$ = $5 + ".setCost(" + $3 +");" ;}
-                        | Set Capacity value In attraction_name SEMICOLON    { $$ = $5 + ".setCapacity(" + $3 +");" ;}
-                        | Set Employees value In attraction_name SEMICOLON   { $$ = $5 + ".setEmployees(" + $3 +");" ;}
-                        | Set ThrillLevel value In attraction_name SEMICOLON { $$ = $5 + ".setThrillLevel(" + $3 +");" ;}
-                        | Set EnergyLost value In attraction_name SEMICOLON  { $$ = $5 + ".setEnergyLost(" + $3 +");" ;}
+add_attraction_attribute: Set Cost value In attraction_name SEMICOLON
+                        | Set Capacity value In attraction_name SEMICOLON
+                        | Set Employees value In attraction_name SEMICOLON
+                        | Set ThrillLevel value In attraction_name SEMICOLON
+                        | Set EnergyLost value In attraction_name SEMICOLON
                         ;
-	
-add_crowd_attribute: Set Size value In crowd_name SEMICOLON			{ $$ = $5 + ".setSize(" + $3 +");" ;}
-                   | Set EnergyLevel value In crowd_name SEMICOLON	{ $$ = $5 + ".setEnergyLevel(" + $3 +");" ;}
-                   | Set ThrillLevel value In crowd_name SEMICOLON	{ $$ = $5 + ".setThrillLevel(" + $3 +");" ;}
-                   | Set SpendingCapacity value In crowd_name SEMICOLON	{ $$ = $5 + ".setSpendingCapacity(" + $3 +");" ;}
+
+add_crowd_attribute: Set Size value In crowd_name SEMICOLON
+                   | Set EnergyLevel value In crowd_name SEMICOLON
+                   | Set ThrillLevel value In crowd_name SEMICOLON
+                   | Set SpendingCapacity value In crowd_name SEMICOLON
                    ;
 
-add_restaurant_attribute: Set Cost value In restaurant_name SEMICOLON   	  { $$ = $5 + ".setCost(" + $3 +");" ;}
-                        | Set Capacity value In restaurant_name SEMICOLON	  { $$ = $5 + ".setCapacity(" + $3 +");" ;}
-                        | Set Employees value In restaurant_name SEMICOLON      { $$ = $5 + ".setEmployees(" + $3 +");" ;} 
-                        | Set SpendLevel value In restaurant_name SEMICOLON	  { $$ = $5 + ".setSpendLevel(" + $3 +");" ;}
-                        | Set EnergyIncrease value In restaurant_name SEMICOLON { $$ = $5 + ".setEnergyIncrease(" + $3 +");" ;}
+add_restaurant_attribute: Set Cost value In restaurant_name SEMICOLON
+                        | Set Capacity value In restaurant_name SEMICOLON
+                        | Set Employees value In restaurant_name SEMICOLON
+                        | Set SpendLevel value In restaurant_name SEMICOLON
+                        | Set EnergyIncrease value In restaurant_name SEMICOLON
                         ;
 
-add_store_attribute: Set Cost value In store_name SEMICOLON		{ $$ = $5 + ".setCost(" + $3 +");" ;}
-                   | Set Capacity value In store_name SEMICOLON	{ $$ = $5 + ".setCapacity(" + $3 +");" ;}
-                   | Set Employees value In store_name SEMICOLON	{ $$ = $5 + ".setEmployees(" + $3 +");" ;}
-                   | Set SpendLevel value In store_name SEMICOLON { $$ = $5 + ".setSpendLevel(" + $3 +");" ;}
+add_store_attribute: Set Cost value SEMICOLON
+                   | Set Capacity value In store_name SEMICOLON
+                   | Set Employees value In store_name SEMICOLON
+                   | Set SpendLevel value In store_name SEMICOLON
 		       ;
 
-assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
+assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3; System.out.println($$); };
 left_side: variable_name { $$ = $1; } ;
 right_side: arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
  	   | function_call { $$ = $1; }
@@ -375,9 +370,9 @@ arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = 
                      ;
 
 condition: If OPEN relational_expression CLOSE block
-	     { $$ = "if(" + $3 + ")" + $5; }
+	     { $$ = "if(" + $3 + ")" + $5; System.out.println($$);}
          | If OPEN relational_expression CLOSE block Else block
-	     { $$ = "if(" + $3 + ")" + $5 + "\nelse" + $7; }
+	     { $$ = "if(" + $3 + ")" + $5 + "\nelse" + $7; System.out.println($$);}
 	   ;
 relational_expression: variable_name LESSEQUAL constant_or_variable  { $$ = $1 + " <= " + $3;}
 			   | variable_name GREATEQUAL constant_or_variable { $$ = $1 + " >= " + $3;}
@@ -411,7 +406,7 @@ initialization_list: initialization_list COMMA variable_name EQUAL constant
 		       ;
 
 loop: Iterate block Until OPEN relational_expression CLOSE SEMICOLON 
-      {$$ = "do" + $2 + "while (" + $5 + ");" ; }
+      {$$ = "do { \n" + $2 + "} while (" + $5 + ");" ; }
     ;
 
 thrill_functions: calculate_revenue { $$ = $1; }
