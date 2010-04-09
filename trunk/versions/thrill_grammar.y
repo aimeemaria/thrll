@@ -142,10 +142,7 @@ import java.util.Hashtable;
 %type <sval> left_side
 %type <sval> right_side
 %type <sval> assignment
-%type <sval> add_store_attribute
-%type <sval> add_restaurant_attribute
-%type <sval> add_crowd_attribute
-%type <sval> add_attraction_attribute
+%type <sval> add_attribute
 %type <sval> statement
 %type <sval> statements
 %type <sval> end_block
@@ -159,6 +156,7 @@ import java.util.Hashtable;
 %type <sval> condition
 %type <sval> usercode
 %type <sval> functions
+%type <sval> return
 %%
 
 program: definitions usercode;
@@ -168,7 +166,7 @@ crowd_definitions: crowd_definitions crowd_definition
                  | empty {}
                  ;
 
-usercode: start functions { $$ = $1 + $2; System.out.print($$); } ; 
+usercode: start functions { $$ = $1 + $2; generateThrillProgram($$); /*System.out.print($$);*/ } ; 
 
 crowd_definition: Crowd  { createObj = true; }
 			crowd_name { try { createObject($3); } catch(Exception ex) {} }
@@ -320,44 +318,28 @@ end_block: CLOSE_PARAN;
 statements: statements statement { $$ = $1 + "\n" +  $2; }
           | empty { $$ = ""; }
 	    ;
-statement: add_attraction_attribute { $$ = $1; }
-	   | add_crowd_attribute { $$ = $1; }
-	   | add_restaurant_attribute { $$ = $1; }
-	   | add_store_attribute { $$ = $1; }
-	   | assignment { $$ = $1; }
-	   | condition { $$ = $1; }
-         | declaration { $$ = $1; }
-	   | function_call { $$ = $1; }
-         | initialization { $$ = $1; }
-	   | loop { $$ = $1; }
-	   | thrill_functions { $$ = $1; }
+statement: add_attribute 	{ $$ = $1; }
+	   | assignment 	 	{ $$ = $1; }
+	   | condition 	 	{ $$ = $1; }
+         | declaration 	 	{ $$ = $1; }
+	   | function_call 	{ $$ = $1; }
+         | initialization 	{ $$ = $1; }
+	   | loop 			{ $$ = $1; }
+	   | return 		{ $$ = $1; }
+	   | thrill_functions 	{ $$ = $1; }
          ;
 
-add_attraction_attribute: Set Cost value In attraction_name SEMICOLON 	     { $$ = $5 + ".setCost(" + $3 +");" ;}
-                        | Set Capacity value In attraction_name SEMICOLON    { $$ = $5 + ".setCapacity(" + $3 +");" ;}
-                        | Set Employees value In attraction_name SEMICOLON   { $$ = $5 + ".setEmployees(" + $3 +");" ;}
-                        | Set ThrillLevel value In attraction_name SEMICOLON { $$ = $5 + ".setThrillLevel(" + $3 +");" ;}
-                        | Set EnergyLost value In attraction_name SEMICOLON  { $$ = $5 + ".setEnergyLost(" + $3 +");" ;}
-                        ;
-	
-add_crowd_attribute: Set Size value In crowd_name SEMICOLON			{ $$ = $5 + ".setSize(" + $3 +");" ;}
-                   | Set EnergyLevel value In crowd_name SEMICOLON	{ $$ = $5 + ".setEnergyLevel(" + $3 +");" ;}
-                   | Set ThrillLevel value In crowd_name SEMICOLON	{ $$ = $5 + ".setThrillLevel(" + $3 +");" ;}
-                   | Set SpendingCapacity value In crowd_name SEMICOLON	{ $$ = $5 + ".setSpendingCapacity(" + $3 +");" ;}
-                   ;
-
-add_restaurant_attribute: Set Cost value In restaurant_name SEMICOLON   	  { $$ = $5 + ".setCost(" + $3 +");" ;}
-                        | Set Capacity value In restaurant_name SEMICOLON	  { $$ = $5 + ".setCapacity(" + $3 +");" ;}
-                        | Set Employees value In restaurant_name SEMICOLON      { $$ = $5 + ".setEmployees(" + $3 +");" ;} 
-                        | Set SpendLevel value In restaurant_name SEMICOLON	  { $$ = $5 + ".setSpendLevel(" + $3 +");" ;}
-                        | Set EnergyIncrease value In restaurant_name SEMICOLON { $$ = $5 + ".setEnergyIncrease(" + $3 +");" ;}
-                        ;
-
-add_store_attribute: Set Cost value In store_name SEMICOLON		{ $$ = $5 + ".setCost(" + $3 +");" ;}
-                   | Set Capacity value In store_name SEMICOLON	{ $$ = $5 + ".setCapacity(" + $3 +");" ;}
-                   | Set Employees value In store_name SEMICOLON	{ $$ = $5 + ".setEmployees(" + $3 +");" ;}
-                   | Set SpendLevel value In store_name SEMICOLON { $$ = $5 + ".setSpendLevel(" + $3 +");" ;}
-		       ;
+add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "Capacity", $3); }
+		 | Set Cost value In variable_name SEMICOLON			{ $$ = generateAttribute($5, "Cost", $3); }
+		 | Set Employees value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "Employees", $3); }
+		 | Set EnergyIncrease value In variable_name SEMICOLON	{ $$ = generateAttribute($5, "EnergyIncrease", $3); }
+	       | Set EnergyLevel value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "EnergyLevel", $3); }
+             | Set EnergyLost value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "EnergyLost", $3); }
+		 | Set Size value In variable_name SEMICOLON			{ $$ = generateAttribute($5, "Size", $3); }
+             | Set SpendingCapacity value In variable_name SEMICOLON	{ $$ = generateAttribute($5, "SpendingCapacity", $3); }
+		 | Set SpendLevel value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "SpendLevel", $3); }
+             | Set ThrillLevel value In variable_name SEMICOLON	      { $$ = generateAttribute($5, "ThrillLevel", $3); }
+		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
 left_side: variable_name { $$ = $1; } ;
@@ -414,18 +396,20 @@ loop: Iterate block Until OPEN relational_expression CLOSE SEMICOLON
       {$$ = "do" + $2 + "while (" + $5 + ");" ; }
     ;
 
+return: Return constant_or_variable SEMICOLON { $$ = "return " + $2 + ";"; };
+
 thrill_functions: calculate_revenue { $$ = $1; }
                   | output { $$ = $1; } 
                   | simulate { $$ = $1; }
 			;
 
 calculate_revenue: CalculateRevenue COLON crowd_name COMMA duration_name SEMICOLON
-			 {$$ = "calculateRevenue(" + $3 + ", " + $5 + ");" ; }
+			 {$$ = generateRevenue($3, $5) ; }
 		     ;
 
 output: Print constant_variable_chain SEMICOLON { $$ = "System.out.println(" + $2 + ");" ; };
 
-simulate: Simulate COLON crowd_name SEMICOLON {$$ = "simulate(" + $3 + ");"; };
+simulate: Simulate COLON crowd_name SEMICOLON {$$ = generateSimulate($3); };
 
 constant_variable_chain: constant_variable_chain COMMA constant_or_variable 
 				 { $$ = $1 + "+" + $3; }
@@ -470,7 +454,7 @@ restaurant_name: variable_name { $$ = $1; } ;
 store_name: variable_name 	 { $$ = $1; } ;
 variable_name: ID 		 { $$ = $1; } ;
 
-empty: {} ;
+empty: { } ;
 
 %%
 	private Yylex lexer;
@@ -528,7 +512,7 @@ empty: {} ;
 				Attraction attraction = new Attraction();
 				attraction.setAttractionName(identifier);
 				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
+					ThrillException.RedefinitionException(identifier);
 				thrillObjects.put(identifier, attraction);
 				break;
 
@@ -537,7 +521,7 @@ empty: {} ;
 				crowd.setCrowdName(identifier);
 				// check for redefinition
 				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
+					ThrillException.RedefinitionException(identifier);
 				thrillObjects.put(identifier, crowd);
 
 				break;
@@ -550,7 +534,7 @@ empty: {} ;
 				land.setLandName(identifier);
 				// check for redefinition
 				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
+					ThrillException.RedefinitionException(identifier);
 				thrillObjects.put(identifier, land);
 				parkObj.addLand(land);
 				land.setPark(parkObj);
@@ -570,7 +554,7 @@ empty: {} ;
 				park.setParkName(identifier);
 				// check for redefinition
 				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
+					ThrillException.RedefinitionException(identifier);
 				thrillObjects.put(identifier, park);
 
 				// Need a local copy of Park object in the Land object
@@ -582,14 +566,14 @@ empty: {} ;
 				Restaurant restaurant = new Restaurant();
 				restaurant.setRestaurantName(identifier);
 				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
+					ThrillException.RedefinitionException(identifier);
 				thrillObjects.put(identifier, restaurant);
 
 			case Store:
 				Store store = new Store();
 				store .setStoreName(identifier);
 				if(thrillObjects.containsKey(identifier))
-					ThrillException.redefinitionException(identifier);
+					ThrillException.RedefinitionException(identifier);
 				thrillObjects.put(identifier, store);
 				break;
 			}
@@ -650,13 +634,13 @@ empty: {} ;
 		if(obj instanceof Attraction){
 			Attraction a = (Attraction)obj;
 			if(a == null)
-				ThrillException.objectNotFoundException(identifier);
+				ThrillException.ObjectNotFoundException(identifier);
 			setAttractionAttribute(a, allAttributes);
 		}		
 		else if(obj instanceof Crowd){
 			Crowd c = (Crowd)obj;
 			if(c == null)
-				ThrillException.objectNotFoundException(identifier);
+				ThrillException.ObjectNotFoundException(identifier);
 			// set the attribute in the crowd object
 			setCrowdAttribute(c, allAttributes);
 		}
@@ -666,20 +650,20 @@ empty: {} ;
 		else if(obj instanceof Park){
 			Park p = (Park)obj;
 			if(p == null)
-				ThrillException.objectNotFoundException(identifier);
+				ThrillException.ObjectNotFoundException(identifier);
 			// set the attribute in the crowd object
 			setParkAttribute(p, allAttributes);
 		}
 		else if(obj instanceof Restaurant){
 			Restaurant r = (Restaurant)obj;
 			if(r == null)
-				ThrillException.objectNotFoundException(identifier);
+				ThrillException.ObjectNotFoundException(identifier);
 			setRestaurantAttribute(r, allAttributes);
 		}
 		else if(obj instanceof Store){
 			Store s = (Store)obj;
 			if(s == null)
-				ThrillException.objectNotFoundException(identifier);
+				ThrillException.ObjectNotFoundException(identifier);
 			setStoreAttribute(s, allAttributes);
 		}
 	}
@@ -794,6 +778,158 @@ empty: {} ;
 
 	public Hashtable<String, Object> getThrillObjects() {
 		return thrillObjects;
+	}
+	
+	public String generateAttribute(String variable, String function, String value) {
+		String result = null;
+		
+		value = validateAttributeValue(function, value);
+		
+		Object obj = thrillObjects.get(variable);
+		
+		if(obj == null){
+			// ThrillException.ObjectNotFoundException(variable);
+		}
+		else{
+			if(function.equalsIgnoreCase("Capacity")){
+				if(obj instanceof Crowd){
+					//ThrillException.UnexpectedTypeException(variable, "Crowd");
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");
+			}
+			else if(function.equalsIgnoreCase("Cost")){
+				if(obj instanceof Crowd){
+					//ThrillException.UnexpectedTypeException(variable, "Crowd");
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");
+			}
+			else if(function.equalsIgnoreCase("Employees")){
+				if(obj instanceof Crowd){
+					//ThrillException.UnexpectedTypeException(variable, "Crowd");
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");
+			}
+			else if(function.equalsIgnoreCase("EnergyIncrease")){
+				if(!(obj instanceof Restaurant)){
+					//ThrillException.UnexpectedTypeException("Restaurant", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");
+
+			}
+			else if(function.equalsIgnoreCase("EnergyLevel")){
+				if(!(obj instanceof Crowd)){
+					//ThrillException.UnexpectedTypeException("Crowd", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");				
+			}
+			else if(function.equalsIgnoreCase("EnergyLost")){
+				if(!(obj instanceof Attraction)){
+					//ThrillException.UnexpectedTypeException("Attraction", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");
+			}
+			else if(function.equalsIgnoreCase("Size")){
+				if(!(obj instanceof Crowd)){
+					//ThrillException.UnexpectedTypeException("Crowd", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");				
+			}
+			else if(function.equalsIgnoreCase("SpendingCapacity")){
+				if(!(obj instanceof Crowd)){
+					//ThrillException.UnexpectedTypeException("Crowd", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");				
+			}
+			else if(function.equalsIgnoreCase("SpendLevel")){
+				if(!(obj instanceof Restaurant || obj instanceof Store)){
+					//ThrillException.UnexpectedTypeException("Restaurant/Store", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");				
+			}
+			else if(function.equalsIgnoreCase("ThrillLevel")){
+				if(!(obj instanceof Attraction || obj instanceof Crowd)){
+					//ThrillException.UnexpectedTypeException("Attraction/Crowd", variable);
+				}
+				result = variable.concat(".set" + function + "(" + value + ");");				
+			}
+			else{
+				// error condition
+				// ThrillException.UnexpectedTypeException("Attraction/Crowd/Restaurant/Store", variable);
+			}
+		}
+		
+		return result;
+	}
+	
+	public String validateAttributeValue(String function, String value){
+		String result = null;
+		
+		double d = Double.parseDouble(value);
+		
+		if(function.equalsIgnoreCase("Cost")){			
+			if(d < 0)
+				throw new IllegalArgumentException("Cost cannot be less than zero");
+			result = value;
+		}
+		else{
+			int i = (int)d;
+			if(function.equalsIgnoreCase("Capacity") || function.equalsIgnoreCase("Employees")){
+				if(i < 0)
+					throw new IllegalArgumentException(function + " cannot be less than zero");
+				
+			}
+			else {
+				if(i < 0 || i > 20)
+					throw new IllegalArgumentException(function + "cannot be less than 0 or greater than 20");
+			}
+			result = new Integer(i).toString();
+		}
+		return result;
+	}
+
+	// have to check the second argument as well
+	public String generateRevenue(String crowdName, String duration) {
+		String result = null;
+		try {
+			Crowd c = (Crowd)thrillObjects.get(crowdName);
+			if(c == null){
+				ThrillException.ObjectNotFoundException(crowdName);
+			}
+			result = "calculateRevenue(" + crowdName + ", " + duration + ")";
+		}catch(ThrillException oe){
+			//throw oe;
+		}
+		catch(Exception ex){
+			// ThrillException.UnexpectedTypeException("Crowd", crowdName);
+		}
+
+		return result;
+	}
+
+	public String generateSimulate(String crowdName) {
+		String result = null;
+		try {
+			Crowd c = (Crowd)thrillObjects.get(crowdName);
+			if(c == null){
+				ThrillException.ObjectNotFoundException(crowdName);
+			}
+			result = "simulate(" + crowdName + ");";
+		}catch(ThrillException oe){
+			//throw oe;
+		}
+		catch(Exception ex){
+			// ThrillException.UnexpectedTypeException("Crowd", crowdName);
+		}
+		return result;
+	}
+
+	public void generateThrillProgram(String buffer){
+		try{
+			FileWriter writer = new FileWriter(new File("ThrillProgram.java"));
+			writer.write(buffer);
+			writer.close();
+		}catch(IOException io){			
+		}		
 	}
 
 	public static void main(String args[]) throws IOException {

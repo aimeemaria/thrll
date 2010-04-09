@@ -6,13 +6,18 @@ public class ThrillException extends Exception {
 		this.message = message;
 	}
 	
-	public static void redefinitionException(String identifier) throws ThrillException{
+	public static void RedefinitionException(String identifier) throws ThrillException{
 		ThrillException e = new ThrillException(identifier + " already defined");
 		throw e;
 	}
 	
-	public static void objectNotFoundException(String identifier) throws ThrillException{
+	public static void ObjectNotFoundException(String identifier) throws ThrillException{
 		ThrillException e = new ThrillException(identifier + " not found");
+		throw e;
+	}
+	
+	public static void UnexpectedTypeException(String expectedObjType, String foundObjType) throws ThrillException{
+		ThrillException e = new ThrillException("Expected object " + expectedObjType + ". Found " + foundObjType);
 		throw e;
 	}
 }
