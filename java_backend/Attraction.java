@@ -34,7 +34,7 @@ public class Attraction implements LandElement {
 	 * @return a boolean representing whether a person can enter the attraction
 	 */
 	public boolean canEnter(Person p){
-		if (p.thrill >= this.thrillLevel && p.energy >= this.energyLoss && currentAttendance <= capacity)
+		if (p.getThrillLevel() >= this.thrillLevel && p.getEnergyLevel() >= this.energyLoss && currentAttendance <= capacity)
 			return true;
 		else
 			return false;
@@ -57,8 +57,8 @@ public class Attraction implements LandElement {
 	 * @param p The person exiting the attraction
 	 */
 	public void exit(Person p){
-		if (canEnter(p)){
-			p.energy -= energyLoss;
+		if (canEnter(p)){//not necessary?
+			p.setEnergyLevel(p.getEnergyLevel() - energyLoss);
 			currentAttendance--;
 		}
 	}

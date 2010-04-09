@@ -13,7 +13,7 @@ public class Person {
 	}
 	
 	public Person(){
-		setattributes(5,5,100);//what are the default values?
+		setattributes(5,5,100);
 		x=0;
 		y=0;
 		tick = 600;
@@ -47,9 +47,10 @@ public class Person {
 	public void setThrillLevel(int thrillLevel) {
 		this.thrillLevel = thrillLevel;
 	}
-	public void decide(){
+	public int decide(){
 		//randomly select attribute store or restaurant
 		Random generator = new Random();
+		/*
 		int random = generator.nextInt(3);//generates 3 random integer {0,1,2}
 		int dist;
 		if (random == 0){//chose attraction
@@ -60,5 +61,8 @@ public class Person {
 			dist =2;//get closest rest
 		else if(random == 2)//chose store
 			dist = 3;//get closest store
+			*/
+		return generator.nextInt(3);
 	}
+	
 }
