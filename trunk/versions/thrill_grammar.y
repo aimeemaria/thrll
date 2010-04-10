@@ -596,7 +596,7 @@ empty: { $$ = ""; } ;
 	}
 
 	public String generateAttractionAttribute(String a, String allAttributes){
-		String result = null;
+		String result = "";
 		String regex = ":";		
 		String[] attributes = allAttributes.split(regex);
 
