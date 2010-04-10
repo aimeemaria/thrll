@@ -1,38 +1,49 @@
-// this class file implements the Crowd type
+
+import java.util.ArrayList;
+
 public class Crowd {
-	private String crowdName = null;
-	private double spendingCapacity = 0;
-	private int size = 0;
-	private int energyLevel = 0;
-	private int thrillLevel = 0;
+	private String crowdName;
+	private int size;
+	private int energyLevel;
+	private int thrillLevel;
+	private double spendingCapacity;
+	ArrayList<Person> people;
+	
+	private void setattributes(int size,int energy,int thrill,double spend){
+		this.size = size;
+		energyLevel = energy;
+		thrillLevel = thrill;
+		spendingCapacity = spend;
+	}
 	
 	public Crowd(){
-		energyLevel = 5;
-		size = 1000;
-		spendingCapacity = 100.0;
-		thrillLevel = 5;		
+		people=new ArrayList<Person>();
+		//crowdName = "";
+		setattributes(1000,5,5,100.);
 	}
-
-	public String getCrowdName() {
-		return crowdName;
+	
+	public void createpeople(){
+		//people = null; ????
+		for(int i = 0; i<size;i++){
+			//TODO:set attributes of each created person in a normal distribution of crowd attributes
+			people.add(new Person());
+		}
 	}
-
-	public double getSpendingCapacity() {
-		return spendingCapacity;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public int getEnergyLevel() {
+	public int getEnergyLevel(){
 		return energyLevel;
 	}
-
-	public int getThrillLevel() {
+	
+	public int geThrillLevel(){
 		return thrillLevel;
 	}
-
+	
+	public double getSpendingCapacity(){
+		return spendingCapacity;
+	}
+	public int getSize(){
+		return size;
+	}
+	
 	public void setCrowdName(String crowdName) {
 		this.crowdName = crowdName;
 	}
@@ -51,5 +62,6 @@ public class Crowd {
 
 	public void setThrillLevel(int thrillLevel) {
 		this.thrillLevel = thrillLevel;
-	}	
+	}
+	
 }

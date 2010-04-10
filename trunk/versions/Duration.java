@@ -1,4 +1,6 @@
 // this class implements the Duration type
-public class Duration {
-
+public abstract class Duration {
+	protected int value;
+	
+	public abstract int getDays();
 }
