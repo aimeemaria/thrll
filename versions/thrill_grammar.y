@@ -98,7 +98,10 @@ import java.util.Hashtable;
 %type <sval> p1
 %type <sval> p2
 %type <sval> p3
-%type <dval> land_attributes
+%type <sval> land_attributes
+%type <sval> land_elements
+%type <sval> land_element
+%type <sval> attraction_definition
 %type <sval> attraction_attributes
 %type <sval> attraction_attribute
 %type <sval> a1
@@ -106,6 +109,7 @@ import java.util.Hashtable;
 %type <sval> a3
 %type <sval> a4
 %type <sval> a5
+%type <sval> restaurant_definition
 %type <sval> restaurant_attributes
 %type <sval> restaurant_attribute
 %type <sval> r1
@@ -113,6 +117,7 @@ import java.util.Hashtable;
 %type <sval> r3
 %type <sval> r4
 %type <sval> r5
+%type <sval> store_definition
 %type <sval> store_attributes
 %type <sval> store_attribute
 %type <sval> s1
@@ -157,27 +162,36 @@ import java.util.Hashtable;
 %type <sval> usercode
 %type <sval> functions
 %type <sval> return
+%type <sval> initialize_duration
+%type <sval> crowd_definition
+%type <sval> crowd_definitions
+%type <sval> park_definition
+%type <sval> land_definitions
+%type <sval> land_definition
+%type <sval> definitions
+%type <sval> empty
 %%
 
-program: definitions usercode;
+program: definitions usercode { generateThrillProgram($1, $2);};
 
-definitions: crowd_definitions park_definition crowd_definitions;
-crowd_definitions: crowd_definitions crowd_definition
-                 | empty {}
+definitions: crowd_definitions park_definition crowd_definitions {$$ = $1 + $2 + $3; } ;
+crowd_definitions: crowd_definitions crowd_definition { $$ += $2; }
+                 | empty { $$ = "";}
                  ;
 
-usercode: start functions { $$ = $1 + $2; generateThrillProgram($$); /*System.out.print($$);*/ } ; 
+usercode: start functions { $$ = $1 + $2; };
 
-crowd_definition: Crowd  { createObj = true; }
-			crowd_name { try { createObject($3); } catch(Exception ex) {} }
-			crowd_elements { try{ setAttribute($3, $5);}catch(Exception ex){} };
+crowd_definition: Crowd crowd_name crowd_elements 
+			{ addToHashtable($2, "Crowd"); 
+			  $$ = "\nCrowd " + $2 + " = " + "new Crowd();\n" + generateSetAttribute($2, $3); 
+			};
                 
 crowd_elements: SEMICOLON {}
               | crowd_attributes { $$ = $1; }
               ;
               
 crowd_attributes: crowd_attributes crowd_attribute { $$ += $2;}
-                | empty	{}
+                | empty	{ $$ = "";}
                 ;
                 
 crowd_attribute: c1 { $$ = $1; }
@@ -191,17 +205,15 @@ c2: Set Size NUMBER SEMICOLON 		{ $$ = ":Size:" + $3; };
 c3: Set EnergyLevel NUMBER SEMICOLON	{ $$ = ":EnergyLevel:" + $3;};
 c4: Set ThrillLevel NUMBER SEMICOLON   	{ $$ = ":ThrillLevel:" + $3;};
 
-park_definition: Park { createObj = true; }
-		     park_name { try { createObject($3); } catch(Exception ex) {} }
-		     park_elements { try{ setAttribute($3, $5);}catch(Exception ex){} };
-   	 	     land_definitions
+park_definition: Park park_name park_elements { addToHashtable($2, "Park"); };
+		     land_definitions { $$ = "\nPark " + $2 + " = " + "new Park();\n" + generateSetAttribute($2, $3) + $5; }
 
 park_elements: SEMICOLON {}
              | park_attributes { $$ = $1; }
              ;
              
 park_attributes: park_attributes park_attribute { $$ += $2; }
-               | empty {}
+               | empty { $$ = ""; }
                ;
                
 park_attribute: p1 { $$ = $1; }
@@ -213,29 +225,29 @@ p1: Set Admission NUMBER SEMICOLON { $$ = ":Admission:" + $3;};
 p2: Set Capacity NUMBER SEMICOLON  { $$ = ":Capacity:" + $3;};
 p3: Set Cost NUMBER SEMICOLON      { $$ = ":Cost:" + $3;};
 
-land_definitions: land_definitions land_definition
-                | empty {}
+land_definitions: land_definitions land_definition { $$ += $2; }
+                | empty { $$ = ""; }
 		    ;
-land_definition: Land { createObj = true; }
-		     land_name { try { createObject($3); } catch(Exception ex) {} }
-		     land_attributes land_elements { setLocation($3, $5); } ;
-land_attributes: Set Location NUMBER SEMICOLON { $$ = $3; };
-land_elements: land_elements land_element
-             | empty {}
+land_definition: Land land_name { addToHashtable($2, "Land"); } 
+		     land_attributes 
+		     land_elements {
+					   $$ = "\nLand " + $2 + " = " + "new Land();\n" + generateSetAttribute($2, $4) + $5; 					   
+					 } ;
+land_attributes: Set Location NUMBER SEMICOLON { $$ = ":Location:" + $3; };
+land_elements: land_elements land_element { $$ += $2; }
+             | empty { $$ = ""; }
 		 ;
-land_element: attraction_definition 
-            | restaurant_definition 
-            | store_definition 
+land_element: attraction_definition { $$ = $1; }
+            | restaurant_definition { $$ = $1; }
+            | store_definition 	{ $$ = $1; }
             ;
 
-attraction_definition: Attraction { createObj = true; }
-			     attraction_name { try { createObject($3); } catch(Exception ex) {} }
-			     In 
-			     land_name { createAttractionDefinition($6, $3); }
-			     attraction_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
-attraction_attributes: SEMICOLON {}
+attraction_definition: Attraction attraction_name { addToHashtable($2, "Attraction"); }
+			     In land_name
+			     attraction_attributes { $$ = createAttractionDefinition($5, $2) + generateSetAttribute($2, $6); };
+attraction_attributes: SEMICOLON { $$ = ""; }
 			   | attraction_attributes attraction_attribute { $$ += $2; }
-                     | empty {}
+                     | empty { $$ = ""; }
                      ;
 attraction_attribute: a1 { $$ = $1; }
                     | a2 { $$ = $1; }
@@ -249,21 +261,19 @@ a3: Set Employees NUMBER SEMICOLON 	 { $$ = ":Employees:" + $3;};
 a4: Set ThrillLevel NUMBER SEMICOLON { $$ = ":ThrillLevel:" + $3;};
 a5: Set EnergyLost NUMBER SEMICOLON  { $$ = ":EnergyLost:" + $3;};
 
-restaurant_definition: Restaurant { createObj = true; }
-			     restaurant_name { try { createObject($3); } catch(Exception ex) {} }
-			     In 
-  			     land_name { createRestaurantDefinition($6, $3); }
-			     restaurant_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
+restaurant_definition: Restaurant restaurant_name { addToHashtable($2, "Restaurant"); }
+			     In land_name
+			     restaurant_attributes { $$ = createRestaurantDefinition($5, $2) + generateSetAttribute($2, $6); }
 			     ;
-restaurant_attributes: SEMICOLON {}
+restaurant_attributes: SEMICOLON { $$ = ""; }
 			   | restaurant_attributes restaurant_attribute { $$ += $2; }
-                     | empty {}
+                     | empty { $$ = ""; }
 			   ;
 restaurant_attribute: r1 { $$ = $1; }
                     | r2 { $$ = $1; }
                     | r3 { $$ = $1; }
                     | r4 { $$ = $1; }
-                    | r5{ $$ = $1; }
+                    | r5 { $$ = $1; }
                     ;
 r1: Set Cost NUMBER SEMICOLON 		{ $$ = ":Cost:" + $3;};
 r2: Set Capacity NUMBER SEMICOLON;		{ $$ = ":Capacity:" + $3;};
@@ -271,15 +281,13 @@ r3: Set Employees NUMBER SEMICOLON;		{ $$ = ":Employees:" + $3;};
 r4: Set SpendLevel NUMBER SEMICOLON;	{ $$ = ":SpendLevel:" + $3;};
 r5: Set EnergyIncrease NUMBER SEMICOLON;	{ $$ = ":EnergyIncrease:" + $3;};
 
-store_definition: Store  { createObj = true; }
-			store_name { try { createObject($3); } catch(Exception ex) {} }
-			In 
-		      land_name { createStoreDefinition($6, $3); }
-			store_attributes { try{ setAttribute($3, $8);}catch(Exception ex){} };
+store_definition: Store store_name { addToHashtable($2, "Store"); }
+			In land_name
+			store_attributes { $$ = createStoreDefinition($5, $2) + generateSetAttribute($2, $6); }
 			;
-store_attributes: SEMICOLON {}
+store_attributes: SEMICOLON { $$ = ""; }
 		    | store_attributes store_attribute { $$ += $2; }
-                | empty {}
+                | empty { $$ = ""; }
 		    ;
 store_attribute: s1 { $$ = $1; }
                | s2 { $$ = $1; }
@@ -292,7 +300,7 @@ s2: Set Capacity NUMBER SEMICOLON;	 { $$ = ":Capacity:" + $3;};
 s3: Set Employees NUMBER SEMICOLON;	 { $$ = ":Employees:" + $3;};
 s4: Set SpendLevel NUMBER SEMICOLON; { $$ = ":SpendLevel:" + $3;}; 
 
-start: Start COLON block { $$ = "public static void main()\n" + $3; };
+start: Start COLON block { $$ = $3; };
 
 functions: functions function { $$ = $1 + $2; }
 	   | empty { $$ = ""; }
@@ -315,18 +323,19 @@ block: start_block statements end_block { $$ = "{" + $2 + "\n}"; }
 start_block: OPEN_PARAN;
 end_block: CLOSE_PARAN;
 
-statements: statements statement { $$ = $1 + "\n" +  $2; }
+statements: statements statement { $$ = $$ + "\n" +  $2; }
           | empty { $$ = ""; }
 	    ;
-statement: add_attribute 	{ $$ = $1; }
-	   | assignment 	 	{ $$ = $1; }
-	   | condition 	 	{ $$ = $1; }
-         | declaration 	 	{ $$ = $1; }
-	   | function_call 	{ $$ = $1; }
-         | initialization 	{ $$ = $1; }
-	   | loop 			{ $$ = $1; }
-	   | return 		{ $$ = $1; }
-	   | thrill_functions 	{ $$ = $1; }
+statement: add_attribute 	 { $$ = $1; }
+	   | assignment 	 	 { $$ = $1; }
+	   | condition 	 	 { $$ = $1; }
+         | declaration 	 	 { $$ = $1; }
+	   | function_call 	 { $$ = $1; }
+         | initialization 	 { $$ = $1; }
+	   | initialize_duration { $$ = $1; }
+	   | loop 			 { $$ = $1; }
+	   | return 		 { $$ = $1; }
+	   | thrill_functions 	 { $$ = $1; }
          ;
 
 add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "Capacity", $3); }
@@ -345,7 +354,7 @@ assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
 left_side: variable_name { $$ = $1; } ;
 right_side: arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
  	   | function_call { $$ = $1; }
-	   | calculate_revenue { $$ = $1; }
+	   | calculate_revenue { $$ = $1; System.out.print($$);}
 	   ;
 arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = $1 + "+" + $3; }
 			   | arithmetic_expression MINUS arithmetic_expression { $$ = $1 + "-" + $3; }
@@ -392,6 +401,8 @@ initialization_list: initialization_list COMMA variable_name EQUAL constant
 			   { $$ = $1 + " = " + $3; }
 		       ;
 
+initialize_duration: duration_type variable_name EQUAL NUMBER SEMICOLON { $$ = initializeDuration($1, $2, new Double($4).toString() ); }
+
 loop: Iterate block Until OPEN relational_expression CLOSE SEMICOLON 
       {$$ = "do" + $2 + "while (" + $5 + ");" ; }
     ;
@@ -405,7 +416,7 @@ thrill_functions: calculate_revenue { $$ = $1; }
 
 calculate_revenue: CalculateRevenue COLON crowd_name COMMA duration_name SEMICOLON
 			 {$$ = generateRevenue($3, $5) ; }
-		     ;
+		     	;
 
 output: Print constant_variable_chain SEMICOLON { $$ = "System.out.println(" + $2 + ");" ; };
 
@@ -427,7 +438,6 @@ data_type: Crowd { $$ = "Crowd"; }
 
 primitive_type: Number 		{ $$ = "double"; }
               | String 		{ $$ = "String"; }
-		  | duration_type { $$ = $1; }
 		  ;
 
 duration_type: Days   { $$ = "Days"; }
@@ -441,7 +451,7 @@ constant: NUMBER { $$ = new Double($1).toString(); }
 	  ;
 
 value: NUMBER 	   { $$ = new Double($1).toString(); }
-     | variable_name {$$ = $1; }
+     | variable_name { $$ = $1; }
      ;
 
 attraction_name: variable_name { $$ = $1; } ;
@@ -454,15 +464,14 @@ restaurant_name: variable_name { $$ = $1; } ;
 store_name: variable_name 	 { $$ = $1; } ;
 variable_name: ID 		 { $$ = $1; } ;
 
-empty: { } ;
+empty: { $$ = ""; } ;
 
 %%
 	private Yylex lexer;
-	private Hashtable<String, Object> thrillObjects = new Hashtable<String, Object>();
-	Park parkObj = null;
+	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	int noOfParks = 0, noOfLands = 0;
-	boolean createObj = false;
 	short keywordType = 0, attributeType = 0;
+	String parkName = null;
 
 	private int yylex () {
 		int yyl_return = -1;
@@ -504,284 +513,175 @@ empty: { } ;
 		return keywordType;
 	}
 
-	public void createObject(String identifier) throws Exception{
-		if(createObj){
-			switch(keywordType){
-
-			case Attraction:
-				Attraction attraction = new Attraction();
-				attraction.setAttractionName(identifier);
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.RedefinitionException(identifier);
-				thrillObjects.put(identifier, attraction);
-				break;
-
-			case Crowd:
-				Crowd crowd = new Crowd();
-				crowd.setCrowdName(identifier);
-				// check for redefinition
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.RedefinitionException(identifier);
-				thrillObjects.put(identifier, crowd);
-
-				break;
-
-			case Land:
-				if(noOfLands > 6)
-					throw new Exception("Number of lands > 6");
-
-				Land land = new Land();
-				land.setLandName(identifier);
-				// check for redefinition
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.RedefinitionException(identifier);
-				thrillObjects.put(identifier, land);
-				parkObj.addLand(land);
-				land.setPark(parkObj);
-
-				break;
-
-			case Duration:
-				//Duration duration = new Duration();
-				break;
-
-			case Park: 			 
-				// We can have only one park object in the entire program
-				if(noOfParks > 1)
-					throw new Exception("Number of parks > 1");
-
-				Park park = new Park();
-				park.setParkName(identifier);
-				// check for redefinition
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.RedefinitionException(identifier);
-				thrillObjects.put(identifier, park);
-
-				// Need a local copy of Park object in the Land object
-				parkObj = park;
-
-				break;
-
-			case Restaurant:
-				Restaurant restaurant = new Restaurant();
-				restaurant.setRestaurantName(identifier);
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.RedefinitionException(identifier);
-				thrillObjects.put(identifier, restaurant);
-
-			case Store:
-				Store store = new Store();
-				store .setStoreName(identifier);
-				if(thrillObjects.containsKey(identifier))
-					ThrillException.RedefinitionException(identifier);
-				thrillObjects.put(identifier, store);
-				break;
-			}
-			createObj = false;
+	public String createAttractionDefinition(String landName, String attractionName) { 
+		String result = "\nAttraction " + attractionName + " = new Attraction();\n";
+		if(!thrillObjects.containsKey(landName)){
+			// ThrillException.ObjectNotFoundException(landName);
 		}
+		
+		String setName = attractionName + ".setAttractionName(\"" + attractionName + "\");\n";
+		String setLand = attractionName + ".setLand(" + landName + ");\n";
+		String addAttraction = landName + ".addAttraction(" + attractionName + ");\n";
+		result += setName + setLand + addAttraction;
+		
+		return result;
 	}
 
-	public void setLocation(String landName, double location){
-		Land land = (Land)thrillObjects.get(landName);
-		if(land == null) 
-		{ 
-			// grrrr.. this land has not been defined! throw an exception 
+	public String createRestaurantDefinition(String landName, String restaurantName) { 
+		String result = "\nRestaurant " + restaurantName + " = new Restaurant();\n";
+		if(!thrillObjects.containsKey(landName)){
+			// ThrillException.ObjectNotFoundException(landName);
 		}
-		land.setLocation(location);
+		
+		String setName = restaurantName + ".setRestaurantName(\"" + restaurantName + "\");\n";
+		String setLand = restaurantName + ".setLand(" + landName + ");\n";
+		String addRestaurant = landName + ".addRestaurant(" + restaurantName + ");\n";
+		result += setName + setLand + addRestaurant;
+		
+		return result;
 	}
 
-	public void createAttractionDefinition(String landName, String attractioName) { 
-		Land land = (Land)thrillObjects.get(landName);
-		if(land == null) 
-		{ 
-			// grrrr.. this land has not been defined! throw an exception 
+	public String createStoreDefinition(String landName, String storeName) { 
+		String result = "\nStore " + storeName + " = new Store();\n";
+		if(!thrillObjects.containsKey(landName)){
+			// ThrillException.ObjectNotFoundException(landName);
 		}
-		// Now we need to make sure that this store is add to the list of stores in
-		// in the land object
-		Attraction a = (Attraction)thrillObjects.get(attractioName);
-		a.setLand(land);
-		land.addAttraction(a);
+		
+		String setName = storeName + ".setStoreName(\"" + storeName + "\");\n";
+		String setLand = storeName + ".setLand(" + landName + ");\n";
+		String addStore = landName + ".addStore(" + storeName + ");\n";
+		result += setName + setLand + addStore;
+		
+		return result;
 	}
 
-	public void createRestaurantDefinition(String landName, String restaurantName) { 
-		Land land = (Land)thrillObjects.get(landName);
-		if(land == null) 
-		{ 
-			// grrrr.. this land has not been defined! throw an exception 
+	public void addToHashtable(String identifier, String type){
+		if(!thrillObjects.containsKey(identifier)){
+			// ThrillException.RedefinitionException(identifier);
 		}
-		// Now we need to make sure that this store is add to the list of stores in
-		// in the land object
-		Restaurant r = (Restaurant)thrillObjects.get(restaurantName);
-		r.setLand(land);
-		land.addRestaurant(r);
+		if(type == "Park")
+			parkName = identifier;
+		
+		//System.out.println("Adding " + identifier + " Type = " + type);
+		thrillObjects.put(identifier, type);
 	}
 
-	public void createStoreDefinition(String landName, String storeName) { 
-		Land land = (Land)thrillObjects.get(landName);
-		if(land == null) 
-		{ 
-			// grrrr.. this land has not been defined! throw an exception 
+	public String generateSetAttribute(String identifier, String allAttributes){
+		String result = "";
+		String obj = thrillObjects.get(identifier);
+		if(obj == null){
+			// ThrillException.ObjectNotFoundException(identifier);
 		}
-		// Now we need to make sure that this store is add to the list of stores in
-		// in the land object
-		Store s = (Store)thrillObjects.get(storeName);
-		s.setLand(land);
-		land.addStore(s);
-	}	
-
-	public void setAttribute(String identifier, String allAttributes) throws ThrillException{
-		Object obj = thrillObjects.get(identifier);
-		if(obj instanceof Attraction){
-			Attraction a = (Attraction)obj;
-			if(a == null)
-				ThrillException.ObjectNotFoundException(identifier);
-			setAttractionAttribute(a, allAttributes);
+		
+		if(obj.equalsIgnoreCase("Attraction")){
+			result += generateAttractionAttribute(identifier, allAttributes);
 		}		
-		else if(obj instanceof Crowd){
-			Crowd c = (Crowd)obj;
-			if(c == null)
-				ThrillException.ObjectNotFoundException(identifier);
-			// set the attribute in the crowd object
-			setCrowdAttribute(c, allAttributes);
+		else if(obj.equalsIgnoreCase("Crowd")){
+			result += generateCrowdAttribute(identifier, allAttributes);
 		}
-		else if(obj instanceof Land){
-			// similar to Crowd			
+		else if(obj.equalsIgnoreCase("Land")){
+			result += generateLandAttribute(identifier, allAttributes);
 		}
-		else if(obj instanceof Park){
-			Park p = (Park)obj;
-			if(p == null)
-				ThrillException.ObjectNotFoundException(identifier);
-			// set the attribute in the crowd object
-			setParkAttribute(p, allAttributes);
+		else if(obj.equalsIgnoreCase("Park")){
+			result += generateParkAttribute(identifier, allAttributes);
+		}	
+		else if(obj.equalsIgnoreCase("Restaurant")){
+			result += generateRestaurantAttribute(identifier, allAttributes);
 		}
-		else if(obj instanceof Restaurant){
-			Restaurant r = (Restaurant)obj;
-			if(r == null)
-				ThrillException.ObjectNotFoundException(identifier);
-			setRestaurantAttribute(r, allAttributes);
+		else if(obj.equalsIgnoreCase("Store")){
+			result += generateStoreAttribute(identifier, allAttributes);
 		}
-		else if(obj instanceof Store){
-			Store s = (Store)obj;
-			if(s == null)
-				ThrillException.ObjectNotFoundException(identifier);
-			setStoreAttribute(s, allAttributes);
-		}
+				
+		return result;
 	}
 
-	public void setAttractionAttribute(Attraction a, String allAttributes){
-		String regex = ":";
+	public String generateAttractionAttribute(String a, String allAttributes){
+		String result = null;
+		String regex = ":";		
 		String[] attributes = allAttributes.split(regex);
 
 		for(int i = 1; i < attributes.length; i+=2){
-			if(attributes[i].equalsIgnoreCase("Cost")){ 				 
-				a.setCost(Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("Capacity")){
-				a.setCapacity((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("Employees")){
-				a.setEmployees((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("EnergyLost")){
-				a.setEnergyLost((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else{
-				a.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
-			}
+			String value = validateAttributeValue(attributes[i], attributes[i+1]);
+			result += a + ".set" + attributes[i] + "(" + value + ");\n";
 		}
+		
+		return result;
 	}
 
-	public void setCrowdAttribute(Crowd c, String allAttributes)
+	public String generateCrowdAttribute(String c, String allAttributes)
 	{		
 		String regex = ":";
+		String result = c + ".setCrowdName(\"" + c + "\");\n";
 		String[] attributes = allAttributes.split(regex);
 
 		for(int i = 1; i < attributes.length; i+=2){
-			if(attributes[i].equalsIgnoreCase("EnergyLevel")){ 				 
-				c.setEnergyLevel((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("Size")){
-				c.setSize((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("SpendingCapacity")){
-				c.setSpendingCapacity(Double.parseDouble(attributes[i + 1]));
-			}
-			else{
-				c.setThrillLevel((int)Double.parseDouble(attributes[i + 1]));
-			}
-		}	
+			String value = validateAttributeValue(attributes[i], attributes[i+1]);
+			result += c + ".set" + attributes[i] + "(" + value + ");\n";
+		}
+		
+		return result;
 	}
-
-	public void setLandAttribute(Land a, String allAttributes){
-		// similar to setCrowdAttribute()
-	}
-
-	public void setParkAttribute(Park p, String allAttributes){
+	
+	public String generateLandAttribute(String l, String allAttributes){
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
-
+		String result = l + ".setLandName(\"" + l + "\");\n";
+		String setPark = l + ".setPark(" + parkName + ");\n";
+		String addLand = parkName + ".addLand(" + l + ");\n";
+		result += setPark + addLand;
+		//System.out.println(result);
 		for(int i = 1; i < attributes.length; i+=2){
-			if(attributes[i].equalsIgnoreCase("Admission")){ 				 
-				p.setAdmission((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("Capacity")){
-				p.setCapacity((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else{
-				p.setCost(Double.parseDouble(attributes[i + 1]));
-			}
-		}
+			String value = validateAttributeValue(attributes[i], attributes[i+1]);
+			result += l + ".set" + attributes[i] + "(" + value + ");\n";
+		}		
+		return result;
 	}
 
-	public void setRestaurantAttribute(Restaurant r, String allAttributes){
+	public String generateParkAttribute(String p, String allAttributes){
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
-
+		String result = p + ".setParkName(\"" + p + "\");\n"; 
+		
 		for(int i = 1; i < attributes.length; i+=2){
-			if(attributes[i].equalsIgnoreCase("Capacity")){
-				r.setCapacity((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase(attributes[i + 1])){
-				r.setCost(Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("Employees")){
-				r.setEmployees((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("EnergyLost")){
-				r.setEnergyIncrease((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else{
-				r.setSpendLevel((int)Double.parseDouble(attributes[i + 1]));
-			}
+			String value = validateAttributeValue(attributes[i], attributes[i+1]);
+			result += p + ".set" + attributes[i] + "(" + value + ");\n";
 		}
+		
+		return result;
 	}
 
-	public void setStoreAttribute(Store s, String allAttributes){
+	public String generateRestaurantAttribute(String r, String allAttributes){
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
+		String result = "";
 
 		for(int i = 1; i < attributes.length; i+=2){
-			if(attributes[i].equalsIgnoreCase("Capacity")){
-				s.setCapacity((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase(attributes[i + 1])){
-				s.setCost(Double.parseDouble(attributes[i + 1]));
-			}
-			else if(attributes[i].equalsIgnoreCase("Employees")){
-				s.setEmployees((int)Double.parseDouble(attributes[i + 1]));
-			}
-			else {
-				s.setSpendLevel((int)Double.parseDouble(attributes[i + 1]));
-			}
-		}
+			String value = validateAttributeValue(attributes[i], attributes[i+1]);
+			result += r + ".set" + attributes[i] + "(" + value + ");\n";
+		}		
+		
+		return result;
 	}
 
-	public Hashtable<String, Object> getThrillObjects() {
+	public String generateStoreAttribute(String s, String allAttributes){
+		String regex = ":";
+		String[] attributes = allAttributes.split(regex);
+		String result = "";
+
+		for(int i = 1; i < attributes.length; i+=2){
+			String value = validateAttributeValue(attributes[i], attributes[i+1]);
+			result += s + ".set" + attributes[i] + "(" + value + ");\n";
+		}		
+		
+		return result;
+	}
+
+	public Hashtable<String, String> getThrillObjects() {
 		return thrillObjects;
 	}
 	
 	public String generateAttribute(String variable, String function, String value) {
-		String result = null;
+		String result = "";;
 		
 		value = validateAttributeValue(function, value);
 		
@@ -862,18 +762,26 @@ empty: { } ;
 	}
 	
 	public String validateAttributeValue(String function, String value){
-		String result = null;
+		String result = "";;
 		
 		double d = Double.parseDouble(value);
 		
-		if(function.equalsIgnoreCase("Cost")){			
+		if(function.equalsIgnoreCase("Admission") ||
+		   function.equalsIgnoreCase("Cost") || 
+		   function.equalsIgnoreCase("SpendingCapacity")){	
 			if(d < 0)
-				throw new IllegalArgumentException("Cost cannot be less than zero");
+				throw new IllegalArgumentException(function + " cannot be less than zero");
 			result = value;
 		}
 		else{
 			int i = (int)d;
-			if(function.equalsIgnoreCase("Capacity") || function.equalsIgnoreCase("Employees")){
+			if(function.equalsIgnoreCase("Location")){
+				if(i < 1 || i > 6)
+					throw new IllegalArgumentException(function + " cannot be less than zero");				
+			}
+			else if(function.equalsIgnoreCase("Capacity")  || 
+			   function.equalsIgnoreCase("Employees") ||
+			   function.equalsIgnoreCase("Size")){
 				if(i < 0)
 					throw new IllegalArgumentException(function + " cannot be less than zero");
 				
@@ -891,7 +799,7 @@ empty: { } ;
 	public String generateRevenue(String crowdName, String duration) {
 		String result = null;
 		try {
-			Crowd c = (Crowd)thrillObjects.get(crowdName);
+			String c = thrillObjects.get(crowdName);
 			if(c == null){
 				ThrillException.ObjectNotFoundException(crowdName);
 			}
@@ -902,14 +810,14 @@ empty: { } ;
 		catch(Exception ex){
 			// ThrillException.UnexpectedTypeException("Crowd", crowdName);
 		}
-
+		System.out.println(result);
 		return result;
 	}
 
 	public String generateSimulate(String crowdName) {
 		String result = null;
 		try {
-			Crowd c = (Crowd)thrillObjects.get(crowdName);
+			String c = thrillObjects.get(crowdName);
 			if(c == null){
 				ThrillException.ObjectNotFoundException(crowdName);
 			}
@@ -923,13 +831,27 @@ empty: { } ;
 		return result;
 	}
 
-	public void generateThrillProgram(String buffer){
+	public void generateThrillProgram(String definitions, String usercode){
+		String classStart = "public class ThrillProgram {\n";
+		String classEnd = "\n}";
+		String main = "public static void main(){\n";		
+		usercode = usercode.substring(1);
+		
 		try{
 			FileWriter writer = new FileWriter(new File("ThrillProgram.java"));
+			String buffer = classStart + main + definitions +  usercode + classEnd;
 			writer.write(buffer);
 			writer.close();
 		}catch(IOException io){			
 		}		
+	}
+
+	public String initializeDuration(String durationType, String durationName, String value){
+		String result = null;
+		double temp = Double.parseDouble(value);
+		int days = (int)temp;
+		result = durationType + " " + durationName + " = new " + durationType + "(" + days + ");"; 
+		return result;
 	}
 
 	public static void main(String args[]) throws IOException {
@@ -950,7 +872,7 @@ empty: { } ;
 		
 		yyparser.yyparse();
 		
-		Hashtable<String, Object> objects = yyparser.getThrillObjects();
+		Hashtable<String, String> objects = yyparser.getThrillObjects();
 		//System.out.println("No .of objects = " + objects.size());
 	
 		System.out.println("\n\n\t\tHave a nice day\n\n");

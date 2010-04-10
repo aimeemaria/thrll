@@ -1,5 +1,8 @@
 Crowd MyCrowdOne
-    Set SpendingCapacity 25.6;
+    Set Size 300;
+    Set EnergyLevel 7;
+    Set ThrillLevel 4;
+    Set SpendingCapacity 2000;
 
 Crowd MyCrowdTwo
     Set Size 300;
@@ -15,28 +18,29 @@ Park ParkOne
         Set Location 1;
 	Attraction GiantWheel In LandOne
 	Set Cost 10;
-	Set Capacity 1000;
-	Set Employees 5;
-	Set ThrillLevel 10;
-	Set EnergyLost 5;
+	Set Capacity 1000.5;
+	Set Employees 5.5;
+	Set ThrillLevel 10.5;
+	Set EnergyLost 5.5;
     Land LandFour
 	Set Location 3;
 	Store Macys In LandFour
-	Set Cost 20;
-	Set Capacity 2000;
-	Set Employees 25;
+	Set Cost 20.65;
+	Set Capacity 2000.1;
+	Set Employees 25.1;
 	Set SpendLevel 10.6;
     Land LandTwo
         Set Location 2;
 	Restaurant Marriot In LandTwo
-	Set Cost 10;
-	Set Capacity 1000;
-	Set Employees 5;
-	Set SpendLevel 10;
-	Set EnergyIncrease 5;
+	Set Cost 1000.5;
+	Set Capacity 1000.1;
+	Set Employees 5.4;
+	Set SpendLevel 10.4;
+	Set EnergyIncrease 5.1;
 
 Start:
 {   
+    Days d = 10;    
     Number a = 10.5;
     Set EnergyLevel 5.5 In MyCrowdOne;    
     Set ThrillLevel 10 In GiantWheel;
