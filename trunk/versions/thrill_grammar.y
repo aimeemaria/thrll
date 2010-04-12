@@ -1,3 +1,4 @@
+
 %{
 import java.lang.Math;
 import java.io.*;
@@ -307,7 +308,7 @@ functions: functions function { $$ = $1 + $2; }
 	   ;
 
 function: return_type function_name COLON actual_parameters block 
-	  { $$ = "\n" + $1 + " " + $2 + "(" + $4 + ")\n" + $5; }
+	  { $$ = "\n" + "public static " + $1 + " " + $2 + "(" + $4 + ")\n" + $5; }
         ;
 return_type: Number { $$ = "double"; }
            | String { $$ = "String"; }
@@ -378,8 +379,8 @@ relational_expression: variable_name LESSEQUAL constant_or_variable  { $$ = $1 +
 		         ;
 
 declaration: primitive_type declaration_list SEMICOLON { $$ = $1 + " " + $2 + ";"; }
-declaration_list: declaration_list COMMA variable_name { $$ = $1 + ", " + $3; }
-                | variable_name { $$ = $1; }
+declaration_list: declaration_list COMMA variable_name { addToHashtable($3, "Identifier"); $$ = $1 + ", " + $3; }
+                | variable_name { addToHashtable($1, "Identifier"); $$ = $1; }
 		    ;
 
 function_call: function_name COLON formal_parameters SEMICOLON 
@@ -803,7 +804,7 @@ empty: { $$ = ""; } ;
 			if(c == null){
 				ThrillException.ObjectNotFoundException(crowdName);
 			}
-			result = "calculateRevenue(" + crowdName + ", " + duration + ")";
+			result = parkName + ".calculateRevenue(" + crowdName + ", " + duration + ");";
 		}catch(ThrillException oe){
 			//throw oe;
 		}
@@ -821,7 +822,7 @@ empty: { $$ = ""; } ;
 			if(c == null){
 				ThrillException.ObjectNotFoundException(crowdName);
 			}
-			result = "simulate(" + crowdName + ");";
+			result = parkName + ".simulate(" + crowdName + ");";
 		}catch(ThrillException oe){
 			//throw oe;
 		}

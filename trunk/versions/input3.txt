@@ -70,7 +70,7 @@ Start:
     Set ThrillLevel 5.0 In MyCrowdOne;
 
     Number result;
-    result = CalculateRevenue: c, d;
+    result = CalculateRevenue: MyCrowdOne, d;
     result = a + b;
     result = a + b - c;
 

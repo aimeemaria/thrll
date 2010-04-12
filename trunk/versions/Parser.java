@@ -16,7 +16,7 @@
 
 
 
-//#line 2 "thrill_grammar.y"
+//#line 3 "thrill_grammar.y"
 import java.lang.Math;
 import java.io.*;
 import java.util.StringTokenizer;
@@ -651,7 +651,7 @@ final static String yyrule[] = {
 "empty :",
 };
 
-//#line 470 "thrill_grammar.y"
+//#line 471 "thrill_grammar.y"
 	private Yylex lexer;
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	int noOfParks = 0, noOfLands = 0;
@@ -988,7 +988,7 @@ final static String yyrule[] = {
 			if(c == null){
 				ThrillException.ObjectNotFoundException(crowdName);
 			}
-			result = "calculateRevenue(" + crowdName + ", " + duration + ")";
+			result = parkName + ".calculateRevenue(" + crowdName + ", " + duration + ");";
 		}catch(ThrillException oe){
 			//throw oe;
 		}
@@ -1006,7 +1006,7 @@ final static String yyrule[] = {
 			if(c == null){
 				ThrillException.ObjectNotFoundException(crowdName);
 			}
-			result = "simulate(" + crowdName + ");";
+			result = parkName + ".simulate(" + crowdName + ");";
 		}catch(ThrillException oe){
 			//throw oe;
 		}
@@ -1217,727 +1217,727 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 175 "thrill_grammar.y"
+//#line 176 "thrill_grammar.y"
 { generateThrillProgram(val_peek(1).sval, val_peek(0).sval);}
 break;
 case 2:
-//#line 177 "thrill_grammar.y"
+//#line 178 "thrill_grammar.y"
 {yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval; }
 break;
 case 3:
-//#line 178 "thrill_grammar.y"
+//#line 179 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 4:
-//#line 179 "thrill_grammar.y"
+//#line 180 "thrill_grammar.y"
 { yyval.sval = "";}
 break;
 case 5:
-//#line 182 "thrill_grammar.y"
+//#line 183 "thrill_grammar.y"
 { yyval.sval = val_peek(1).sval + val_peek(0).sval; }
 break;
 case 6:
-//#line 185 "thrill_grammar.y"
+//#line 186 "thrill_grammar.y"
 { addToHashtable(val_peek(1).sval, "Crowd"); 
 			  yyval.sval = "\nCrowd " + val_peek(1).sval + " = " + "new Crowd();\n" + generateSetAttribute(val_peek(1).sval, val_peek(0).sval); 
 			}
 break;
 case 7:
-//#line 189 "thrill_grammar.y"
+//#line 190 "thrill_grammar.y"
 {}
 break;
 case 8:
-//#line 190 "thrill_grammar.y"
+//#line 191 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 9:
-//#line 193 "thrill_grammar.y"
+//#line 194 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval;}
 break;
 case 10:
-//#line 194 "thrill_grammar.y"
+//#line 195 "thrill_grammar.y"
 { yyval.sval = "";}
 break;
 case 11:
-//#line 197 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 12:
 //#line 198 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 13:
+case 12:
 //#line 199 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 14:
+case 13:
 //#line 200 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 14:
+//#line 201 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 15:
-//#line 203 "thrill_grammar.y"
+//#line 204 "thrill_grammar.y"
 { yyval.sval = ":SpendingCapacity:" + val_peek(1).dval;}
 break;
 case 16:
-//#line 204 "thrill_grammar.y"
+//#line 205 "thrill_grammar.y"
 { yyval.sval = ":Size:" + val_peek(1).dval; }
 break;
 case 17:
-//#line 205 "thrill_grammar.y"
+//#line 206 "thrill_grammar.y"
 { yyval.sval = ":EnergyLevel:" + val_peek(1).dval;}
 break;
 case 18:
-//#line 206 "thrill_grammar.y"
+//#line 207 "thrill_grammar.y"
 { yyval.sval = ":ThrillLevel:" + val_peek(1).dval;}
 break;
 case 19:
-//#line 208 "thrill_grammar.y"
+//#line 209 "thrill_grammar.y"
 { addToHashtable(val_peek(1).sval, "Park"); }
 break;
 case 20:
-//#line 209 "thrill_grammar.y"
+//#line 210 "thrill_grammar.y"
 { yyval.sval = "\nPark " + val_peek(3).sval + " = " + "new Park();\n" + generateSetAttribute(val_peek(3).sval, val_peek(2).sval) + val_peek(0).sval; }
 break;
 case 21:
-//#line 211 "thrill_grammar.y"
+//#line 212 "thrill_grammar.y"
 {}
 break;
 case 22:
-//#line 212 "thrill_grammar.y"
+//#line 213 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 23:
-//#line 215 "thrill_grammar.y"
+//#line 216 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 24:
-//#line 216 "thrill_grammar.y"
+//#line 217 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 25:
-//#line 219 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 26:
 //#line 220 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 27:
+case 26:
 //#line 221 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 27:
+//#line 222 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 28:
-//#line 224 "thrill_grammar.y"
+//#line 225 "thrill_grammar.y"
 { yyval.sval = ":Admission:" + val_peek(1).dval;}
 break;
 case 29:
-//#line 225 "thrill_grammar.y"
+//#line 226 "thrill_grammar.y"
 { yyval.sval = ":Capacity:" + val_peek(1).dval;}
 break;
 case 30:
-//#line 226 "thrill_grammar.y"
+//#line 227 "thrill_grammar.y"
 { yyval.sval = ":Cost:" + val_peek(1).dval;}
 break;
 case 31:
-//#line 228 "thrill_grammar.y"
+//#line 229 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 32:
-//#line 229 "thrill_grammar.y"
+//#line 230 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 33:
-//#line 231 "thrill_grammar.y"
+//#line 232 "thrill_grammar.y"
 { addToHashtable(val_peek(0).sval, "Land"); }
 break;
 case 34:
-//#line 233 "thrill_grammar.y"
+//#line 234 "thrill_grammar.y"
 {
 					   yyval.sval = "\nLand " + val_peek(3).sval + " = " + "new Land();\n" + generateSetAttribute(val_peek(3).sval, val_peek(1).sval) + val_peek(0).sval; 					   
 					 }
 break;
 case 35:
-//#line 236 "thrill_grammar.y"
+//#line 237 "thrill_grammar.y"
 { yyval.sval = ":Location:" + val_peek(1).dval; }
 break;
 case 36:
-//#line 237 "thrill_grammar.y"
+//#line 238 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 37:
-//#line 238 "thrill_grammar.y"
+//#line 239 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 38:
-//#line 240 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 39:
 //#line 241 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 40:
+case 39:
 //#line 242 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 40:
+//#line 243 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 41:
-//#line 245 "thrill_grammar.y"
+//#line 246 "thrill_grammar.y"
 { addToHashtable(val_peek(0).sval, "Attraction"); }
 break;
 case 42:
-//#line 247 "thrill_grammar.y"
+//#line 248 "thrill_grammar.y"
 { yyval.sval = createAttractionDefinition(val_peek(1).sval, val_peek(4).sval) + generateSetAttribute(val_peek(4).sval, val_peek(0).sval); }
 break;
 case 43:
-//#line 248 "thrill_grammar.y"
+//#line 249 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 44:
-//#line 249 "thrill_grammar.y"
+//#line 250 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 45:
-//#line 250 "thrill_grammar.y"
+//#line 251 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 46:
-//#line 252 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 47:
 //#line 253 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 48:
+case 47:
 //#line 254 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 49:
+case 48:
 //#line 255 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 50:
+case 49:
 //#line 256 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 50:
+//#line 257 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 51:
-//#line 258 "thrill_grammar.y"
+//#line 259 "thrill_grammar.y"
 { yyval.sval = ":Cost:" + val_peek(1).dval;}
 break;
 case 52:
-//#line 259 "thrill_grammar.y"
+//#line 260 "thrill_grammar.y"
 { yyval.sval = ":Capacity:" + val_peek(1).dval;}
 break;
 case 53:
-//#line 260 "thrill_grammar.y"
+//#line 261 "thrill_grammar.y"
 { yyval.sval = ":Employees:" + val_peek(1).dval;}
 break;
 case 54:
-//#line 261 "thrill_grammar.y"
+//#line 262 "thrill_grammar.y"
 { yyval.sval = ":ThrillLevel:" + val_peek(1).dval;}
 break;
 case 55:
-//#line 262 "thrill_grammar.y"
+//#line 263 "thrill_grammar.y"
 { yyval.sval = ":EnergyLost:" + val_peek(1).dval;}
 break;
 case 56:
-//#line 264 "thrill_grammar.y"
+//#line 265 "thrill_grammar.y"
 { addToHashtable(val_peek(0).sval, "Restaurant"); }
 break;
 case 57:
-//#line 266 "thrill_grammar.y"
+//#line 267 "thrill_grammar.y"
 { yyval.sval = createRestaurantDefinition(val_peek(1).sval, val_peek(4).sval) + generateSetAttribute(val_peek(4).sval, val_peek(0).sval); }
 break;
 case 58:
-//#line 268 "thrill_grammar.y"
+//#line 269 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 59:
-//#line 269 "thrill_grammar.y"
+//#line 270 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 60:
-//#line 270 "thrill_grammar.y"
+//#line 271 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 61:
-//#line 272 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 62:
 //#line 273 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 63:
+case 62:
 //#line 274 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 64:
+case 63:
 //#line 275 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 65:
+case 64:
 //#line 276 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 65:
+//#line 277 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 66:
-//#line 278 "thrill_grammar.y"
+//#line 279 "thrill_grammar.y"
 { yyval.sval = ":Cost:" + val_peek(1).dval;}
 break;
 case 67:
-//#line 279 "thrill_grammar.y"
+//#line 280 "thrill_grammar.y"
 { yyval.sval = ":Capacity:" + val_peek(1).dval;}
 break;
 case 68:
-//#line 280 "thrill_grammar.y"
+//#line 281 "thrill_grammar.y"
 { yyval.sval = ":Employees:" + val_peek(1).dval;}
 break;
 case 69:
-//#line 281 "thrill_grammar.y"
+//#line 282 "thrill_grammar.y"
 { yyval.sval = ":SpendLevel:" + val_peek(1).dval;}
 break;
 case 70:
-//#line 282 "thrill_grammar.y"
+//#line 283 "thrill_grammar.y"
 { yyval.sval = ":EnergyIncrease:" + val_peek(1).dval;}
 break;
 case 71:
-//#line 284 "thrill_grammar.y"
+//#line 285 "thrill_grammar.y"
 { addToHashtable(val_peek(0).sval, "Store"); }
 break;
 case 72:
-//#line 286 "thrill_grammar.y"
+//#line 287 "thrill_grammar.y"
 { yyval.sval = createStoreDefinition(val_peek(1).sval, val_peek(4).sval) + generateSetAttribute(val_peek(4).sval, val_peek(0).sval); }
 break;
 case 73:
-//#line 288 "thrill_grammar.y"
+//#line 289 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 74:
-//#line 289 "thrill_grammar.y"
+//#line 290 "thrill_grammar.y"
 { yyval.sval += val_peek(0).sval; }
 break;
 case 75:
-//#line 290 "thrill_grammar.y"
+//#line 291 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 76:
-//#line 292 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 77:
 //#line 293 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 78:
+case 77:
 //#line 294 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 79:
+case 78:
 //#line 295 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 79:
+//#line 296 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 80:
-//#line 298 "thrill_grammar.y"
+//#line 299 "thrill_grammar.y"
 { yyval.sval = ":Cost:" + val_peek(1).dval;}
 break;
 case 81:
-//#line 299 "thrill_grammar.y"
+//#line 300 "thrill_grammar.y"
 { yyval.sval = ":Capacity:" + val_peek(1).dval;}
 break;
 case 82:
-//#line 300 "thrill_grammar.y"
+//#line 301 "thrill_grammar.y"
 { yyval.sval = ":Employees:" + val_peek(1).dval;}
 break;
 case 83:
-//#line 301 "thrill_grammar.y"
+//#line 302 "thrill_grammar.y"
 { yyval.sval = ":SpendLevel:" + val_peek(1).dval;}
 break;
 case 84:
-//#line 303 "thrill_grammar.y"
+//#line 304 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 85:
-//#line 305 "thrill_grammar.y"
+//#line 306 "thrill_grammar.y"
 { yyval.sval = val_peek(1).sval + val_peek(0).sval; }
 break;
 case 86:
-//#line 306 "thrill_grammar.y"
+//#line 307 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 87:
-//#line 310 "thrill_grammar.y"
-{ yyval.sval = "\n" + val_peek(4).sval + " " + val_peek(3).sval + "(" + val_peek(1).sval + ")\n" + val_peek(0).sval; }
+//#line 311 "thrill_grammar.y"
+{ yyval.sval = "\n" + "public static " + val_peek(4).sval + " " + val_peek(3).sval + "(" + val_peek(1).sval + ")\n" + val_peek(0).sval; }
 break;
 case 88:
-//#line 312 "thrill_grammar.y"
+//#line 313 "thrill_grammar.y"
 { yyval.sval = "double"; }
 break;
 case 89:
-//#line 313 "thrill_grammar.y"
+//#line 314 "thrill_grammar.y"
 { yyval.sval = "String"; }
 break;
 case 90:
-//#line 314 "thrill_grammar.y"
+//#line 315 "thrill_grammar.y"
 {yyval.sval = "void"; }
 break;
 case 91:
-//#line 316 "thrill_grammar.y"
+//#line 317 "thrill_grammar.y"
 { yyval.sval = val_peek(3).sval + ", " + val_peek(1).sval + " " + val_peek(0).sval; }
 break;
 case 92:
-//#line 317 "thrill_grammar.y"
+//#line 318 "thrill_grammar.y"
 { yyval.sval = val_peek(1).sval + " " + val_peek(0).sval; }
 break;
 case 93:
-//#line 318 "thrill_grammar.y"
+//#line 319 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 94:
-//#line 321 "thrill_grammar.y"
+//#line 322 "thrill_grammar.y"
 { yyval.sval = "{" + val_peek(1).sval + "\n}"; }
 break;
 case 97:
-//#line 326 "thrill_grammar.y"
+//#line 327 "thrill_grammar.y"
 { yyval.sval = yyval.sval + "\n" +  val_peek(0).sval; }
 break;
 case 98:
-//#line 327 "thrill_grammar.y"
+//#line 328 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 99:
-//#line 329 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 100:
 //#line 330 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 101:
+case 100:
 //#line 331 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 102:
+case 101:
 //#line 332 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 103:
+case 102:
 //#line 333 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 104:
+case 103:
 //#line 334 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 105:
+case 104:
 //#line 335 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 106:
+case 105:
 //#line 336 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 107:
+case 106:
 //#line 337 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 108:
+case 107:
 //#line 338 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 108:
+//#line 339 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 109:
-//#line 341 "thrill_grammar.y"
+//#line 342 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "Capacity", val_peek(3).sval); }
 break;
 case 110:
-//#line 342 "thrill_grammar.y"
+//#line 343 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "Cost", val_peek(3).sval); }
 break;
 case 111:
-//#line 343 "thrill_grammar.y"
+//#line 344 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "Employees", val_peek(3).sval); }
 break;
 case 112:
-//#line 344 "thrill_grammar.y"
+//#line 345 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "EnergyIncrease", val_peek(3).sval); }
 break;
 case 113:
-//#line 345 "thrill_grammar.y"
+//#line 346 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "EnergyLevel", val_peek(3).sval); }
 break;
 case 114:
-//#line 346 "thrill_grammar.y"
+//#line 347 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "EnergyLost", val_peek(3).sval); }
 break;
 case 115:
-//#line 347 "thrill_grammar.y"
+//#line 348 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "Size", val_peek(3).sval); }
 break;
 case 116:
-//#line 348 "thrill_grammar.y"
+//#line 349 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "SpendingCapacity", val_peek(3).sval); }
 break;
 case 117:
-//#line 349 "thrill_grammar.y"
+//#line 350 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "SpendLevel", val_peek(3).sval); }
 break;
 case 118:
-//#line 350 "thrill_grammar.y"
+//#line 351 "thrill_grammar.y"
 { yyval.sval = generateAttribute(val_peek(1).sval, "ThrillLevel", val_peek(3).sval); }
 break;
 case 119:
-//#line 353 "thrill_grammar.y"
+//#line 354 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " = " + val_peek(0).sval;}
 break;
 case 120:
-//#line 354 "thrill_grammar.y"
+//#line 355 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 121:
-//#line 355 "thrill_grammar.y"
+//#line 356 "thrill_grammar.y"
 { yyval.sval = val_peek(1).sval + ";"; }
 break;
 case 122:
-//#line 356 "thrill_grammar.y"
+//#line 357 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 123:
-//#line 357 "thrill_grammar.y"
+//#line 358 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; System.out.print(yyval.sval);}
 break;
 case 124:
-//#line 359 "thrill_grammar.y"
+//#line 360 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + "+" + val_peek(0).sval; }
 break;
 case 125:
-//#line 360 "thrill_grammar.y"
+//#line 361 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + "-" + val_peek(0).sval; }
 break;
 case 126:
-//#line 361 "thrill_grammar.y"
+//#line 362 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + "*" + val_peek(0).sval; }
 break;
 case 127:
-//#line 362 "thrill_grammar.y"
+//#line 363 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + "/" + val_peek(0).sval; }
 break;
 case 128:
-//#line 363 "thrill_grammar.y"
+//#line 364 "thrill_grammar.y"
 { yyval.sval = "(" + val_peek(1).sval + ")"; }
 break;
 case 129:
-//#line 364 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 130:
 //#line 365 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 130:
+//#line 366 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 131:
-//#line 369 "thrill_grammar.y"
+//#line 370 "thrill_grammar.y"
 { yyval.sval = "if(" + val_peek(2).sval + ")" + val_peek(0).sval; }
 break;
 case 132:
-//#line 371 "thrill_grammar.y"
+//#line 372 "thrill_grammar.y"
 { yyval.sval = "if(" + val_peek(4).sval + ")" + val_peek(2).sval + "\nelse" + val_peek(0).sval; }
 break;
 case 133:
-//#line 373 "thrill_grammar.y"
+//#line 374 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " <= " + val_peek(0).sval;}
 break;
 case 134:
-//#line 374 "thrill_grammar.y"
+//#line 375 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " >= " + val_peek(0).sval;}
 break;
 case 135:
-//#line 375 "thrill_grammar.y"
+//#line 376 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " != " + val_peek(0).sval;}
 break;
 case 136:
-//#line 376 "thrill_grammar.y"
+//#line 377 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " < " + val_peek(0).sval;}
 break;
 case 137:
-//#line 377 "thrill_grammar.y"
+//#line 378 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " > " + val_peek(0).sval;}
 break;
 case 138:
-//#line 380 "thrill_grammar.y"
+//#line 381 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " " + val_peek(1).sval + ";"; }
 break;
 case 139:
-//#line 381 "thrill_grammar.y"
-{ yyval.sval = val_peek(2).sval + ", " + val_peek(0).sval; }
+//#line 382 "thrill_grammar.y"
+{ addToHashtable(val_peek(0).sval, "Identifier"); yyval.sval = val_peek(2).sval + ", " + val_peek(0).sval; }
 break;
 case 140:
-//#line 382 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
+//#line 383 "thrill_grammar.y"
+{ addToHashtable(val_peek(0).sval, "Identifier"); yyval.sval = val_peek(0).sval; }
 break;
 case 141:
-//#line 386 "thrill_grammar.y"
+//#line 387 "thrill_grammar.y"
 { yyval.sval = val_peek(3).sval + "(" + val_peek(1).sval + ");" ; }
 break;
 case 142:
-//#line 389 "thrill_grammar.y"
+//#line 390 "thrill_grammar.y"
 { yyval.sval = yyval.sval + "," + val_peek(0).sval; }
 break;
 case 143:
-//#line 390 "thrill_grammar.y"
+//#line 391 "thrill_grammar.y"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 144:
-//#line 391 "thrill_grammar.y"
+//#line 392 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 145:
-//#line 395 "thrill_grammar.y"
+//#line 396 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " " + val_peek(1).sval + ";"; }
 break;
 case 146:
-//#line 399 "thrill_grammar.y"
+//#line 400 "thrill_grammar.y"
 { yyval.sval = val_peek(4).sval + ", " + val_peek(2).sval + "=" + val_peek(0).sval; }
 break;
 case 147:
-//#line 401 "thrill_grammar.y"
+//#line 402 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " = " + val_peek(0).sval; }
 break;
 case 148:
-//#line 404 "thrill_grammar.y"
+//#line 405 "thrill_grammar.y"
 { yyval.sval = initializeDuration(val_peek(4).sval, val_peek(3).sval, new Double(val_peek(1).dval).toString() ); }
 break;
 case 149:
-//#line 407 "thrill_grammar.y"
+//#line 408 "thrill_grammar.y"
 {yyval.sval = "do" + val_peek(5).sval + "while (" + val_peek(2).sval + ");" ; }
 break;
 case 150:
-//#line 410 "thrill_grammar.y"
+//#line 411 "thrill_grammar.y"
 { yyval.sval = "return " + val_peek(1).sval + ";"; }
 break;
 case 151:
-//#line 412 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 152:
 //#line 413 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 153:
+case 152:
 //#line 414 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 153:
+//#line 415 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 154:
-//#line 418 "thrill_grammar.y"
+//#line 419 "thrill_grammar.y"
 {yyval.sval = generateRevenue(val_peek(3).sval, val_peek(1).sval) ; }
 break;
 case 155:
-//#line 421 "thrill_grammar.y"
+//#line 422 "thrill_grammar.y"
 { yyval.sval = "System.out.println(" + val_peek(1).sval + ");" ; }
 break;
 case 156:
-//#line 423 "thrill_grammar.y"
+//#line 424 "thrill_grammar.y"
 {yyval.sval = generateSimulate(val_peek(1).sval); }
 break;
 case 157:
-//#line 426 "thrill_grammar.y"
+//#line 427 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + "+" + val_peek(0).sval; }
 break;
 case 158:
-//#line 428 "thrill_grammar.y"
+//#line 429 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 159:
-//#line 431 "thrill_grammar.y"
+//#line 432 "thrill_grammar.y"
 { yyval.sval = "\"" + val_peek(0).sval + "\""; }
 break;
 case 160:
-//#line 432 "thrill_grammar.y"
+//#line 433 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 161:
-//#line 435 "thrill_grammar.y"
+//#line 436 "thrill_grammar.y"
 { yyval.sval = "Crowd"; }
 break;
 case 162:
-//#line 436 "thrill_grammar.y"
+//#line 437 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 163:
-//#line 439 "thrill_grammar.y"
+//#line 440 "thrill_grammar.y"
 { yyval.sval = "double"; }
 break;
 case 164:
-//#line 440 "thrill_grammar.y"
+//#line 441 "thrill_grammar.y"
 { yyval.sval = "String"; }
 break;
 case 165:
-//#line 443 "thrill_grammar.y"
+//#line 444 "thrill_grammar.y"
 { yyval.sval = "Days"; }
 break;
 case 166:
-//#line 444 "thrill_grammar.y"
+//#line 445 "thrill_grammar.y"
 { yyval.sval = "Weeks"; }
 break;
 case 167:
-//#line 445 "thrill_grammar.y"
+//#line 446 "thrill_grammar.y"
 { yyval.sval = "Months"; }
 break;
 case 168:
-//#line 446 "thrill_grammar.y"
+//#line 447 "thrill_grammar.y"
 { yyval.sval = "Years"; }
 break;
 case 169:
-//#line 449 "thrill_grammar.y"
+//#line 450 "thrill_grammar.y"
 { yyval.sval = new Double(val_peek(0).dval).toString(); }
 break;
 case 170:
-//#line 450 "thrill_grammar.y"
+//#line 451 "thrill_grammar.y"
 { yyval.sval = "\"" + val_peek(1).sval + "\""; }
 break;
 case 171:
-//#line 453 "thrill_grammar.y"
+//#line 454 "thrill_grammar.y"
 { yyval.sval = new Double(val_peek(0).dval).toString(); }
 break;
 case 172:
-//#line 454 "thrill_grammar.y"
+//#line 455 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 173:
-//#line 457 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 174:
 //#line 458 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 175:
+case 174:
 //#line 459 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 176:
+case 175:
 //#line 460 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 177:
+case 176:
 //#line 461 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 178:
+case 177:
 //#line 462 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 179:
+case 178:
 //#line 463 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 180:
+case 179:
 //#line 464 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 181:
+case 180:
 //#line 465 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 181:
+//#line 466 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 182:
-//#line 467 "thrill_grammar.y"
+//#line 468 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 //#line 1925 "Parser.java"

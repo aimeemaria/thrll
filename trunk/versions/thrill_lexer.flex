@@ -21,6 +21,7 @@ NL  	 = \n | \r | \r\n
 Admission           { return Parser.Admission;      }
 Attraction          { yyparser.setKeywordType(Parser.Attraction); return Parser.Attraction;     }
 Capacity            { return Parser.Capacity;       }
+CalculateRevenue	  { return Parser.CalculateRevenue; }
 Cost                { return Parser.Cost;           }
 Crowd               { yyparser.setKeywordType(Parser.Crowd); return Parser.Crowd;          }
 Days                { return Parser.Days;           }
