@@ -29,6 +29,7 @@ public class Crowd {
 			people.add(new Person());
 		}
 	}
+	
 	public int getEnergyLevel(){
 		return energyLevel;
 	}
