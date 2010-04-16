@@ -23,7 +23,7 @@ public class KapilRandomDistribution {
         return (ret > 20 || ret < 1) ? gaussianRandomRanged(a, b) : ret;
     }
     
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exceptuion{
         System.out.println("Even Distribution: ");
         for(int i = 0; i < 5; i++) {
             System.out.println(kapilRandRanged(1, 20));
