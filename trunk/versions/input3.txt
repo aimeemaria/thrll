@@ -54,11 +54,14 @@ Start:
 {   
     Days d = 10;    
     Number a = 10.5;
+    String name = "check";
+    String name2 = "check";
     Set EnergyLevel 5.5 In MyCrowdOne;    
     Set ThrillLevel 10 In GiantWheel;
     Set Size 10 In MyCrowdOne;
     Set SpendingCapacity 10 In MyCrowdOne;
 
+    Number newNumber;
     Number a, b, c;
     Number a = 100.5, b = 10;
     String name = "Hemanth", nwstring = "string";

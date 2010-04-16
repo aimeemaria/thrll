@@ -20,4 +20,9 @@ public class ThrillException extends Exception {
 		ThrillException e = new ThrillException("Expected object " + expectedObjType + ". Found " + foundObjType);
 		throw e;
 	}
+	
+	public static void InvalidStringConstant(String identifier, String value) throws ThrillException{
+		ThrillException e = new ThrillException("String constant " + identifier + " has invalid value " + value);
+		throw e;
+	}
 }

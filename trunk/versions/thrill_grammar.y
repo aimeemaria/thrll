@@ -127,6 +127,7 @@ import java.util.Hashtable;
 %type <sval> s4
 %type <sval> value
 %type <sval> constant
+%type <sval> string_constant
 %type <sval> primitive_type
 %type <sval> data_type
 %type <sval> constant_or_variable
@@ -173,7 +174,7 @@ import java.util.Hashtable;
 %type <sval> empty
 %%
 
-program: definitions usercode { generateThrillProgram($1, $2);};
+program: definitions usercode { generateThrillProgram($1, $2); System.out.println("Total number of lines in the input: " + yyline); };
 
 definitions: crowd_definitions park_definition crowd_definitions {$$ = $1 + $2 + $3; } ;
 crowd_definitions: crowd_definitions crowd_definition { $$ += $2; }
@@ -202,9 +203,9 @@ crowd_attribute: c1 { $$ = $1; }
                ;
 
 c1: Set SpendingCapacity NUMBER SEMICOLON { $$ = ":SpendingCapacity:" + $3;};
-c2: Set Size NUMBER SEMICOLON 		{ $$ = ":Size:" + $3; };
-c3: Set EnergyLevel NUMBER SEMICOLON	{ $$ = ":EnergyLevel:" + $3;};
-c4: Set ThrillLevel NUMBER SEMICOLON   	{ $$ = ":ThrillLevel:" + $3;};
+c2: Set Size NUMBER SEMICOLON 		 { $$ = ":Size:" + $3; };
+c3: Set EnergyLevel NUMBER SEMICOLON	 { $$ = ":EnergyLevel:" + $3;};
+c4: Set ThrillLevel NUMBER SEMICOLON   	 { $$ = ":ThrillLevel:" + $3;};
 
 park_definition: Park park_name park_elements { addToHashtable($2, "Park"); };
 		     land_definitions { $$ = "\nPark " + $2 + " = " + "new Park();\n" + generateSetAttribute($2, $3) + $5; }
@@ -352,18 +353,23 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAtt
 		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
-left_side: variable_name { $$ = $1; } ;
+left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else { /* throw exception */ } } ;
 right_side: arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
  	   | function_call { $$ = $1; }
-	   | calculate_revenue { $$ = $1; System.out.print($$);}
+	   | calculate_revenue { $$ = $1; }
 	   ;
-arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = $1 + "+" + $3; }
-			   | arithmetic_expression MINUS arithmetic_expression { $$ = $1 + "-" + $3; }
-			   | arithmetic_expression MUL arithmetic_expression 	 { $$ = $1 + "*" + $3; }
-			   | arithmetic_expression DIV arithmetic_expression 	 { $$ = $1 + "/" + $3; }
-                     | OPEN arithmetic_expression CLOSE 			 { $$ = "(" + $2 + ")"; }
-                     | variable_name 						 { $$ = $1; }
-                     | constant 							 { $$ = $1; }
+arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { try{ $$ = generateArithmeticExpression($1, "+", $3); }catch(ThrillException e){ } }
+			   | arithmetic_expression MINUS arithmetic_expression { try{ $$ = generateArithmeticExpression($1, "-", $3); }catch(ThrillException e){ } }
+			   | arithmetic_expression MUL arithmetic_expression   { try{ $$ = generateArithmeticExpression($1, "*", $3); }catch(ThrillException e){ } }
+			   | arithmetic_expression DIV arithmetic_expression   { try{ $$ = generateArithmeticExpression($1, "/", $3); }catch(ThrillException e){ } }
+                     | OPEN arithmetic_expression CLOSE 			  { $$ = "(" + $2 + ")"; }
+                     | variable_name 						  { try { boolean exists = checkHashtable($1); 
+												    	    if(exists){ $$ = $1; } 
+												    	    else{ ThrillException.ObjectNotFoundException("Line(" + yyline + ") " + $1);}
+												    }catch(ThrillException e){
+												    }
+												  }
+                     | constant 							  { $$ = $1; }
                      ;
 
 condition: If OPEN relational_expression CLOSE block
@@ -374,13 +380,13 @@ condition: If OPEN relational_expression CLOSE block
 relational_expression: variable_name LESSEQUAL constant_or_variable  { $$ = $1 + " <= " + $3;}
 			   | variable_name GREATEQUAL constant_or_variable { $$ = $1 + " >= " + $3;}
 			   | variable_name NOTEQUAL constant_or_variable   { $$ = $1 + " != " + $3;}
-			   | variable_name LESS constant_or_variable 	   { $$ = $1 + " < " + $3;}
-			   | variable_name GREAT constant_or_variable 	   { $$ = $1 + " > " + $3;}
+			   | variable_name LESS constant_or_variable 	    { $$ = $1 + " < " + $3;}
+			   | variable_name GREAT constant_or_variable 	    { $$ = $1 + " > " + $3;}
 		         ;
 
-declaration: primitive_type declaration_list SEMICOLON { $$ = $1 + " " + $2 + ";"; }
-declaration_list: declaration_list COMMA variable_name { addToHashtable($3, "Identifier"); $$ = $1 + ", " + $3; }
-                | variable_name { addToHashtable($1, "Identifier"); $$ = $1; }
+declaration: primitive_type declaration_list SEMICOLON { addDeclVariables($1, $2); $$ = $1 + " " + $2 + ";"; }
+declaration_list: declaration_list COMMA variable_name { $$ = $1 + ", " + $3; }
+                | variable_name { $$ = $1; }
 		    ;
 
 function_call: function_name COLON formal_parameters SEMICOLON 
@@ -393,7 +399,7 @@ formal_parameters: formal_parameters COMMA variable_name { $$ = $$ + "," + $3; }
 		     ;
 
 initialization: primitive_type initialization_list SEMICOLON 
-                { $$ = $1 + " " + $2 + ";"; }
+                { addInitVariables($1, $2); $$ = $1 + " " + $2 + ";"; }
 		  ;
 
 initialization_list: initialization_list COMMA variable_name EQUAL constant 
@@ -402,7 +408,7 @@ initialization_list: initialization_list COMMA variable_name EQUAL constant
 			   { $$ = $1 + " = " + $3; }
 		       ;
 
-initialize_duration: duration_type variable_name EQUAL NUMBER SEMICOLON { $$ = initializeDuration($1, $2, new Double($4).toString() ); }
+initialize_duration: duration_type variable_name EQUAL NUMBER SEMICOLON { addToHashtable($2, $1); $$ = initializeDuration($1, $2, new Double($4).toString() ); }
 
 loop: Iterate block Until OPEN relational_expression CLOSE SEMICOLON 
       {$$ = "do" + $2 + "while (" + $5 + ");" ; }
@@ -430,7 +436,7 @@ constant_variable_chain: constant_variable_chain COMMA constant_or_variable
 			     ;
 
 constant_or_variable: constant { $$ = "\"" + $1 + "\""; }
-                    | variable_name { $$ = $1; }
+                    | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ /*throw exception*/ } }
 			  ;
 
 data_type: Crowd { $$ = "Crowd"; }
@@ -448,27 +454,32 @@ duration_type: Days   { $$ = "Days"; }
 		 ;
 
 constant: NUMBER { $$ = new Double($1).toString(); }
-        | Quote ID Quote { $$ = "\"" + $2 + "\""; }
+        | Quote string_constant Quote { System.out.println($2); $$ = "\"" + $2 + "\""; }
 	  ;
 
+string_constant: string_constant ID { $$ = $1 + " " + $2; }
+		   | ID			 { $$ = $1; }
+		   ; 
+
 value: NUMBER 	   { $$ = new Double($1).toString(); }
-     | variable_name { $$ = $1; }
+     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else {/* throw exception */} }
      ;
 
 attraction_name: variable_name { $$ = $1; } ;
-crowd_name: variable_name 	 { $$ = $1; } ;
+crowd_name: variable_name 	  { $$ = $1; } ;
 duration_name: variable_name   { $$ = $1; } ;
-function_name: variable_name 	 { $$ = $1; } ;
-land_name: variable_name 	 { $$ = $1; } ;
-park_name: variable_name 	 { $$ = $1; } ;
+function_name: variable_name 	  { $$ = $1; } ;
+land_name: variable_name 	  { $$ = $1; } ;
+park_name: variable_name 	  { $$ = $1; } ;
 restaurant_name: variable_name { $$ = $1; } ;
-store_name: variable_name 	 { $$ = $1; } ;
-variable_name: ID 		 { $$ = $1; } ;
+store_name: variable_name 	  { $$ = $1; } ;
+variable_name: ID 		  { $$ = $1; } ;
 
 empty: { $$ = ""; } ;
 
 %%
 	private Yylex lexer;
+	public int yyline = 0;
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	int noOfParks = 0, noOfLands = 0;
 	short keywordType = 0, attributeType = 0;
@@ -565,6 +576,58 @@ empty: { $$ = ""; } ;
 		
 		//System.out.println("Adding " + identifier + " Type = " + type);
 		thrillObjects.put(identifier, type);
+	}
+
+	public boolean checkHashtable(String identifier) {
+		boolean result = false;
+		if(thrillObjects.containsKey(identifier)){
+			result = true;
+		}
+		return result;
+	}
+
+	public void addDeclVariables(String type, String allVariables){
+		String[] variables = allVariables.split(",");
+		
+		if(type.equalsIgnoreCase("double")){
+			type = "Number";
+		}
+		else{
+			type = "String";
+		}
+		
+		for(int i = 0; i < variables.length; ++i){
+			addToHashtable(variables[i].trim(), type);
+		}
+	}
+
+	// we have a small problem here. An initialization might be of the form
+	// Number a = 10; 
+	// OR
+	// Number a = 10, b = 10;
+	// So we need to check for both equal to and comma before splitting
+	// Not a good way, but there is no choice
+	public void addInitVariables(String type, String allVariables){
+		String[] variables = null;
+		
+		if(type.equalsIgnoreCase("double")){
+			type = "Number";
+		}
+		else{
+			type = "String";
+		}
+		
+		if(allVariables.contains(",")){
+			String[] temp = allVariables.split(",");
+			for(int i = 0; i < temp.length; ++i){
+				variables = temp[i].split("=");
+				addToHashtable(variables[0].trim(), type);
+			}
+		}
+		else{
+			variables = allVariables.split("=");
+			addToHashtable(variables[0].trim(), type);
+		}
 	}
 
 	public String generateSetAttribute(String identifier, String allAttributes){
@@ -762,6 +825,49 @@ empty: { $$ = ""; } ;
 		return result;
 	}
 	
+	public String generateArithmeticExpression(String value1, String operator, String value2) throws ThrillException{
+		String result = "";
+
+		if(checkSemanticType(value1.charAt(0))){
+			result = checkSemanticValue(value1);
+		}
+		else{
+			result = value1;
+		}		
+
+		result += operator;
+		
+		if(checkSemanticType(value2.charAt(0))){
+			result += checkSemanticValue(value2);
+		}
+		else{
+			result += value2;
+		}
+
+		return result;
+	}
+
+	public boolean checkSemanticType(char c){
+		if(Character.isDigit(c)){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	public String checkSemanticValue(String value) throws ThrillException{
+		String type = thrillObjects.get(value);
+		if(type == null){
+			ThrillException.ObjectNotFoundException("Line(" + yyline + ") " + value);
+			return null;
+		}
+		else if(!type.equalsIgnoreCase("Number")){			
+			ThrillException.UnexpectedTypeException("Number", type);
+		}
+		return value;
+	}
+
 	public String validateAttributeValue(String function, String value){
 		String result = "";;
 		
@@ -811,7 +917,6 @@ empty: { $$ = ""; } ;
 		catch(Exception ex){
 			// ThrillException.UnexpectedTypeException("Crowd", crowdName);
 		}
-		System.out.println(result);
 		return result;
 	}
 
@@ -856,7 +961,7 @@ empty: { $$ = ""; } ;
 	}
 
 	public static void main(String args[]) throws IOException {
-		System.out.println("\n\n\t\tTHRLL programming language\n\n");
+		System.out.println("\nCompiling ...\n");
 
 		Parser yyparser;
 		if ( args.length > 0 ) {
@@ -876,5 +981,5 @@ empty: { $$ = ""; } ;
 		Hashtable<String, String> objects = yyparser.getThrillObjects();
 		//System.out.println("No .of objects = " + objects.size());
 	
-		System.out.println("\n\n\t\tHave a nice day\n\n");
+		System.out.println("\nThrillProgram.java generated successfully.\n");;
 	}

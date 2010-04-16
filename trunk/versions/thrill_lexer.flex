@@ -56,7 +56,7 @@ Weeks               { return Parser.Weeks;          }
 Years               { return Parser.Years;          }
 
 /* newline */
-{NL}                { /* Do nothing */ }
+{NL}                { yyparser.yyline++; }
 
 /* Identifier */
 {ID}                { yyparser.yylval = new ParserVal(yytext()); return Parser.ID; }
