@@ -1,32 +1,40 @@
+package thrill.backend;
 
 import java.util.ArrayList;
 
 public class Crowd {
-	private String crowdName;
 	private int size;
 	private int energyLevel;
 	private int thrillLevel;
-	private double spendingCapacity;
+	private int spendingCapacity;
 	ArrayList<Person> people;
 	
-	private void setattributes(int size,int energy,int thrill,double spend){
+	private void setattributes(int size,int energy,int thrill,int spend){
 		this.size = size;
 		energyLevel = energy;
 		thrillLevel = thrill;
 		spendingCapacity = spend;
 	}
 	
+	//default values
 	public Crowd(){
 		people=new ArrayList<Person>();
-		//crowdName = "";
-		setattributes(1000,5,5,100.);
+		setattributes(1000,5,5,100);
 	}
-	
+	/*
+	 * This might change a little if I think I want to include other distributions.
+	 * Right now I am just taking a normal distribution.
+	 */
 	public void createpeople(){
-		//people = null; ????
-		for(int i = 0; i<size;i++){
-			//TODO:set attributes of each created person in a normal distribution of crowd attributes
-			people.add(new Person());
+		
+		NormalDistribution n = new NormalDistribution();
+		
+		//get the normal distribution in here. 
+		int energy[] = n.generateNumbers(energyLevel, size);
+		int thrill[] = n.generateNumbers(thrillLevel, size);
+		int spend[] = n.generateNumbers(spendingCapacity, size);
+		for(int i = 0; i < size; i++){
+			people.add(new Person(energy[i],thrill[i],spend[i]));
 		}
 	}
 	public int getEnergyLevel(){
@@ -48,7 +56,7 @@ public class Crowd {
 		this.crowdName = crowdName;
 	}
 
-	public void setSpendingCapacity(double spendingCapacity) {
+	public void setSpendingCapacity(int spendingCapacity) {
 		this.spendingCapacity = spendingCapacity;
 	}
 
@@ -64,4 +72,9 @@ public class Crowd {
 		this.thrillLevel = thrillLevel;
 	}
 	
+	public static void main(String args[]) {
+		Crowd c = new Crowd();
+		c.setattributes(100,5,14,14);
+		c.createpeople();
+	}
 }

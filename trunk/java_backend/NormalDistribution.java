@@ -1,3 +1,5 @@
+package thrill.backend;
+
 import java.util.Random;
 
 abstract class Distribution {
@@ -37,21 +39,5 @@ public class NormalDistribution extends Distribution {
     		generatedArray[i] = value;
 		}
 		return generatedArray;
-	}
-
-	public static void main(String args[]) {
-
-		System.out.println("first");
-		NormalDistribution n = new NormalDistribution();
-		int[] genArray = n.generateNumbers(10,100);
-		int i;
-		
-		double average = 0;
-		for(i=0;i<100;i++) {
-			average +=genArray[i];
-		    System.out.print(genArray[i] + "\n");	
-		}
-		System.out.println();
-		System.out.println(" Average value = " + average / 100);
 	}
 }

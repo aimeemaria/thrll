@@ -1,3 +1,5 @@
+package thrill.backend;
+
 import java.util.Random;
 public class Person {
 	private int energyLevel;
@@ -12,6 +14,9 @@ public class Person {
 		spendingCapacity = spend;
 	}
 	
+	public Person(int energy, int thrill, int spend) {
+		setattributes(energy,thrill,spend);
+	}
 	public Person(){
 		setattributes(5,5,100);
 		x=0;
@@ -64,5 +69,4 @@ public class Person {
 			*/
 		return generator.nextInt(3);
 	}
-	
 }
