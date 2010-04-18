@@ -60,7 +60,7 @@ public class Park {
 		return landObjs;
 	}
 
-	public void addLand(Land land) throws ThrillException{
+	public void addLand(Land land) {
 		if(landObjs.contains(land))
 			ThrillException.RedefinitionException(land.getLandName());
 		landObjs.add(land);

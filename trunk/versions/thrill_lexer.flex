@@ -19,11 +19,11 @@ NL  	 = \n | \r | \r\n
 
 /* keywords */
 Admission           { return Parser.Admission;      }
-Attraction          { yyparser.setKeywordType(Parser.Attraction); return Parser.Attraction;     }
+Attraction          { return Parser.Attraction;     }
 Capacity            { return Parser.Capacity;       }
 CalculateRevenue	  { return Parser.CalculateRevenue; }
 Cost                { return Parser.Cost;           }
-Crowd               { yyparser.setKeywordType(Parser.Crowd); return Parser.Crowd;          }
+Crowd               { return Parser.Crowd;          }
 Days                { return Parser.Days;           }
 Duration            { return Parser.Duration;       }
 Else                { return Parser.Else;           }
@@ -34,13 +34,13 @@ EnergyLost          { return Parser.EnergyLost;     }
 If                  { return Parser.If;             }
 In                  { return Parser.In;             }
 Iterate             { return Parser.Iterate;        }
-Land                { yyparser.noOfLands++; yyparser.setKeywordType(Parser.Land); return Parser.Land; }
+Land                { yyparser.noOfLands++; return Parser.Land; }
 Location            { return Parser.Location;       }
 Months              { return Parser.Months;         }
 Number              { return Parser.Number;         }
-Park                { yyparser.noOfParks++; yyparser.setKeywordType(Parser.Park); return Parser.Park; }
+Park                { yyparser.noOfParks++; return Parser.Park; }
 Print               { return Parser.Print;          }
-Restaurant          { yyparser.setKeywordType(Parser.Restaurant); return Parser.Restaurant;     }
+Restaurant          { return Parser.Restaurant;     }
 Return              { return Parser.Return;         }
 Set                 { return Parser.Set;            }
 Simulate            { return Parser.Simulate;       }
@@ -48,7 +48,7 @@ Size                { return Parser.Size;           }
 SpendingCapacity    { return Parser.SpendingCapacity; }
 SpendLevel          { return Parser.SpendLevel;     }
 Start               { return Parser.Start;          }
-Store               { yyparser.noOfLands++; yyparser.setKeywordType(Parser.Store); return Parser.Store; }
+Store               { return Parser.Store; }
 String              { return Parser.String;         }
 ThrillLevel         { return Parser.ThrillLevel;    }
 Until               { return Parser.Until;          }
