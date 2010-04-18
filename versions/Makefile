@@ -2,7 +2,7 @@
 # byacc/j from http://troi.lincom-asg.com/~rjamison/byacc/
 
 JFLEX  = jflex 
-BYACCJ = yacc -J -d -v
+BYACCJ = yacc -Jthrows=ThrillException -Jnorun -d -v
 JAVAC  = javac
 
 # targets:

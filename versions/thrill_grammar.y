@@ -152,8 +152,6 @@ import java.util.Hashtable;
 %type <sval> add_attribute
 %type <sval> statement
 %type <sval> statements
-%type <sval> end_block
-%type <sval> start_block
 %type <sval> block
 %type <sval> actual_parameters
 %type <sval> return_type
@@ -176,7 +174,7 @@ import java.util.Hashtable;
 
 program: definitions usercode { generateThrillProgram($1, $2); System.out.println("Total number of lines in the input: " + yyline); };
 
-definitions: crowd_definitions park_definition crowd_definitions {$$ = $1 + $2 + $3; } ;
+definitions: crowd_definitions park_definition crowd_definitions { $$ = $1 + $2 + $3; } ;
 crowd_definitions: crowd_definitions crowd_definition { $$ += $2; }
                  | empty { $$ = "";}
                  ;
@@ -184,7 +182,7 @@ crowd_definitions: crowd_definitions crowd_definition { $$ += $2; }
 usercode: start functions { $$ = $1 + $2; };
 
 crowd_definition: Crowd crowd_name crowd_elements 
-			{ addToHashtable($2, "Crowd"); 
+			{ scopeName = "Global"; addToHashtable($2, "Crowd"); 
 			  $$ = "\nCrowd " + $2 + " = " + "new Crowd();\n" + generateSetAttribute($2, $3); 
 			};
                 
@@ -207,7 +205,7 @@ c2: Set Size NUMBER SEMICOLON 		 { $$ = ":Size:" + $3; };
 c3: Set EnergyLevel NUMBER SEMICOLON	 { $$ = ":EnergyLevel:" + $3;};
 c4: Set ThrillLevel NUMBER SEMICOLON   	 { $$ = ":ThrillLevel:" + $3;};
 
-park_definition: Park park_name park_elements { addToHashtable($2, "Park"); };
+park_definition: Park park_name park_elements { scopeName = "Global"; addToHashtable($2, "Park"); };
 		     land_definitions { $$ = "\nPark " + $2 + " = " + "new Park();\n" + generateSetAttribute($2, $3) + $5; }
 
 park_elements: SEMICOLON {}
@@ -302,21 +300,23 @@ s2: Set Capacity NUMBER SEMICOLON;	 { $$ = ":Capacity:" + $3;};
 s3: Set Employees NUMBER SEMICOLON;	 { $$ = ":Employees:" + $3;};
 s4: Set SpendLevel NUMBER SEMICOLON; { $$ = ":SpendLevel:" + $3;}; 
 
-start: Start COLON block { $$ = $3; };
+start: Start { scopeName = "Start"; } COLON block { $$ = $4; };
 
 functions: functions function { $$ = $1 + $2; }
 	   | empty { $$ = ""; }
 	   ;
 
-function: return_type function_name COLON actual_parameters block 
-	  { $$ = "\n" + "public static " + $1 + " " + $2 + "(" + $4 + ")\n" + $5; }
+function: return_type function_name { scopeName = $2; } COLON actual_parameters block 
+	  { 
+		$$ = "\n" + "public static " + generateFunction($1, $2, $5, $6);
+	  }
         ;
 return_type: Number { $$ = "double"; }
            | String { $$ = "String"; }
            | empty {$$ = "void"; }
            ;
-actual_parameters: actual_parameters COMMA data_type variable_name { $$ = $1 + ", " + $3 + " " + $4; }
-		     | data_type variable_name { $$ = $1 + " " + $2; }
+actual_parameters: actual_parameters COMMA data_type variable_name { addToHashtable($4, $3); $$ = $1 + ", " + $3 + " " + $4; }
+		     | data_type variable_name { addToHashtable($2, $1); $$ = $1 + " " + $2; }
                  | empty { $$ = ""; }
 		     ;
 
@@ -353,35 +353,31 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAtt
 		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
-left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else { /* throw exception */ } } ;
+left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } } ;
 right_side: arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
- 	   | function_call { $$ = $1; }
-	   | calculate_revenue { $$ = $1; }
+ 	    | function_call { $$ = $1; }
+	    | calculate_revenue { $$ = $1; }
 	   ;
-arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { try{ $$ = generateArithmeticExpression($1, "+", $3); }catch(ThrillException e){ } }
-			   | arithmetic_expression MINUS arithmetic_expression { try{ $$ = generateArithmeticExpression($1, "-", $3); }catch(ThrillException e){ } }
-			   | arithmetic_expression MUL arithmetic_expression   { try{ $$ = generateArithmeticExpression($1, "*", $3); }catch(ThrillException e){ } }
-			   | arithmetic_expression DIV arithmetic_expression   { try{ $$ = generateArithmeticExpression($1, "/", $3); }catch(ThrillException e){ } }
+arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = generateArithmeticExpression($1, "+", $3); }
+			   | arithmetic_expression MINUS arithmetic_expression { $$ = generateArithmeticExpression($1, "-", $3); }
+			   | arithmetic_expression MUL arithmetic_expression   { $$ = generateArithmeticExpression($1, "*", $3); }
+			   | arithmetic_expression DIV arithmetic_expression   { $$ = generateArithmeticExpression($1, "/", $3); }
                      | OPEN arithmetic_expression CLOSE 			  { $$ = "(" + $2 + ")"; }
-                     | variable_name 						  { try { boolean exists = checkHashtable($1); 
-												    	    if(exists){ $$ = $1; } 
-												    	    else{ ThrillException.ObjectNotFoundException("Line(" + yyline + ") " + $1);}
-												    }catch(ThrillException e){
-												    }
+                     | variable_name 						  { boolean exists = checkHashtable($1); 
+												    if(exists){ $$ = $1; } 
+												    else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); }
 												  }
                      | constant 							  { $$ = $1; }
                      ;
 
-condition: If OPEN relational_expression CLOSE block
-	     { $$ = "if(" + $3 + ")" + $5; }
-         | If OPEN relational_expression CLOSE block Else block
-	     { $$ = "if(" + $3 + ")" + $5 + "\nelse" + $7; }
+condition: If OPEN relational_expression CLOSE block 		    { $$ = "if(" + $3 + ")" + $5; }
+         | If OPEN relational_expression CLOSE block Else block { $$ = "if(" + $3 + ")" + $5 + "\nelse" + $7; }
 	   ;
 relational_expression: variable_name LESSEQUAL constant_or_variable  { $$ = $1 + " <= " + $3;}
 			   | variable_name GREATEQUAL constant_or_variable { $$ = $1 + " >= " + $3;}
 			   | variable_name NOTEQUAL constant_or_variable   { $$ = $1 + " != " + $3;}
-			   | variable_name LESS constant_or_variable 	    { $$ = $1 + " < " + $3;}
-			   | variable_name GREAT constant_or_variable 	    { $$ = $1 + " > " + $3;}
+			   | variable_name LESS constant_or_variable 	   { $$ = $1 + " < " + $3;}
+			   | variable_name GREAT constant_or_variable 	   { $$ = $1 + " > " + $3;}
 		         ;
 
 declaration: primitive_type declaration_list SEMICOLON { addDeclVariables($1, $2); $$ = $1 + " " + $2 + ";"; }
@@ -414,7 +410,9 @@ loop: Iterate block Until OPEN relational_expression CLOSE SEMICOLON
       {$$ = "do" + $2 + "while (" + $5 + ");" ; }
     ;
 
-return: Return constant_or_variable SEMICOLON { $$ = "return " + $2 + ";"; };
+return: Return constant_or_variable SEMICOLON { $$ = "return " + $2 + ";"; }
+	| Return SEMICOLON { $$ = "return ;"; }
+	;
 
 thrill_functions: calculate_revenue { $$ = $1; }
                   | output { $$ = $1; } 
@@ -436,7 +434,7 @@ constant_variable_chain: constant_variable_chain COMMA constant_or_variable
 			     ;
 
 constant_or_variable: constant { $$ = "\"" + $1 + "\""; }
-                    | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ /*throw exception*/ } }
+                    | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }
 			  ;
 
 data_type: Crowd { $$ = "Crowd"; }
@@ -454,7 +452,7 @@ duration_type: Days   { $$ = "Days"; }
 		 ;
 
 constant: NUMBER { $$ = new Double($1).toString(); }
-        | Quote string_constant Quote { System.out.println($2); $$ = "\"" + $2 + "\""; }
+        | Quote string_constant Quote { $$ = "\"" + $2 + "\""; }
 	  ;
 
 string_constant: string_constant ID { $$ = $1 + " " + $2; }
@@ -462,7 +460,7 @@ string_constant: string_constant ID { $$ = $1 + " " + $2; }
 		   ; 
 
 value: NUMBER 	   { $$ = new Double($1).toString(); }
-     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else {/* throw exception */} }
+     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }
      ;
 
 attraction_name: variable_name { $$ = $1; } ;
@@ -482,8 +480,8 @@ empty: { $$ = ""; } ;
 	public int yyline = 0;
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	int noOfParks = 0, noOfLands = 0;
-	short keywordType = 0, attributeType = 0;
 	String parkName = null;
+    String scopeName = null;
 
 	private int yylex () {
 		int yyl_return = -1;
@@ -509,93 +507,89 @@ empty: { $$ = ""; } ;
 
 	static boolean interactive;
 
-	public void setAttributeType(short val){
-		attributeType = val;
-	}
-
-	public short getAttributeType(){
-		return attributeType;
-	}
-
-	public void setKeywordType(short val){
-		keywordType = val;
-	}
-
-	public short getKeywordType(){
-		return keywordType;
-	}
-
-	public String createAttractionDefinition(String landName, String attractionName) { 
+	public String createAttractionDefinition(String landName, String attractionName) throws ThrillException{ 
 		String result = "\nAttraction " + attractionName + " = new Attraction();\n";
-		if(!thrillObjects.containsKey(landName)){
-			// ThrillException.ObjectNotFoundException(landName);
-		}
+		String key = "Gobal." + landName;
 		
+		if(!thrillObjects.containsKey(key)){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", landName);
+		}
+
 		String setName = attractionName + ".setAttractionName(\"" + attractionName + "\");\n";
 		String setLand = attractionName + ".setLand(" + landName + ");\n";
 		String addAttraction = landName + ".addAttraction(" + attractionName + ");\n";
 		result += setName + setLand + addAttraction;
-		
+
 		return result;
 	}
 
-	public String createRestaurantDefinition(String landName, String restaurantName) { 
+	public String createRestaurantDefinition(String landName, String restaurantName) throws ThrillException { 
 		String result = "\nRestaurant " + restaurantName + " = new Restaurant();\n";
-		if(!thrillObjects.containsKey(landName)){
-			// ThrillException.ObjectNotFoundException(landName);
-		}
+		String key = "Global." + landName;
 		
+		if(!thrillObjects.containsKey(key)){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", landName);
+		}
+
 		String setName = restaurantName + ".setRestaurantName(\"" + restaurantName + "\");\n";
 		String setLand = restaurantName + ".setLand(" + landName + ");\n";
 		String addRestaurant = landName + ".addRestaurant(" + restaurantName + ");\n";
 		result += setName + setLand + addRestaurant;
-		
+
 		return result;
 	}
 
-	public String createStoreDefinition(String landName, String storeName) { 
+	public String createStoreDefinition(String landName, String storeName) throws ThrillException{ 
 		String result = "\nStore " + storeName + " = new Store();\n";
-		if(!thrillObjects.containsKey(landName)){
-			// ThrillException.ObjectNotFoundException(landName);
-		}
+		String key = "Global." + landName;
 		
+		if(!thrillObjects.containsKey(key)){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", landName);
+		}
+
 		String setName = storeName + ".setStoreName(\"" + storeName + "\");\n";
 		String setLand = storeName + ".setLand(" + landName + ");\n";
 		String addStore = landName + ".addStore(" + storeName + ");\n";
 		result += setName + setLand + addStore;
-		
+
 		return result;
 	}
 
-	public void addToHashtable(String identifier, String type){
-		if(!thrillObjects.containsKey(identifier)){
-			// ThrillException.RedefinitionException(identifier);
+	public void addToHashtable(String identifier, String type) throws ThrillException{
+		String key = identifier;
+		if(scopeName != null){
+			key = scopeName + "." + identifier;
+		}
+
+		if(thrillObjects.containsKey(key)){
+			ThrillException.RedefinitionException(identifier);
 		}
 		if(type == "Park")
 			parkName = identifier;
-		
-		//System.out.println("Adding " + identifier + " Type = " + type);
-		thrillObjects.put(identifier, type);
+
+		thrillObjects.put(key, type);
 	}
 
 	public boolean checkHashtable(String identifier) {
 		boolean result = false;
-		if(thrillObjects.containsKey(identifier)){
+		String key = scopeName + "." + identifier;
+
+		if(thrillObjects.containsKey(key)){
 			result = true;
 		}
 		return result;
 	}
 
-	public void addDeclVariables(String type, String allVariables){
+	public void addDeclVariables(String type, String allVariables) throws ThrillException{
 		String[] variables = allVariables.split(",");
-		
+
 		if(type.equalsIgnoreCase("double")){
 			type = "Number";
 		}
 		else{
 			type = "String";
 		}
-		
+
 		for(int i = 0; i < variables.length; ++i){
 			addToHashtable(variables[i].trim(), type);
 		}
@@ -607,16 +601,16 @@ empty: { $$ = ""; } ;
 	// Number a = 10, b = 10;
 	// So we need to check for both equal to and comma before splitting
 	// Not a good way, but there is no choice
-	public void addInitVariables(String type, String allVariables){
+	public void addInitVariables(String type, String allVariables) throws ThrillException{
 		String[] variables = null;
-		
+
 		if(type.equalsIgnoreCase("double")){
 			type = "Number";
 		}
 		else{
 			type = "String";
 		}
-		
+
 		if(allVariables.contains(",")){
 			String[] temp = allVariables.split(",");
 			for(int i = 0; i < temp.length; ++i){
@@ -630,13 +624,14 @@ empty: { $$ = ""; } ;
 		}
 	}
 
-	public String generateSetAttribute(String identifier, String allAttributes){
+	public String generateSetAttribute(String identifier, String allAttributes) throws ThrillException{
 		String result = "";
-		String obj = thrillObjects.get(identifier);
+		String key = scopeName + "." + identifier;
+		String obj = thrillObjects.get(key);
 		if(obj == null){
-			// ThrillException.ObjectNotFoundException(identifier);
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", identifier);
 		}
-		
+
 		if(obj.equalsIgnoreCase("Attraction")){
 			result += generateAttractionAttribute(identifier, allAttributes);
 		}		
@@ -655,7 +650,7 @@ empty: { $$ = ""; } ;
 		else if(obj.equalsIgnoreCase("Store")){
 			result += generateStoreAttribute(identifier, allAttributes);
 		}
-				
+
 		return result;
 	}
 
@@ -668,12 +663,11 @@ empty: { $$ = ""; } ;
 			String value = validateAttributeValue(attributes[i], attributes[i+1]);
 			result += a + ".set" + attributes[i] + "(" + value + ");\n";
 		}
-		
+
 		return result;
 	}
 
-	public String generateCrowdAttribute(String c, String allAttributes)
-	{		
+	public String generateCrowdAttribute(String c, String allAttributes){		
 		String regex = ":";
 		String result = c + ".setCrowdName(\"" + c + "\");\n";
 		String[] attributes = allAttributes.split(regex);
@@ -682,10 +676,10 @@ empty: { $$ = ""; } ;
 			String value = validateAttributeValue(attributes[i], attributes[i+1]);
 			result += c + ".set" + attributes[i] + "(" + value + ");\n";
 		}
-		
+
 		return result;
 	}
-	
+
 	public String generateLandAttribute(String l, String allAttributes){
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
@@ -693,7 +687,7 @@ empty: { $$ = ""; } ;
 		String setPark = l + ".setPark(" + parkName + ");\n";
 		String addLand = parkName + ".addLand(" + l + ");\n";
 		result += setPark + addLand;
-		//System.out.println(result);
+
 		for(int i = 1; i < attributes.length; i+=2){
 			String value = validateAttributeValue(attributes[i], attributes[i+1]);
 			result += l + ".set" + attributes[i] + "(" + value + ");\n";
@@ -705,12 +699,12 @@ empty: { $$ = ""; } ;
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
 		String result = p + ".setParkName(\"" + p + "\");\n"; 
-		
+
 		for(int i = 1; i < attributes.length; i+=2){
 			String value = validateAttributeValue(attributes[i], attributes[i+1]);
 			result += p + ".set" + attributes[i] + "(" + value + ");\n";
 		}
-		
+
 		return result;
 	}
 
@@ -723,7 +717,7 @@ empty: { $$ = ""; } ;
 			String value = validateAttributeValue(attributes[i], attributes[i+1]);
 			result += r + ".set" + attributes[i] + "(" + value + ");\n";
 		}		
-		
+
 		return result;
 	}
 
@@ -736,95 +730,95 @@ empty: { $$ = ""; } ;
 			String value = validateAttributeValue(attributes[i], attributes[i+1]);
 			result += s + ".set" + attributes[i] + "(" + value + ");\n";
 		}		
-		
+
 		return result;
 	}
 
 	public Hashtable<String, String> getThrillObjects() {
 		return thrillObjects;
 	}
-	
-	public String generateAttribute(String variable, String function, String value) {
+
+	public String generateAttribute(String variable, String function, String value) throws ThrillException{
 		String result = "";;
-		
+		String key = scopeName + "." + variable;
 		value = validateAttributeValue(function, value);
-		
-		Object obj = thrillObjects.get(variable);
-		
+
+		Object obj = thrillObjects.get(key);
+
 		if(obj == null){
-			// ThrillException.ObjectNotFoundException(variable);
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", variable);
 		}
 		else{
 			if(function.equalsIgnoreCase("Capacity")){
 				if(obj instanceof Crowd){
-					//ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException(variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Cost")){
 				if(obj instanceof Crowd){
-					//ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException(variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Employees")){
 				if(obj instanceof Crowd){
-					//ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException(variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("EnergyIncrease")){
 				if(!(obj instanceof Restaurant)){
-					//ThrillException.UnexpectedTypeException("Restaurant", variable);
+					ThrillException.UnexpectedTypeException("Restaurant", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 
 			}
 			else if(function.equalsIgnoreCase("EnergyLevel")){
 				if(!(obj instanceof Crowd)){
-					//ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("EnergyLost")){
 				if(!(obj instanceof Attraction)){
-					//ThrillException.UnexpectedTypeException("Attraction", variable);
+					ThrillException.UnexpectedTypeException("Attraction", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Size")){
 				if(!(obj instanceof Crowd)){
-					//ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendingCapacity")){
 				if(!(obj instanceof Crowd)){
-					//ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendLevel")){
 				if(!(obj instanceof Restaurant || obj instanceof Store)){
-					//ThrillException.UnexpectedTypeException("Restaurant/Store", variable);
+					ThrillException.UnexpectedTypeException("Restaurant/Store", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("ThrillLevel")){
 				if(!(obj instanceof Attraction || obj instanceof Crowd)){
-					//ThrillException.UnexpectedTypeException("Attraction/Crowd", variable);
+					ThrillException.UnexpectedTypeException("Attraction/Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else{
 				// error condition
-				// ThrillException.UnexpectedTypeException("Attraction/Crowd/Restaurant/Store", variable);
+				ThrillException.UnexpectedTypeException("Attraction/Crowd/Restaurant/Store", variable);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public String generateArithmeticExpression(String value1, String operator, String value2) throws ThrillException{
 		String result = "";
 
@@ -857,9 +851,10 @@ empty: { $$ = ""; } ;
 	}
 
 	public String checkSemanticValue(String value) throws ThrillException{
-		String type = thrillObjects.get(value);
+		String key = scopeName + "." + value;
+		String type = thrillObjects.get(key);
 		if(type == null){
-			ThrillException.ObjectNotFoundException("Line(" + yyline + ") " + value);
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", value);
 			return null;
 		}
 		else if(!type.equalsIgnoreCase("Number")){			
@@ -868,14 +863,75 @@ empty: { $$ = ""; } ;
 		return value;
 	}
 
+	public String generateFunction(String returnType, String functionName, String parameters, String block) throws ThrillException{
+		String result = null;
+		boolean checkReturn = false;
+		String returnStmt = null;
+		int beginIndex = 0;
+		int endIndex = 0;
+		
+		if(block.contains("return")){
+			beginIndex = block.indexOf("return");
+			endIndex = block.indexOf(";", beginIndex);
+			returnStmt = block.substring(beginIndex, endIndex + 1);	
+			checkReturn = true;
+		}
+		
+		if(checkReturn && !checkReturnType(returnType, returnStmt)){
+			//ThrillException.
+		}
+
+		result = returnType + " " + functionName + "(" + parameters + ")\n" + block;
+		
+		return result;
+	}
+	
+	boolean checkReturnType(String returnType, String returnStmt) throws ThrillException{
+		boolean result = false;
+		String temp = returnType.equalsIgnoreCase("double") ? "Number" : returnType; 
+		String retVal = returnStmt.substring(7, returnStmt.length() - 1);		
+		
+		if(!returnType.equalsIgnoreCase("void")){
+			String key = scopeName + "." + retVal;
+			String type = thrillObjects.get(key);
+			if(retVal.length() > 0){
+				
+				if(type == null){
+					ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", retVal);
+				}
+
+				if(Character.isDigit(retVal.charAt(0)) && type.equalsIgnoreCase("Number")){
+					result = true;
+				}
+				else if(type.equalsIgnoreCase(temp)){
+					result = true;
+				}
+				else{
+					ThrillException.UnexpectedTypeException(returnType, type);
+				}				
+			}
+			else{
+				ThrillException.UnexpectedTypeException(returnType, "void");
+			}
+		}
+		else{			
+			if(retVal.length() == 0)
+				return true;
+			else
+				return false;
+		}
+		
+		return result;
+	}
+
 	public String validateAttributeValue(String function, String value){
 		String result = "";;
-		
+
 		double d = Double.parseDouble(value);
-		
+
 		if(function.equalsIgnoreCase("Admission") ||
-		   function.equalsIgnoreCase("Cost") || 
-		   function.equalsIgnoreCase("SpendingCapacity")){	
+				function.equalsIgnoreCase("Cost") || 
+				function.equalsIgnoreCase("SpendingCapacity")){	
 			if(d < 0)
 				throw new IllegalArgumentException(function + " cannot be less than zero");
 			result = value;
@@ -887,11 +943,11 @@ empty: { $$ = ""; } ;
 					throw new IllegalArgumentException(function + " cannot be less than zero");				
 			}
 			else if(function.equalsIgnoreCase("Capacity")  || 
-			   function.equalsIgnoreCase("Employees") ||
-			   function.equalsIgnoreCase("Size")){
+					function.equalsIgnoreCase("Employees") ||
+					function.equalsIgnoreCase("Size")){
 				if(i < 0)
 					throw new IllegalArgumentException(function + " cannot be less than zero");
-				
+
 			}
 			else {
 				if(i < 0 || i > 20)
@@ -903,37 +959,23 @@ empty: { $$ = ""; } ;
 	}
 
 	// have to check the second argument as well
-	public String generateRevenue(String crowdName, String duration) {
+	public String generateRevenue(String crowdName, String duration) throws ThrillException {
 		String result = null;
-		try {
-			String c = thrillObjects.get(crowdName);
-			if(c == null){
-				ThrillException.ObjectNotFoundException(crowdName);
-			}
-			result = parkName + ".calculateRevenue(" + crowdName + ", " + duration + ");";
-		}catch(ThrillException oe){
-			//throw oe;
+		String c = thrillObjects.get(crowdName);
+		if(c == null){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", crowdName);
 		}
-		catch(Exception ex){
-			// ThrillException.UnexpectedTypeException("Crowd", crowdName);
-		}
+		result = parkName + ".calculateRevenue(" + crowdName + ", " + duration + ");";
 		return result;
 	}
 
-	public String generateSimulate(String crowdName) {
+	public String generateSimulate(String crowdName) throws ThrillException{
 		String result = null;
-		try {
-			String c = thrillObjects.get(crowdName);
-			if(c == null){
-				ThrillException.ObjectNotFoundException(crowdName);
-			}
-			result = parkName + ".simulate(" + crowdName + ");";
-		}catch(ThrillException oe){
-			//throw oe;
+		String c = thrillObjects.get(crowdName);
+		if(c == null){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", crowdName);
 		}
-		catch(Exception ex){
-			// ThrillException.UnexpectedTypeException("Crowd", crowdName);
-		}
+		result = parkName + ".simulate(" + crowdName + ");";
 		return result;
 	}
 
@@ -942,7 +984,7 @@ empty: { $$ = ""; } ;
 		String classEnd = "\n}";
 		String main = "public static void main(){\n";		
 		usercode = usercode.substring(1);
-		
+
 		try{
 			FileWriter writer = new FileWriter(new File("ThrillProgram.java"));
 			String buffer = classStart + main + definitions +  usercode + classEnd;
@@ -952,8 +994,12 @@ empty: { $$ = ""; } ;
 		}		
 	}
 
-	public String initializeDuration(String durationType, String durationName, String value){
+	public String initializeDuration(String durationType, String durationName, String value) throws ThrillException{
 		String result = null;
+		if(!thrillObjects.containsKey(durationName)){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", durationName);
+		}
+		
 		double temp = Double.parseDouble(value);
 		int days = (int)temp;
 		result = durationType + " " + durationName + " = new " + durationType + "(" + days + ");"; 
@@ -961,25 +1007,27 @@ empty: { $$ = ""; } ;
 	}
 
 	public static void main(String args[]) throws IOException {
-		System.out.println("\nCompiling ...\n");
 
 		Parser yyparser;
-		if ( args.length > 0 ) {
-			// parse a file
-			yyparser = new Parser(new FileReader(args[0]));
+		if(args.length < 1){
+			System.out.println("Usage: java Parser <thrill_program.txt>");
+			return;
 		}
-		else {
-			// interactive mode
-			System.out.println("[Quit with CTRL-D]");
-			System.out.println("Input");
-			interactive = true;
-			yyparser = new Parser(new InputStreamReader(System.in));
+
+		// parse a file
+		yyparser = new Parser(new FileReader(args[0]));
+
+		System.out.println("\nCompiling ...\n");
+
+		try{
+			yyparser.yyparse();
+
+			Hashtable<String, String> objects = yyparser.getThrillObjects();
+			//System.out.println("No .of objects = " + objects.size());
+
+			System.out.println("\nThrillProgram.java generated successfully.\n");;
+
+		}catch(ThrillException ex){
+			System.out.println(ex.getMessage());			
 		}
-		
-		yyparser.yyparse();
-		
-		Hashtable<String, String> objects = yyparser.getThrillObjects();
-		//System.out.println("No .of objects = " + objects.size());
-	
-		System.out.println("\nThrillProgram.java generated successfully.\n");;
 	}
