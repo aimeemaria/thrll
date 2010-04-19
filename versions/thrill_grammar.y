@@ -743,69 +743,69 @@ empty: { $$ = ""; } ;
 		String key = scopeName + "." + variable;
 		value = validateAttributeValue(function, value);
 
-		Object obj = thrillObjects.get(key);
+		String obj = thrillObjects.get(key);
 
 		if(obj == null){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", variable);
 		}
 		else{
 			if(function.equalsIgnoreCase("Capacity")){
-				if(obj instanceof Crowd){
+				if(obj.equalsIgnoreCase("Crowd")){
 					ThrillException.UnexpectedTypeException(variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Cost")){
-				if(obj instanceof Crowd){
+				if(obj.equalsIgnoreCase("Crowd")){
 					ThrillException.UnexpectedTypeException(variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Employees")){
-				if(obj instanceof Crowd){
+				if(obj.equalsIgnoreCase("Crowd")){
 					ThrillException.UnexpectedTypeException(variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("EnergyIncrease")){
-				if(!(obj instanceof Restaurant)){
+				if(!(obj.equalsIgnoreCase("Restaurant"))){
 					ThrillException.UnexpectedTypeException("Restaurant", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 
 			}
 			else if(function.equalsIgnoreCase("EnergyLevel")){
-				if(!(obj instanceof Crowd)){
+				if(!(obj.equalsIgnoreCase("Crowd"))){
 					ThrillException.UnexpectedTypeException("Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("EnergyLost")){
-				if(!(obj instanceof Attraction)){
+				if(!(obj.equalsIgnoreCase("Attraction"))){
 					ThrillException.UnexpectedTypeException("Attraction", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Size")){
-				if(!(obj instanceof Crowd)){
+				if(!(obj.equalsIgnoreCase("Crowd"))){
 					ThrillException.UnexpectedTypeException("Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendingCapacity")){
-				if(!(obj instanceof Crowd)){
+				if(!(obj.equalsIgnoreCase("Crowd"))){
 					ThrillException.UnexpectedTypeException("Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendLevel")){
-				if(!(obj instanceof Restaurant || obj instanceof Store)){
+				if(!(obj.equalsIgnoreCase("Restaurant") || obj.equalsIgnoreCase("Store"))){
 					ThrillException.UnexpectedTypeException("Restaurant/Store", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("ThrillLevel")){
-				if(!(obj instanceof Attraction || obj instanceof Crowd)){
+				if(!(obj.equalsIgnoreCase("Attraction") || obj.equalsIgnoreCase("Crowd"))){
 					ThrillException.UnexpectedTypeException("Attraction/Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
