@@ -1,8 +1,8 @@
-package thrill.backend;
 
 import java.util.ArrayList;
 
 public class Crowd {
+	String crowdName = null;
 	private int size;
 	private int energyLevel;
 	private int thrillLevel;
