@@ -482,6 +482,8 @@ empty: { $$ = ""; } ;
 	int noOfParks = 0, noOfLands = 0;
 	String parkName = null;
 	String scopeName = null;
+	final int MAX_LIMIT_PARK = 1;
+	final int MAX_LIMIT_LANDS = 6;
 
 	private int yylex () {
 		int yyl_return = -1;
@@ -565,10 +567,21 @@ empty: { $$ = ""; } ;
 			ThrillException.RedefinitionException("Error on line(" + yyline + "): ", identifier);
 		}
 
-		if(type == "Park")
-			parkName = identifier;
-
-		thrillObjects.put(key, type);
+		if(type == "Park"){
+			if(noOfParks > 1){
+				ThrillException.ExceededObjectLimitException("Error on line(" + yyline + "): ", "Park", MAX_LIMIT_PARK);
+			}
+			else{
+				parkName = identifier;
+			}
+		
+		}
+		else if(type == "Land" && noOfLands > 6){
+			ThrillException.ExceededObjectLimitException("Error on line(" + yyline + "): ", "Land", MAX_LIMIT_LANDS);
+		}
+		else{
+			thrillObjects.put(key, type);
+		}
 	}
 
 	public boolean checkHashtable(String identifier) {
