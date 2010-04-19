@@ -1,5 +1,3 @@
-package thrill.backend;
-
 import java.util.Random;
 
 abstract class Distribution {

@@ -1,5 +1,3 @@
-package thrill.backend;
-
 import java.util.Random;
 public class Person {
 	private int energyLevel;
