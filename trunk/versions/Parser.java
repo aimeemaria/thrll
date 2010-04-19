@@ -667,7 +667,7 @@ final static String yyrule[] = {
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	int noOfParks = 0, noOfLands = 0;
 	String parkName = null;
-    String scopeName = null;
+	String scopeName = null;
 
 	private int yylex () {
 		int yyl_return = -1;
@@ -676,7 +676,7 @@ final static String yyrule[] = {
 			yyl_return = lexer.yylex();
 		}
 		catch (IOException e) {
-			System.err.println("IO error:" +e);
+			System.err.println("IO error: " + e.getMessage());
 		}
 		return yyl_return;
 	}
@@ -695,8 +695,8 @@ final static String yyrule[] = {
 
 	public String createAttractionDefinition(String landName, String attractionName) throws ThrillException{ 
 		String result = "\nAttraction " + attractionName + " = new Attraction();\n";
-		String key = "Gobal." + landName;
-		
+		String key = "Global." + landName;
+
 		if(!thrillObjects.containsKey(key)){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", landName);
 		}
@@ -712,7 +712,7 @@ final static String yyrule[] = {
 	public String createRestaurantDefinition(String landName, String restaurantName) throws ThrillException { 
 		String result = "\nRestaurant " + restaurantName + " = new Restaurant();\n";
 		String key = "Global." + landName;
-		
+
 		if(!thrillObjects.containsKey(key)){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", landName);
 		}
@@ -728,7 +728,7 @@ final static String yyrule[] = {
 	public String createStoreDefinition(String landName, String storeName) throws ThrillException{ 
 		String result = "\nStore " + storeName + " = new Store();\n";
 		String key = "Global." + landName;
-		
+
 		if(!thrillObjects.containsKey(key)){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", landName);
 		}
@@ -748,8 +748,9 @@ final static String yyrule[] = {
 		}
 
 		if(thrillObjects.containsKey(key)){
-			ThrillException.RedefinitionException(identifier);
+			ThrillException.RedefinitionException("Error on line(" + yyline + "): ", identifier);
 		}
+
 		if(type == "Park")
 			parkName = identifier;
 
@@ -840,7 +841,7 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateAttractionAttribute(String a, String allAttributes){
+	public String generateAttractionAttribute(String a, String allAttributes) throws ThrillException{
 		String result = "";
 		String regex = ":";		
 		String[] attributes = allAttributes.split(regex);
@@ -853,7 +854,7 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateCrowdAttribute(String c, String allAttributes){		
+	public String generateCrowdAttribute(String c, String allAttributes) throws ThrillException{		
 		String regex = ":";
 		String result = c + ".setCrowdName(\"" + c + "\");\n";
 		String[] attributes = allAttributes.split(regex);
@@ -866,7 +867,7 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateLandAttribute(String l, String allAttributes){
+	public String generateLandAttribute(String l, String allAttributes)throws ThrillException{
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
 		String result = l + ".setLandName(\"" + l + "\");\n";
@@ -881,7 +882,7 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateParkAttribute(String p, String allAttributes){
+	public String generateParkAttribute(String p, String allAttributes) throws ThrillException{
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
 		String result = p + ".setParkName(\"" + p + "\");\n"; 
@@ -894,7 +895,7 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateRestaurantAttribute(String r, String allAttributes){
+	public String generateRestaurantAttribute(String r, String allAttributes) throws ThrillException{
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
 		String result = "";
@@ -907,7 +908,7 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateStoreAttribute(String s, String allAttributes){
+	public String generateStoreAttribute(String s, String allAttributes) throws ThrillException{
 		String regex = ":";
 		String[] attributes = allAttributes.split(regex);
 		String result = "";
@@ -937,68 +938,68 @@ final static String yyrule[] = {
 		else{
 			if(function.equalsIgnoreCase("Capacity")){
 				if(obj.equalsIgnoreCase("Crowd")){
-					ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Cost")){
 				if(obj.equalsIgnoreCase("Crowd")){
-					ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Employees")){
 				if(obj.equalsIgnoreCase("Crowd")){
-					ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("EnergyIncrease")){
 				if(!(obj.equalsIgnoreCase("Restaurant"))){
-					ThrillException.UnexpectedTypeException("Restaurant", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Restaurant", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 
 			}
 			else if(function.equalsIgnoreCase("EnergyLevel")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("EnergyLost")){
 				if(!(obj.equalsIgnoreCase("Attraction"))){
-					ThrillException.UnexpectedTypeException("Attraction", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Attraction", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Size")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendingCapacity")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendLevel")){
 				if(!(obj.equalsIgnoreCase("Restaurant") || obj.equalsIgnoreCase("Store"))){
-					ThrillException.UnexpectedTypeException("Restaurant/Store", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Restaurant/Store", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("ThrillLevel")){
 				if(!(obj.equalsIgnoreCase("Attraction") || obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Attraction/Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Attraction/Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else{
 				// error condition
-				ThrillException.UnexpectedTypeException("Attraction/Crowd/Restaurant/Store", variable);
+				ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Attraction/Crowd/Restaurant/Store", variable);
 			}
 		}
 
@@ -1016,7 +1017,7 @@ final static String yyrule[] = {
 		}		
 
 		result += operator;
-		
+
 		if(checkSemanticType(value2.charAt(0))){
 			result += checkSemanticValue(value2);
 		}
@@ -1044,7 +1045,7 @@ final static String yyrule[] = {
 			return null;
 		}
 		else if(!type.equalsIgnoreCase("Number")){			
-			ThrillException.UnexpectedTypeException("Number", type);
+			ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Number", type);
 		}
 		return value;
 	}
@@ -1055,33 +1056,33 @@ final static String yyrule[] = {
 		String returnStmt = null;
 		int beginIndex = 0;
 		int endIndex = 0;
-		
+
 		if(block.contains("return")){
 			beginIndex = block.indexOf("return");
 			endIndex = block.indexOf(";", beginIndex);
 			returnStmt = block.substring(beginIndex, endIndex + 1);	
 			checkReturn = true;
 		}
-		
+
 		if(checkReturn && !checkReturnType(returnType, returnStmt)){
 			//ThrillException.
 		}
 
 		result = returnType + " " + functionName + "(" + parameters + ")\n" + block;
-		
+
 		return result;
 	}
-	
+
 	boolean checkReturnType(String returnType, String returnStmt) throws ThrillException{
 		boolean result = false;
 		String temp = returnType.equalsIgnoreCase("double") ? "Number" : returnType; 
 		String retVal = returnStmt.substring(7, returnStmt.length() - 1);		
-		
+
 		if(!returnType.equalsIgnoreCase("void")){
 			String key = scopeName + "." + retVal;
 			String type = thrillObjects.get(key);
 			if(retVal.length() > 0){
-				
+
 				if(type == null){
 					ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", retVal);
 				}
@@ -1093,11 +1094,11 @@ final static String yyrule[] = {
 					result = true;
 				}
 				else{
-					ThrillException.UnexpectedTypeException(returnType, type);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", returnType, type);
 				}				
 			}
 			else{
-				ThrillException.UnexpectedTypeException(returnType, "void");
+				ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", returnType, "void");
 			}
 		}
 		else{			
@@ -1106,38 +1107,38 @@ final static String yyrule[] = {
 			else
 				return false;
 		}
-		
+
 		return result;
 	}
 
-	public String validateAttributeValue(String function, String value){
+	public String validateAttributeValue(String attribute, String value) throws ThrillException{
 		String result = "";;
 
 		double d = Double.parseDouble(value);
 
-		if(function.equalsIgnoreCase("Admission") ||
-				function.equalsIgnoreCase("Cost") || 
-				function.equalsIgnoreCase("SpendingCapacity")){	
+		if(attribute.equalsIgnoreCase("Admission") ||
+				attribute.equalsIgnoreCase("Cost") || 
+				attribute.equalsIgnoreCase("SpendingCapacity")){	
 			if(d < 0)
-				throw new IllegalArgumentException(function + " cannot be less than zero");
+				ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");
 			result = value;
 		}
 		else{
 			int i = (int)d;
-			if(function.equalsIgnoreCase("Location")){
+			if(attribute.equalsIgnoreCase("Location")){
 				if(i < 1 || i > 6)
-					throw new IllegalArgumentException(function + " cannot be less than zero");				
+					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " should be a value between 1 and 6");			
 			}
-			else if(function.equalsIgnoreCase("Capacity")  || 
-					function.equalsIgnoreCase("Employees") ||
-					function.equalsIgnoreCase("Size")){
+			else if(attribute.equalsIgnoreCase("Capacity")  || 
+					attribute.equalsIgnoreCase("Employees") ||
+					attribute.equalsIgnoreCase("Size")){
 				if(i < 0)
-					throw new IllegalArgumentException(function + " cannot be less than zero");
+					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");
 
 			}
 			else {
 				if(i < 0 || i > 20)
-					throw new IllegalArgumentException(function + "cannot be less than 0 or greater than 20");
+					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero or greater than 20");
 			}
 			result = new Integer(i).toString();
 		}
@@ -1145,22 +1146,28 @@ final static String yyrule[] = {
 	}
 
 	// have to check the second argument as well
-	public String generateRevenue(String crowdName, String duration) throws ThrillException {
+	public String generateRevenue(String crowdName, String duration) throws ThrillException {		
 		String result = null;
-		String c = thrillObjects.get(crowdName);
+		String c = thrillObjects.get("Global." + crowdName);
 		if(c == null){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", crowdName);
+		}		
+		
+		String d = thrillObjects.get(scopeName + "." + duration);
+		if(d == null){
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", duration);	
 		}
+		
 		result = parkName + ".calculateRevenue(" + crowdName + ", " + duration + ");";
 		return result;
 	}
 
 	public String generateSimulate(String crowdName) throws ThrillException{
 		String result = null;
-		String c = thrillObjects.get(crowdName);
+		String c = thrillObjects.get("Global." + crowdName);
 		if(c == null){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", crowdName);
-		}
+		}		
 		result = parkName + ".simulate(" + crowdName + ");";
 		return result;
 	}
@@ -1185,7 +1192,7 @@ final static String yyrule[] = {
 		if(!thrillObjects.containsKey(durationName)){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", durationName);
 		}
-		
+
 		double temp = Double.parseDouble(value);
 		int days = (int)temp;
 		result = durationType + " " + durationName + " = new " + durationType + "(" + days + ");"; 
@@ -1208,16 +1215,13 @@ final static String yyrule[] = {
 		try{
 			yyparser.yyparse();
 
-			Hashtable<String, String> objects = yyparser.getThrillObjects();
-			//System.out.println("No .of objects = " + objects.size());
-
 			System.out.println("\nThrillProgram.java generated successfully.\n");;
 
 		}catch(ThrillException ex){
 			System.out.println(ex.getMessage());			
 		}
 	}
-//#line 1207 "Parser.java"
+//#line 1211 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1726,11 +1730,11 @@ case 87:
 break;
 case 88:
 //#line 309 "thrill_grammar.y"
-{ scopeName = val_peek(0).sval; }
+{ scopeName = val_peek(0).sval; addToHashtable(val_peek(0).sval, "Function"); }
 break;
 case 89:
 //#line 310 "thrill_grammar.y"
-{ 
+{
 		yyval.sval = "\n" + "public static " + generateFunction(val_peek(5).sval, val_peek(4).sval, val_peek(1).sval, val_peek(0).sval);
 	  }
 break;
@@ -2121,7 +2125,7 @@ case 187:
 //#line 476 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
-//#line 2105 "Parser.java"
+//#line 2109 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

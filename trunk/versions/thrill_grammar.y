@@ -562,7 +562,7 @@ empty: { $$ = ""; } ;
 		}
 
 		if(thrillObjects.containsKey(key)){
-			ThrillException.RedefinitionException(identifier);
+			ThrillException.RedefinitionException("Error on line(" + yyline + "): ", identifier);
 		}
 
 		if(type == "Park")
@@ -752,68 +752,68 @@ empty: { $$ = ""; } ;
 		else{
 			if(function.equalsIgnoreCase("Capacity")){
 				if(obj.equalsIgnoreCase("Crowd")){
-					ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Cost")){
 				if(obj.equalsIgnoreCase("Crowd")){
-					ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Employees")){
 				if(obj.equalsIgnoreCase("Crowd")){
-					ThrillException.UnexpectedTypeException(variable, "Crowd");
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", variable, "Crowd");
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("EnergyIncrease")){
 				if(!(obj.equalsIgnoreCase("Restaurant"))){
-					ThrillException.UnexpectedTypeException("Restaurant", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Restaurant", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 
 			}
 			else if(function.equalsIgnoreCase("EnergyLevel")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("EnergyLost")){
 				if(!(obj.equalsIgnoreCase("Attraction"))){
-					ThrillException.UnexpectedTypeException("Attraction", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Attraction", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Size")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendingCapacity")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendLevel")){
 				if(!(obj.equalsIgnoreCase("Restaurant") || obj.equalsIgnoreCase("Store"))){
-					ThrillException.UnexpectedTypeException("Restaurant/Store", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Restaurant/Store", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("ThrillLevel")){
 				if(!(obj.equalsIgnoreCase("Attraction") || obj.equalsIgnoreCase("Crowd"))){
-					ThrillException.UnexpectedTypeException("Attraction/Crowd", variable);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Attraction/Crowd", variable);
 				}
 				result = variable.concat(".set" + function + "(" + value + ");");				
 			}
 			else{
 				// error condition
-				ThrillException.UnexpectedTypeException("Attraction/Crowd/Restaurant/Store", variable);
+				ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Attraction/Crowd/Restaurant/Store", variable);
 			}
 		}
 
@@ -859,7 +859,7 @@ empty: { $$ = ""; } ;
 			return null;
 		}
 		else if(!type.equalsIgnoreCase("Number")){			
-			ThrillException.UnexpectedTypeException("Number", type);
+			ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Number", type);
 		}
 		return value;
 	}
@@ -908,11 +908,11 @@ empty: { $$ = ""; } ;
 					result = true;
 				}
 				else{
-					ThrillException.UnexpectedTypeException(returnType, type);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", returnType, type);
 				}				
 			}
 			else{
-				ThrillException.UnexpectedTypeException(returnType, "void");
+				ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", returnType, "void");
 			}
 		}
 		else{			
@@ -941,7 +941,7 @@ empty: { $$ = ""; } ;
 			int i = (int)d;
 			if(attribute.equalsIgnoreCase("Location")){
 				if(i < 1 || i > 6)
-					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");			
+					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " should be a value between 1 and 6");			
 			}
 			else if(attribute.equalsIgnoreCase("Capacity")  || 
 					attribute.equalsIgnoreCase("Employees") ||
