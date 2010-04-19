@@ -21,8 +21,13 @@ public class ThrillException extends Exception {
 		throw e;
 	}
 	
-	public static void InvalidStringConstant(String identifier, String value) throws ThrillException{
+	public static void InvalidStringConstantException(String identifier, String value) throws ThrillException{
 		ThrillException e = new ThrillException("String constant " + identifier + " has invalid value " + value);
+		throw e;
+	}
+	
+	public static void InvalidArgumentException(String lineInfo, String message) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + message);
 		throw e;
 	}
 	
