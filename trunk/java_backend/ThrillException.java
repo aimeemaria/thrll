@@ -6,6 +6,10 @@ public class ThrillException extends Exception {
 		this.message = message;
 	}
 	
+	public static void ExceededObjectLimitException(String lineInfo, String object, int limit){
+		ThrillException e = new ThrillException(lineInfo + object + " definition has exceeded the maximum limit " + limit);
+	}
+	
 	public static void RedefinitionException(String lineInfo, String identifier) throws ThrillException{
 		ThrillException e = new ThrillException(lineInfo + identifier + " already defined");
 		throw e;
