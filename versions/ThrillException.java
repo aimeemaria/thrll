@@ -6,8 +6,8 @@ public class ThrillException extends Exception {
 		this.message = message;
 	}
 	
-	public static void RedefinitionException(String identifier) throws ThrillException{
-		ThrillException e = new ThrillException(identifier + " already defined");
+	public static void RedefinitionException(String lineInfo, String identifier) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + identifier + " already defined");
 		throw e;
 	}
 	
@@ -16,13 +16,13 @@ public class ThrillException extends Exception {
 		throw e;
 	}
 	
-	public static void UnexpectedTypeException(String expectedObjType, String foundObjType) throws ThrillException{
-		ThrillException e = new ThrillException("Expected object type " + expectedObjType + ". Found type " + foundObjType);
+	public static void UnexpectedTypeException(String lineInfo, String expectedObjType, String foundObjType) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + " expected object type " + expectedObjType + ". Found type " + foundObjType);
 		throw e;
 	}
 	
-	public static void InvalidStringConstantException(String identifier, String value) throws ThrillException{
-		ThrillException e = new ThrillException("String constant " + identifier + " has invalid value " + value);
+	public static void InvalidStringConstantException(String lineInfo, String identifier, String value) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + " string constant " + identifier + " has invalid value " + value);
 		throw e;
 	}
 	
