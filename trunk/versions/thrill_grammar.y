@@ -576,12 +576,12 @@ empty: { $$ = ""; } ;
 			}
 		
 		}
-		else if(type == "Land" && noOfLands > 6){
-			ThrillException.ExceededObjectLimitException("Error on line(" + yyline + "): ", "Land", MAX_LIMIT_LANDS);
+		else if(type == "Land"){
+			if(noOfLands > 6)
+				ThrillException.ExceededObjectLimitException("Error on line(" + yyline + "): ", "Land", MAX_LIMIT_LANDS);
 		}
-		else{
-			thrillObjects.put(key, type);
-		}
+
+		thrillObjects.put(key, type);
 	}
 
 	public boolean checkHashtable(String identifier) {
