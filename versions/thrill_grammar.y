@@ -40,9 +40,9 @@ import java.util.Hashtable;
 %token Duration         	 /* Duration keyword         */
 %token Else             	 /* Else keyword             */
 %token Employees        	 /* Employees keyword        */
-%token EnergyIncrease   /* EnergyIncrease keyword   */
+%token EnergyIncrease   	 /* EnergyIncrease keyword   */
 %token <dval>EnergyLevel      /* EnergyLevel keyword      */
-%token EnergyLost       /* EnergyLost keyword       */
+%token EnergyLost       	 /* EnergyLost keyword       */
 %token If               	 /* If keyword               */
 %token In               	 /* In keyword               */
 %token Iterate          	 /* Iterate keyword          */
@@ -358,10 +358,10 @@ right_side: arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
  	    | function_call { $$ = $1; }
 	    | calculate_revenue { $$ = $1; }
 	   ;
-arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = generateArithmeticExpression($1, "+", $3); }
-			   | arithmetic_expression MINUS arithmetic_expression { $$ = generateArithmeticExpression($1, "-", $3); }
-			   | arithmetic_expression MUL arithmetic_expression   { $$ = generateArithmeticExpression($1, "*", $3); }
-			   | arithmetic_expression DIV arithmetic_expression   { $$ = generateArithmeticExpression($1, "/", $3); }
+arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = generateArithmeticExpression($1, " + ", $3); }
+			   | arithmetic_expression MINUS arithmetic_expression { $$ = generateArithmeticExpression($1, " - ", $3); }
+			   | arithmetic_expression MUL arithmetic_expression   { $$ = generateArithmeticExpression($1, " * ", $3); }
+			   | arithmetic_expression DIV arithmetic_expression   { $$ = generateArithmeticExpression($1, " / ", $3); }
                      | OPEN arithmetic_expression CLOSE 			  { $$ = "(" + $2 + ")"; }
                      | variable_name 						  { boolean exists = checkHashtable($1); 
 												    if(exists){ $$ = $1; } 
@@ -399,7 +399,7 @@ initialization: primitive_type initialization_list SEMICOLON
 		  ;
 
 initialization_list: initialization_list COMMA variable_name EQUAL constant 
-                     { $$ = $1 + ", " + $3 + "=" + $5; }
+                     { $$ = $1 + ", " + $3 + " = " + $5; }
 		       | variable_name EQUAL constant 
 			   { $$ = $1 + " = " + $3; }
 		       ;
