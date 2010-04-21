@@ -37,7 +37,10 @@
 
 import javax.swing.*;
 import java.util.*;
+import java.io.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.GroupLayout.*;
 
@@ -48,84 +51,89 @@ public class TextAreaDemo extends JFrame{
     private JScrollPane jScrollPane1;
     private JTextArea textArea;
     private DisplayPanel graph;
-    
-    
+    private JButton button;
+    private JTextField text;
     
     public TextAreaDemo() {
 	initComponents();
-        /*
-        textArea.getDocument().addDocumentListener(this);
-        
-        InputMap im = textArea.getInputMap();
-        ActionMap am = textArea.getActionMap();
-        im.put(KeyStroke.getKeyStroke("ENTER"), COMMIT_ACTION);
-        am.put(COMMIT_ACTION, new CommitAction());
-        
-        words = new ArrayList<String>(5);
-        words.add("spark");
-        words.add("special");
-        words.add("spectacles");
-        words.add("spectacular");
-        words.add("swing");
-*/
     }
     
-    
+    private class BListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent a)
+		{
+			String message = textArea.getText();
+
+			if(a.getSource() == button){
+				FileOutputStream fout;		
+				text.setText("Executing now . . . ");
+				try
+				{
+				    // Open an output stream
+				    fout = new FileOutputStream ("code.txt");
+
+				    // Print a line of text
+				    new PrintStream(fout).print (message);
+
+				    // Close our output stream
+				    fout.close();		
+				
+				}
+				catch (IOException e)
+				{
+					System.err.println ("Unable to write to file");
+					System.exit(-1);
+				}
+
+
+			}
+					
+		}
+	}
     private void initComponents() {
         jLabel1 = new JLabel("Enter your Program Code  below . . . ");
-        
+        text = new JTextField ();
         textArea = new JTextArea();
-	graph = new DisplayPanel();
+	    graph = new DisplayPanel();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        textArea.setColumns(200);
+        textArea.setColumns(50);
         textArea.setLineWrap(true);
-        textArea.setRows(500);
+        textArea.setRows(25);
         textArea.setWrapStyleWord(true);
         
         jScrollPane1 = new JScrollPane(textArea);
-        
+        button = new JButton("Execute");
+        button.addActionListener(new BListener());
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        
-        //Create a parallel group for the horizontal axis
-        ParallelGroup hGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        //Create a sequential and a parallel groups
-	SequentialGroup h1 = layout.createSequentialGroup();
-        ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
-        //Add a scroll panel and a label to the parallel group h2
-	h2.addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE);
-        h2.addComponent(jLabel1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE,400, Short.MAX_VALUE);
-        h2.addComponent(graph,GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE);
-	//Add a container gap to the sequential group h1
-	h1.addContainerGap();
-        // Add the group h2 to the group h1
-	h1.addGroup(h2);
-        h1.addContainerGap();
-        //Add the group h1 to hGroup
-	hGroup.addGroup(Alignment.TRAILING,h1);
-        //Create the horizontal group
-	layout.setHorizontalGroup(hGroup);
-        
-	//Create a parallel group for the vertical axis
-        ParallelGroup vGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        //Create a sequential group
-	SequentialGroup v1 = layout.createSequentialGroup();
-        //Add a container gap to the sequential group v1
-	v1.addContainerGap();
-        //Add a label to the sequential group v1
-	v1.addComponent(jLabel1);
-        v1.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED);
-        //Add scroll panel to the sequential group v1
-	v1.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE);
-	v1.addComponent(graph,GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE);
-        v1.addContainerGap();
-        //Add the group v1 to vGroup
-	vGroup.addGroup(v1);
-        //Create the vertical group
-	layout.setVerticalGroup(vGroup);
+ 
+       layout.setAutoCreateGaps(true);
+       layout.setAutoCreateContainerGaps(true);
+
+  
+       layout.setHorizontalGroup(
+          layout.createSequentialGroup()
+             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+             .addComponent(jLabel1)
+             .addComponent(jScrollPane1)
+             .addComponent(text))
+             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                  .addComponent(graph)
+                  .addComponent(button))
+       );
+       layout.setVerticalGroup(
+          layout.createSequentialGroup()
+          .addComponent(jLabel1)
+             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            	  .addComponent(jScrollPane1)
+                  .addComponent(graph))
+             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            		 .addComponent(text)
+            		 .addComponent(button))
+       );
         pack();
-        
+
     }
-    
-    
+
+
 }

@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.*;
 import java.awt.geom.*;
 import java.io.*;
 import java.util.*;
@@ -7,23 +8,21 @@ import java.util.*;
 public class DisplayPanel extends JPanel {
 	int xs;
 	int ys;
-
+	int SCREEN_WIDTH=500; //screen size for panel
+	int SCREEN_HEIGHT=600;
+	
 	public DisplayPanel() {
 		
 		setBackground(Color.white);
 		//setForeground(Color.blue);
-		//setPreferredSize( new Dimension(300,300));
+		setPreferredSize( new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
 	}
 
 	protected void paintComponent(Graphics g1) {
 		 super.paintComponent(g1);
 
 		  // Cast Graphics to Graphics2D
-		  Graphics2D g = (Graphics2D)g1;
-		  
-		  
-		  
-		  
+		  Graphics2D g = (Graphics2D) g1;
 /*
 		g.setColor(getBackground()); //colors the window
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -38,63 +37,111 @@ public class DisplayPanel extends JPanel {
 		
 		this.drawhub(g); // draw the tree
 		revalidate(); //update the component panel*/
-		  
 		  this.drawhub(g);
 	}
 
 	public void drawhub(Graphics2D g) {//actually draws the tree
 		
-		int SCREEN_WIDTH=400; //screen size for panel
-		int SCREEN_HEIGHT=400;
-		
 		//center and radius of hub
 		int cx = (int)SCREEN_WIDTH  / 2;
 		int cy = (int) SCREEN_HEIGHT / 2;
-		int cr = 30;
+		int cr = 50; //radius
 		
-		GradientPaint gradient =
-		    new GradientPaint(0, 0, Color.blue, 175, 175, Color.green,
-		                      true);
-		GradientPaint grad2 =
-		    new GradientPaint(0, 0, Color.red, 175, 175, Color.yellow,
-		                      true);
+		GradientPaint grad1 = new GradientPaint(0, 0, Color.cyan, 175, 175, Color.green, true);
+		GradientPaint grad2 = new GradientPaint(0, 0, Color.green, 175, 175, Color.cyan, true);
+		
+	 
 		Ellipse2D.Double circle = new Ellipse2D.Double(cx-cr,cy-cr,cr*2,cr*2);
-		//g.drawOval(cx-cr,cy-cr,cr*2,cr*2);
-		double rad ;
+		g.setColor(Color.red); //set color and fonts
+		Font MyFont = new Font("Serif",Font.ROMAN_BASELINE,25);
+		g.setFont(MyFont);
+		g.drawString("(^_^)   Layout   (^_^) ",100,50);
+		
+		double rad ; //radians
 		int x,x1,y,y2 ;
 		int degrees = 1;
-		//int[] xes={0,0,0,0,0};
-		//int[] yes={0,0,0,0,0};
 		
-		int idx = 0;
+		int idx = 5;
 		for (int i = 1 ; i < 4 ; i++){
 		rad = degrees * Math.PI / 180; 
-		x=(int)( (4*cr) * Math.cos(rad)+ cx);
-		y=(int)( (4*cr) * Math.sin(rad)+ cy);
-		//xes[idx]=x;
-		//yes[idx++]=y;
+		x=(int)( (idx*cr) * Math.cos(rad)+ cx);
+		y=(int)( (idx*cr) * Math.sin(rad)+ cy);
 		
 		degrees += 60;
 		rad = degrees * Math.PI / 180; 
-		x1=(int)( (4*cr) * Math.cos(rad)+ cx);
-		y2=(int)( (4*cr) * Math.sin(rad)+ cy);
-		//xes[idx]=x1;
-		//yes[idx++]=y2;
+		x1=(int)( (idx*cr) * Math.cos(rad)+ cx);
+		y2=(int)( (idx*cr) * Math.sin(rad)+ cy);
+		
+		degrees+=60;
+		int[] xPoints = { cx, x, x1 };
+		int[] yPoints = { cy, y, y2};
+		Polygon tri = new Polygon(xPoints, yPoints, 3);
+		g.setPaint(grad1);
+		g.fill(tri);
+		g.setColor(Color.black);
+		g.draw(tri);
+	}
+		
+		degrees = 61;
+		
+		for (int i = 1 ; i < 4 ; i++){
+		rad = degrees * Math.PI / 180; 
+		x=(int)( (idx*cr) * Math.cos(rad)+ cx);
+		y=(int)( (idx*cr) * Math.sin(rad)+ cy);
+		
+		degrees += 60;
+		rad = degrees * Math.PI / 180; 
+		x1=(int)( (idx*cr) * Math.cos(rad)+ cx);
+		y2=(int)( (idx*cr) * Math.sin(rad)+ cy);
+		
 		degrees+=60;
 		int[] xPoints = { cx, x, x1 };
 		int[] yPoints = { cy, y, y2};
 		Polygon tri = new Polygon(xPoints, yPoints, 3);
 		g.setPaint(grad2);
 		g.fill(tri);
+		g.setColor(Color.black);
+		
+		//g.draw(r);
 		g.draw(tri);
 	}
 		
-		//Polygon hex = new Polygon(xes,yes,5);
-		//g.draw(hex);
+		Rectangle r;
+		degrees = 15;
+		idx = 3;
+		for(int j = 0 ; j<2;j++){
+			for (int i = 0 ; i < 12 ; i++){
+				rad = degrees * Math.PI / 180; 
+				x=(int)( (idx*cr) * Math.cos(rad)+ cx);
+				y=(int)( (idx*cr) * Math.sin(rad)+ cy);
+				degrees += 30;
+				g.setColor(Color.black);
+				r = new Rectangle(x, y, 15, 15);
+				g.fill(r);
+			}
+			idx++;
+			degrees=15;
+		}
 		
-		g.setPaint(gradient);
+		Ellipse2D.Double c2;
+		degrees = 30;
+		idx = 2;
+		
+		for (int i = 0 ; i < 6 ; i++){
+			rad = degrees * Math.PI / 180; 
+			x=(int)( (idx*cr) * Math.cos(rad)+ cx);
+			y=(int)( (idx*cr) * Math.sin(rad)+ cy);
+			degrees += 60;
+			c2 = new Ellipse2D.Double(x,y,20,20);
+			g.setColor(Color.yellow);
+			g.fill(c2);
+			g.setColor(Color.black);
+			g.draw(c2);
+		}
+		g.setColor(Color.yellow);
 		g.fill(circle);
-		g.setStroke(new BasicStroke(5)); // 8-pixel wide pen
+		//g.setStroke(new BasicStroke(5)); // 8-pixel wide pen
+		g.setColor(Color.black);
 		g.draw(circle);
 		
 		
