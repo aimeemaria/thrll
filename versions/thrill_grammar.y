@@ -1002,7 +1002,7 @@ empty: { $$ = ""; } ;
 	public void generateThrillProgram(String definitions, String usercode){
 		String classStart = "public class ThrillProgram {\n";
 		String classEnd = "\n}";
-		String main = "public static void main(){\n";		
+		String main = "public static void main(String[] args){\n";		
 		usercode = usercode.substring(1);
 
 		try{
