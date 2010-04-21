@@ -944,8 +944,7 @@ empty: { $$ = ""; } ;
 		double d = Double.parseDouble(value);
 
 		if(attribute.equalsIgnoreCase("Admission") ||
-				attribute.equalsIgnoreCase("Cost") || 
-				attribute.equalsIgnoreCase("SpendingCapacity")){	
+				attribute.equalsIgnoreCase("Cost")){	
 			if(d < 0)
 				ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");
 			result = value;
@@ -958,6 +957,7 @@ empty: { $$ = ""; } ;
 			}
 			else if(attribute.equalsIgnoreCase("Capacity")  || 
 					attribute.equalsIgnoreCase("Employees") ||
+					attribute.equalsIgnoreCase("SpendingCapacity") ||
 					attribute.equalsIgnoreCase("Size")){
 				if(i < 0)
 					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");
@@ -1016,7 +1016,7 @@ empty: { $$ = ""; } ;
 
 	public String initializeDuration(String durationType, String durationName, String value) throws ThrillException{
 		String result = null;
-		if(!thrillObjects.containsKey(durationName)){
+		if(!checkHashtable(durationName)){
 			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", durationName);
 		}
 
