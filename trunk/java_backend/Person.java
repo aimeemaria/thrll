@@ -1,10 +1,14 @@
 import java.util.Random;
+import java.awt.geom.Point2D;
 public class Person {
 	private int energyLevel;
 	private int thrillLevel;
 	private double spendingCapacity;
+	private int location; // what land this person is in
 	private double x,y; //position
-	private int tick; //time
+	private int tick;
+
+	
 	
 	private void setattributes(int energy,int thrill, double spend){
 		energyLevel = energy;
@@ -19,9 +23,17 @@ public class Person {
 		setattributes(5,5,100);
 		x=0;
 		y=0;
-		tick = 600;
+		tick = 48;
+		location = 1; //person enters in Land 1
+	}
+	public void decrease_tick(int n){
+		tick -=n;
 	}
 	
+	public void set_position(double x, double y){
+		this.x=x;
+		this.y=y;
+	}
 	public int getEnergyLevel(){
 		return energyLevel;
 	}
@@ -50,21 +62,5 @@ public class Person {
 	public void setThrillLevel(int thrillLevel) {
 		this.thrillLevel = thrillLevel;
 	}
-	public int decide(){
-		//randomly select attribute store or restaurant
-		Random generator = new Random();
-		/*
-		int random = generator.nextInt(3);//generates 3 random integer {0,1,2}
-		int dist;
-		if (random == 0){//chose attraction
-			dist = 1;//get closest attraction
-			//if (canenter()){ enter and decrease energy} ;
-		}
-		else if(random == 1)//chose restaurant
-			dist =2;//get closest rest
-		else if(random == 2)//chose store
-			dist = 3;//get closest store
-			*/
-		return generator.nextInt(3);
-	}
+
 }

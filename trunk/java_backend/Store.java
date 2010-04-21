@@ -1,3 +1,5 @@
+import java.util.Random;
+import java.awt.geom.Point2D;
 /**Store.java
  * Team THRLL
  * This file represents a store in the theme park.
@@ -18,6 +20,7 @@ public class Store implements LandElement {
 	private int currentAttendance;  //the current number of people in the store
 	private double price;  //the average purchase price of the store
 	private Land land;
+	private Point2D p;
 	
 	public Store(){
 		//set default values
@@ -164,10 +167,30 @@ public class Store implements LandElement {
 	public void setLand(Land land)
 	{ 
 		this.land = land; 
+		//set location within land
+		Random r = new Random();
+		int radius = r.nextInt(3)+2;
+		int angle = r.nextInt(60) + 60*(land.getlocation()-1);
+		p.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
 	} 
-	  
+	
+	public double getcost(int hours, double salary){
+		return hours * employees * salary;
+	 }
 	public Land getLand()
 	{ 
 		return land; 
+	}
+
+	@Override
+	public double calculateRevenue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Point2D get_position() {
+		// TODO Auto-generated method stub
+		return null;
 	} 
 }

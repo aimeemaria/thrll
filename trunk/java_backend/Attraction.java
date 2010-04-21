@@ -1,3 +1,5 @@
+import java.awt.geom.Point2D;
+import java.util.Random;
 /**Attraction.java
  * 4/6/2010
  * This class represents an Attraction in the theme park.
@@ -19,7 +21,7 @@ public class Attraction implements LandElement {
 	private int energyLost; //Energy Lost during this attraction
 	private int timeNeeded; //The amount of time it takes to experience the attraction
 	private Land land; //The land object to which this attraction belongs to
-	
+	private Point2D p;
 	/**The Constructor
 	 * Constructs an attraction with default values
 	 */
@@ -75,11 +77,14 @@ public class Attraction implements LandElement {
 	 * @param park The park where the attraction is located.
 	 * @return The cost to operate this attraction for one day.
 	 */
-	public double calculateRevenue(Park park){
-		double revenue = -1 * park.getHours() * employees * park.getSalary();
+	public double calculateRevenue(){
+		double revenue = 0;
 		return revenue;
 	}
 	
+	public double getcost(int hours, double salary){
+		return hours * employees * salary;
+	 }
 	public String getAttractionName() {
 		return attractionName;
 	}
@@ -126,6 +131,9 @@ public class Attraction implements LandElement {
 	 */
 	public int getCapacity() {
 		return capacity;
+	}
+	public Point2D get_position(){
+		return p;
 	}
 
 	/**
@@ -180,6 +188,13 @@ public class Attraction implements LandElement {
 	 */
 	public void setLand(Land land){
 		this.land = land;
+		
+		//set location within land
+		Random r = new Random();
+		int radius = r.nextInt(3)+2;
+		int angle = r.nextInt(60) + 60*(land.getlocation()-1);
+		p=new Point2D.Double();
+		p.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
 	}	
 
 	/**

@@ -16,7 +16,7 @@ public class Park
 	public double salary;  	//the salary of park employees
 	
 	// internal list of land objects
-	private ArrayList<Land> LandObjs = null;
+	private ArrayList<Land> LandObjs = new ArrayList<Land>();
 	
 	/*	Constructor
 	 *	to set default values of the members
@@ -80,7 +80,26 @@ public class Park
 		// via landObjs arraylist. Each class should have a copy of its children
 		// objects
 		
-		return result;
+		//for each land
+		//get cost of operation (include employees)
+		double cost=0;
+		for(int i = 0 ; i < LandObjs.size();i++){
+			cost += LandObjs.get(i).getcost(hours,salary);//returns operation cost for all elements in the land
+		}
+		//assume the crowd enters as soon as park opens
+		
+		c.createpeople();
+		//ToDo:
+		//run simulation of decisions for each person and update revenue
+		Person p;
+		for(int i =0;i<c.getSize();i++){
+			p = c.people.get(i);
+			int decide;
+			//Person p will be simulated for the entire Duration
+			
+			
+		}
+		return result-cost;
 	}
 	
 	public int getHours()
