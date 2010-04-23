@@ -754,7 +754,7 @@ empty: { $$ = ""; } ;
 
 	public String generateAttribute(String variable, String function, String value) throws ThrillException{
 		String result = "";;
-		String key = scopeName + "." + variable;
+		String key = "Global." + variable;
 		value = validateAttributeValue(function, value);
 
 		String obj = thrillObjects.get(key);
