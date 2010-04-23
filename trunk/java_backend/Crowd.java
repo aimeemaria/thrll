@@ -19,7 +19,7 @@ public class Crowd {
 	//default values
 	public Crowd(){
 		people=new ArrayList<Person>();
-		setattributes(1000,5,5,100);
+		setattributes(1000,10,10,10);
 	}
 	/*
 	 * This might change a little if I think I want to include other distributions.

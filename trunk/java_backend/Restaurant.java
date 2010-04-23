@@ -67,6 +67,7 @@ public class Restaurant implements LandElement
 	 	if (canEnter(p))
  		{
 			CurrentAttendance++;
+			p.setEnergyLevel(p.getEnergyLevel() + EnergyIncrease);
 			sales += price;
 		}
 	 }

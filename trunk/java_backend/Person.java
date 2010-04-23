@@ -22,7 +22,7 @@ public class Person {
 		location = 1;
 	}
 	public Person(){
-		setattributes(5,5,100);
+		setattributes(10,10,10);
 		x=0;
 		y=0;
 		tick = 48;
@@ -79,4 +79,5 @@ public class Person {
 		return location;
 	}
 	
+		
 }
