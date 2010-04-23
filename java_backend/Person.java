@@ -18,6 +18,8 @@ public class Person {
 	
 	public Person(int energy, int thrill, int spend) {
 		setattributes(energy,thrill,spend);
+		tick = 48;
+		location = 1;
 	}
 	public Person(){
 		setattributes(5,5,100);
@@ -25,9 +27,6 @@ public class Person {
 		y=0;
 		tick = 48;
 		location = 1; //person enters in Land 1
-	}
-	public void decrease_tick(int n){
-		tick -=n;
 	}
 	
 	public void set_position(double x, double y){
@@ -62,5 +61,22 @@ public class Person {
 	public void setThrillLevel(int thrillLevel) {
 		this.thrillLevel = thrillLevel;
 	}
-
+	
+	public void decreaseTick(int dec){
+		tick -= dec;
+	}
+	
+	public int getTick(){
+		return tick;
+		
+	}
+	
+	public void leavePark(){
+		tick = 0;
+	}
+	
+	public int getLocation(){
+		return location;
+	}
+	
 }

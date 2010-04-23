@@ -65,5 +65,9 @@ public class Land {
 		}
 		return cost;
 	}
+	
+	public ArrayList<LandElement> getContents(){
+		return LandElemObjs;
+	}
 
 }
