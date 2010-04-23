@@ -59,7 +59,7 @@ public class DisplayPanel extends JPanel {
 		
 		double rad ; //radians
 		int x,x1,y,y2 ;
-		int degrees = 1;
+		int degrees = 0;
 		
 		int idx = 5;
 		for (int i = 1 ; i < 4 ; i++){
@@ -82,7 +82,7 @@ public class DisplayPanel extends JPanel {
 		g.draw(tri);
 	}
 		
-		degrees = 61;
+		degrees = 60;
 		
 		for (int i = 1 ; i < 4 ; i++){
 		rad = degrees * Math.PI / 180; 
@@ -105,7 +105,7 @@ public class DisplayPanel extends JPanel {
 		//g.draw(r);
 		g.draw(tri);
 	}
-		
+		/*
 		Rectangle r;
 		degrees = 15;
 		idx = 3;
@@ -122,30 +122,46 @@ public class DisplayPanel extends JPanel {
 			idx++;
 			degrees=15;
 		}
-		
+		*/
 		Ellipse2D.Double c2;
 		degrees = 30;
-		idx = 2;
-		
+		idx = 3;
+		String t = "Land ";
 		for (int i = 0 ; i < 6 ; i++){
 			rad = degrees * Math.PI / 180; 
 			x=(int)( (idx*cr) * Math.cos(rad)+ cx);
 			y=(int)( (idx*cr) * Math.sin(rad)+ cy);
 			degrees += 60;
-			c2 = new Ellipse2D.Double(x,y,20,20);
-			g.setColor(Color.yellow);
-			g.fill(c2);
+			//c2 = new Ellipse2D.Double(x,y,20,20);
+			
+			//g.setColor(Color.yellow);
+			//g.fill(c2);
 			g.setColor(Color.black);
-			g.draw(c2);
+			//g.draw(c2);
+			g.drawString(t+(i+1), x-40, y);
 		}
+		  
+		
+		// g.translate(0, 0);
 		g.setColor(Color.yellow);
 		g.fill(circle);
 		//g.setStroke(new BasicStroke(5)); // 8-pixel wide pen
 		g.setColor(Color.black);
 		g.draw(circle);
-		
-		
+		g.drawString("Hub",cx-25,cy+10);
 		/*
+		g.translate(cx, cy);
+		 for (int i=0; i<16; i++) {
+		      // Rotate the coordinate system around current
+		      // origin, which is at the center of the circle.
+		      g.rotate(Math.PI/8.0);
+		    
+		      g.setColor(Color.black);
+		      g.drawString("Land", 100, 100);
+		    }
+
+		
+		
 		int degrees = 54;
 		double rad ;
 		int x,x1,y,y2 ;
