@@ -24,7 +24,7 @@ public class Tester {
 		Crowd myCrowd = new Crowd();
 		myCrowd.setSize(1);
 		
-		Duration myDuration = new Duration();
+		Days myDuration = new Days(1);
 		
 		myPark.calculateRevenue(myCrowd, myDuration);
 
