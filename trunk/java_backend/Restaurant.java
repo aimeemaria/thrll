@@ -18,7 +18,8 @@ public class Restaurant implements LandElement
 	 private double price;
 	 private double sales;
 	 private Land land;
-	 private Point2D p;
+	 private Point2D.Double p;
+	 private int timeNeeded;
 	 /*	Constructor
 	  * To set default values to the members
 	  */
@@ -33,8 +34,12 @@ public class Restaurant implements LandElement
 		EnergyIncrease = 1;
 		CurrentAttendance = 0;
 		price = 10.00;
-		sales = 0.0;		
+		sales = 0.0;	
+		timeNeeded = 2;
+		p = new Point2D.Double();
 	 } 
+	 
+	 
 	 
 	 public double getcost(int hours, double salary){
 		return hours * employees * salary;
@@ -165,6 +170,27 @@ public class Restaurant implements LandElement
 	public Point2D get_position() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public char getType(){
+		return 'r';
+	}
+
+
+
+	/**
+	 * @return the timeNeeded
+	 */
+	public int getTimeNeeded() {
+		return timeNeeded;
+	}
+
+
+
+	/**
+	 * @param timeNeeded the timeNeeded to set
+	 */
+	public void setTimeNeeded(int timeNeeded) {
+		this.timeNeeded = timeNeeded;
 	}
 	  
 }		

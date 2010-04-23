@@ -20,5 +20,8 @@ public interface LandElement {
 	public void setLand(Land land);
 	public void enter(Person p);
 	public void exit(Person p);
+	public char getType();
+	public int getTimeNeeded();
+	public Land getLand();
 	
 }

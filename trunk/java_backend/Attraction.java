@@ -32,7 +32,7 @@ public class Attraction implements LandElement {
 		capacity = 1000;
 		currentAttendance = 0;
 		employees = 2;
-		timeNeeded = 600;
+		timeNeeded = 4;
 	}
 	/**Determines if a person can enter the attraction.  If they can, returns true
 	 * 
@@ -203,4 +203,8 @@ public class Attraction implements LandElement {
 	public Land getLand(){
 		return land;
 	}	
+	
+	public char getType(){
+		return 'a';
+	}
 }

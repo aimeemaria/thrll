@@ -72,9 +72,5 @@ public class Crowd {
 		this.thrillLevel = thrillLevel;
 	}
 	
-	public static void main(String args[]) {
-		Crowd c = new Crowd();
-		c.setattributes(100,5,14,14);
-		c.createpeople();
-	}
+
 }
