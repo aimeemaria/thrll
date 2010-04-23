@@ -353,21 +353,22 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAtt
 		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
-left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } } ;
-right_side: arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
+left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
+right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
+          | arithmetic_expression SEMICOLON { System.out.println("arithmetic expression " + $1); $$ = $1 + ";"; }
  	    | function_call { $$ = $1; }
 	    | calculate_revenue { $$ = $1; }
 	   ;
-arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = generateArithmeticExpression($1, " + ", $3); }
-			   | arithmetic_expression MINUS arithmetic_expression { $$ = generateArithmeticExpression($1, " - ", $3); }
-			   | arithmetic_expression MUL arithmetic_expression   { $$ = generateArithmeticExpression($1, " * ", $3); }
-			   | arithmetic_expression DIV arithmetic_expression   { $$ = generateArithmeticExpression($1, " / ", $3); }
-                     | OPEN arithmetic_expression CLOSE 			  { $$ = "(" + $2 + ")"; }
-                     | variable_name 						  { boolean exists = checkHashtable($1); 
-												    if(exists){ $$ = $1; } 
-												    else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); }
-												  }
-                     | constant 							  { $$ = $1; }
+arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = $1 + "+" + $3; }
+			   | arithmetic_expression MINUS arithmetic_expression { $$ = $1 + "-" + $3; }
+			   | arithmetic_expression MUL arithmetic_expression   { $$ = $1 + "*" + $3; }
+			   | arithmetic_expression DIV arithmetic_expression   { $$ = $1 + "/" + $3; }
+                     | OPEN arithmetic_expression CLOSE 			 { $$ = "(" + $2 + ")"; }
+                     | variable_name 						 { boolean exists = checkHashtable($1); 
+												   if(exists){ $$ = $1; } 
+												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); }
+												 }
+                     | constant 							 { $$ = $1; }
                      ;
 
 condition: If OPEN relational_expression CLOSE block 		    { $$ = "if(" + $3 + ")" + $5; }
