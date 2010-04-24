@@ -1,6 +1,6 @@
 Crowd MyCrowdOne
 Set Size 100;
-Set EnergyLevel 10;  
+Set EnergyLevel 10;
 
 Crowd MyCrowdTwo     
 Set Size 100;     
