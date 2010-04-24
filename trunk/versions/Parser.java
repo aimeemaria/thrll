@@ -1877,7 +1877,7 @@ case 131:
 break;
 case 132:
 //#line 367 "thrill_grammar.y"
-{ System.out.println("Variable " + val_peek(0).sval);
+{ 
 												   boolean exists = checkHashtable(val_peek(0).sval); 
 												   if(exists){ yyval.sval = checkSemanticValue(val_peek(0).sval); } 
 												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", val_peek(0).sval); }
