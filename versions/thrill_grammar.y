@@ -364,7 +364,7 @@ arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = 
 			   | arithmetic_expression MUL arithmetic_expression   { $$ = $1 + "*" + $3; }
 			   | arithmetic_expression DIV arithmetic_expression   { checkDivideByZero($1, $3); $$ = $1 + "/" + $3; }
                      | OPEN arithmetic_expression CLOSE 			 { $$ = "(" + $2 + ")"; }
-                     | variable_name 						 { System.out.println("Variable " + $1);
+                     | variable_name 						 { 
 												   boolean exists = checkHashtable($1); 
 												   if(exists){ $$ = checkSemanticValue($1); } 
 												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); }
