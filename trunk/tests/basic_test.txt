@@ -4,7 +4,7 @@ Set EnergyLevel 10;
 
 Crowd MyCrowdTwo     
 Set Size 100;     
-Set ThrillLevel 100;      
+Set ThrillLevel 10;      
 
 Park ThrillPark      
 Set Admission 100;     
@@ -12,7 +12,7 @@ Set Capacity  1000;
 Set Cost      10;          
 
 Land MyLand         
-Set Location 100;       
+Set Location 1.5;       
 
 Attraction GiantWheel In MyLand;                
 
@@ -32,5 +32,5 @@ Set SpendingCapacity 10;
 
 Start:
 {
-Set Cost 100 in GiantWheel;
+Set Cost 100 In GiantWheel;
 }
