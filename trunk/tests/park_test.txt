@@ -12,7 +12,7 @@ Set Capacity  1000;
 Set Cost      10;          
 
 Land ParkLand         
-Set Location 100;         
+Set Location 1;         
 
 Attraction GiantWheel In ParkLand;                
 
@@ -24,7 +24,7 @@ Crowd MyCrowdThree
 Set Size 100;     
 Set SpendingCapacity 10;      
 
-Crowd MyCrowdOne     
+Crowd MyCrowd     
 Set ThrillLevel 100;     
 Set SpendingCapacity 10;
 

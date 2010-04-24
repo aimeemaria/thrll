@@ -4,7 +4,7 @@ Set EnergyLevel 10;
 
 Crowd MyCrowdTwo     
 Set Size 100;     
-Set ThrillLevel 10;      
+Set ThrillLevel 100;      
 
 Park ThrillPark      
 Set Admission 100;     
@@ -18,13 +18,13 @@ Attraction GiantWheel In MyLand;
 
 Restaurant Hotel In MyLand;           
 
-Store KidsStuff In MyLand;                    
+Store KidsStuff In MyLand;
 
 Crowd MyCrowdThree     
 Set Size 100;     
 Set SpendingCapacity 10;
 Set ThrillLevel 10;
-Set EnergyLevel 10;
+
       
 Crowd MyCrowdFour     
 Set Size 100;     
