@@ -56,9 +56,6 @@ Park ParkOne
     Land BadLand
    	Set Location 3;
 
-    Land NotHappening
-	Set Location 3;
-
 Start:
 {   
 }

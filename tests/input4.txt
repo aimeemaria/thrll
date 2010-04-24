@@ -9,7 +9,8 @@ Park ParkOne
         Set Location 1;
 
 Start:
-{   
+{   Number a,b;
+
     If(a < b)
     {
 	a = b;

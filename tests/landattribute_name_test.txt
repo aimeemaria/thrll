@@ -12,11 +12,11 @@ Set Capacity  1000;
 Set Cost      10;          
 
 Land ParkLand         
-Set Location 100;         
+Set Location 100  
 
 Attraction GiantWheel In ParkLand;                
 
-Restaurant GiantWheel1 In ParkLand;           
+Restaurant GiantWheel In ParkLand;           
 
 Store KidsStuff In ParkLand;                    
 

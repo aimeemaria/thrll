@@ -12,7 +12,7 @@ Set Capacity  1000;
 Set Cost      10;          
 
 Land ParkLand         
-Set Location 100;         
+Set Location 1;         
 
 Attraction GiantWheel In ParkLand;                
 
@@ -21,10 +21,10 @@ Restaurant Hotel In ParkLand;
 Store KidsStuff In ParkLand;                    
 
 Crowd MyCrowdThree     
-Set Size 100;     
-Set SpendingCapacity 2.3;
+Set Size 100.8;     
+Set SpendingCapacity ;
 Set ThrillLevel 10;
-Set EnergyLevel 1;
+Set EnergyLevel 0;
       
 Crowd MyCrowdFour     
 Set Size 100;     
