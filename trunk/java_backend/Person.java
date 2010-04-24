@@ -73,6 +73,11 @@ public class Person {
 	
 	public void leavePark(){
 		tick = 0;
+		//*********************************************************
+		//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
+		//*********************************************************
+		System.out.println("Exited Park!");
+		//*********************************************************
 	}
 	
 	public int getLocation(){

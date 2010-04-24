@@ -83,6 +83,8 @@ public class Park
 			cost += LandObjs.get(i).getcost(hours,salary);//returns operation cost for all elements in the land
 		}
 
+		double admissionSales = c.getSize() * admission;
+		
 		//assume the crowd enters as soon as park opens
 		c.createpeople();
 		Person p;
@@ -105,6 +107,7 @@ public class Park
 				//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
 				//*********************************************************
 				System.out.println("Tick = " +p.getTick());
+				System.out.println("Energy = " +p.getEnergyLevel());
 				//*********************************************************
 
 				//Choose land to visit
@@ -125,7 +128,7 @@ public class Park
 					}
 					else{
 						int choice = generator.nextInt(attractions.size());
-						LandElement attraction = attractions.get(i);
+						LandElement attraction = attractions.get(generator.nextInt(attractions.size()));
 						//Account for time to move to location
 						if(LandObjs.indexOf(attraction.getLand()) == p.getLocation() + 1)
 							p.decreaseTick(1);
@@ -153,7 +156,7 @@ public class Park
 					}
 					else{
 						int choice = generator.nextInt(stores.size());
-						LandElement store = stores.get(i);
+						LandElement store = stores.get(generator.nextInt(stores.size()));
 						//Account for time to move to location
 						if(LandObjs.indexOf(store.getLand()) == p.getLocation() + 1)
 							p.decreaseTick(1);
@@ -185,7 +188,7 @@ public class Park
 					}
 					else{
 						int choice = generator.nextInt(restaurants.size());
-						LandElement restaurant = restaurants.get(i);
+						LandElement restaurant = restaurants.get(generator.nextInt(restaurants.size()));
 						//Account for time to move to location
 						if(LandObjs.indexOf(restaurant.getLand()) == p.getLocation() + 1)
 							p.decreaseTick(1);
