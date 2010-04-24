@@ -355,17 +355,18 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAtt
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
 left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
 right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
-          | arithmetic_expression SEMICOLON { System.out.println("arithmetic expression " + $1); $$ = $1 + ";"; }
+          | arithmetic_expression SEMICOLON { $$ = $1; }
  	    | function_call { $$ = $1; }
 	    | calculate_revenue { $$ = $1; }
 	   ;
 arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = $1 + "+" + $3; }
 			   | arithmetic_expression MINUS arithmetic_expression { $$ = $1 + "-" + $3; }
 			   | arithmetic_expression MUL arithmetic_expression   { $$ = $1 + "*" + $3; }
-			   | arithmetic_expression DIV arithmetic_expression   { $$ = $1 + "/" + $3; }
+			   | arithmetic_expression DIV arithmetic_expression   { checkDivideByZero($1, $3); $$ = $1 + "/" + $3; }
                      | OPEN arithmetic_expression CLOSE 			 { $$ = "(" + $2 + ")"; }
-                     | variable_name 						 { boolean exists = checkHashtable($1); 
-												   if(exists){ $$ = $1; } 
+                     | variable_name 						 { System.out.println("Variable " + $1);
+												   boolean exists = checkHashtable($1); 
+												   if(exists){ $$ = checkSemanticValue($1); } 
 												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); }
 												 }
                      | constant 							 { $$ = $1; }
@@ -563,7 +564,7 @@ empty: { $$ = ""; } ;
 		if(scopeName != null){
 			key = scopeName + "." + identifier;
 		}
-
+		
 		if(thrillObjects.containsKey(key)){
 			ThrillException.RedefinitionException("Error on line(" + yyline + "): ", identifier);
 		}
@@ -580,6 +581,9 @@ empty: { $$ = ""; } ;
 		else if(type == "Land"){
 			if(noOfLands > 6)
 				ThrillException.ExceededObjectLimitException("Error on line(" + yyline + "): ", "Land", MAX_LIMIT_LANDS);
+		}
+		else if(type == "double"){
+			type = "Number";
 		}
 
 		thrillObjects.put(key, type);
@@ -598,13 +602,6 @@ empty: { $$ = ""; } ;
 	public void addDeclVariables(String type, String allVariables) throws ThrillException{
 		String[] variables = allVariables.split(",");
 
-		if(type.equalsIgnoreCase("double")){
-			type = "Number";
-		}
-		else{
-			type = "String";
-		}
-
 		for(int i = 0; i < variables.length; ++i){
 			addToHashtable(variables[i].trim(), type);
 		}
@@ -618,13 +615,6 @@ empty: { $$ = ""; } ;
 	// Not a good way, but there is no choice
 	public void addInitVariables(String type, String allVariables) throws ThrillException{
 		String[] variables = null;
-
-		if(type.equalsIgnoreCase("double")){
-			type = "Number";
-		}
-		else{
-			type = "String";
-		}
 
 		if(allVariables.contains(",")){
 			String[] temp = allVariables.split(",");
@@ -834,37 +824,6 @@ empty: { $$ = ""; } ;
 		return result;
 	}
 
-	public String generateArithmeticExpression(String value1, String operator, String value2) throws ThrillException{
-		String result = "";
-
-		if(checkSemanticType(value1.charAt(0))){
-			result = checkSemanticValue(value1);
-		}
-		else{
-			result = value1;
-		}		
-
-		result += operator;
-
-		if(checkSemanticType(value2.charAt(0))){
-			result += checkSemanticValue(value2);
-		}
-		else{
-			result += value2;
-		}
-
-		return result;
-	}
-
-	public boolean checkSemanticType(char c){
-		if(Character.isDigit(c)){
-			return false;
-		}
-		else{
-			return true;
-		}
-	}
-
 	public String checkSemanticValue(String value) throws ThrillException{
 		String key = scopeName + "." + value;
 		String type = thrillObjects.get(key);
@@ -876,6 +835,10 @@ empty: { $$ = ""; } ;
 			ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Number", type);
 		}
 		return value;
+	}
+
+	public boolean checkDivideByZero(String value1, String value2){
+		return true;
 	}
 
 	public String generateFunction(String returnType, String functionName, String parameters, String block) throws ThrillException{
@@ -892,8 +855,9 @@ empty: { $$ = ""; } ;
 			checkReturn = true;
 		}
 
-		if(checkReturn && !checkReturnType(returnType, returnStmt)){
-			//ThrillException.
+		if(checkReturn && !checkReturnType(returnType, returnStmt) 
+		|| !returnType.equalsIgnoreCase("void") && returnStmt == null){
+			ThrillException.MissingReturnStatementException("Error on line(" + yyline +"): ", " invalid/missing return statement");
 		}
 
 		result = returnType + " " + functionName + "(" + parameters + ")\n" + block;

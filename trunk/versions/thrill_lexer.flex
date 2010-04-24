@@ -62,14 +62,16 @@ Years               { return Parser.Years;          }
 {ID}                { yyparser.yylval = new ParserVal(yytext()); return Parser.ID; }
 
 /* float */
-{NUMBER}            { yyparser.yylval = new ParserVal(Double.parseDouble(yytext()));
-                      return Parser.NUMBER;                                        }
+{NUMBER}            { 
+			    yyparser.yylval = new ParserVal(Double.parseDouble(yytext()));
+                      return Parser.NUMBER;                                        
+			  }
 
 \b                  { System.err.println("Sorry, backspace doesn't work"); }
 
 [ \t]+              { /* Do nothing */              }
 
-;                   { return Parser.SEMICOLON;      }
+[;]+                { return Parser.SEMICOLON;      }
 
 ,                   { return Parser.COMMA;          }
 

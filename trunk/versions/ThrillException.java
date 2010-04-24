@@ -36,6 +36,11 @@ public class ThrillException extends Exception {
 		throw e;
 	}
 	
+	public static void MissingReturnStatementException(String lineInfo, String message) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + message);
+		throw e;
+	}
+	
 	public String getMessage() {
 		return message;
 	}

@@ -662,7 +662,7 @@ final static String yyrule[] = {
 "empty :",
 };
 
-//#line 480 "thrill_grammar.y"
+//#line 481 "thrill_grammar.y"
 	private Yylex lexer;
 	public int yyline = 0;
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
@@ -749,7 +749,7 @@ final static String yyrule[] = {
 		if(scopeName != null){
 			key = scopeName + "." + identifier;
 		}
-
+		
 		if(thrillObjects.containsKey(key)){
 			ThrillException.RedefinitionException("Error on line(" + yyline + "): ", identifier);
 		}
@@ -766,6 +766,9 @@ final static String yyrule[] = {
 		else if(type == "Land"){
 			if(noOfLands > 6)
 				ThrillException.ExceededObjectLimitException("Error on line(" + yyline + "): ", "Land", MAX_LIMIT_LANDS);
+		}
+		else if(type == "double"){
+			type = "Number";
 		}
 
 		thrillObjects.put(key, type);
@@ -784,13 +787,6 @@ final static String yyrule[] = {
 	public void addDeclVariables(String type, String allVariables) throws ThrillException{
 		String[] variables = allVariables.split(",");
 
-		if(type.equalsIgnoreCase("double")){
-			type = "Number";
-		}
-		else{
-			type = "String";
-		}
-
 		for(int i = 0; i < variables.length; ++i){
 			addToHashtable(variables[i].trim(), type);
 		}
@@ -804,13 +800,6 @@ final static String yyrule[] = {
 	// Not a good way, but there is no choice
 	public void addInitVariables(String type, String allVariables) throws ThrillException{
 		String[] variables = null;
-
-		if(type.equalsIgnoreCase("double")){
-			type = "Number";
-		}
-		else{
-			type = "String";
-		}
 
 		if(allVariables.contains(",")){
 			String[] temp = allVariables.split(",");
@@ -1020,37 +1009,6 @@ final static String yyrule[] = {
 		return result;
 	}
 
-	public String generateArithmeticExpression(String value1, String operator, String value2) throws ThrillException{
-		String result = "";
-
-		if(checkSemanticType(value1.charAt(0))){
-			result = checkSemanticValue(value1);
-		}
-		else{
-			result = value1;
-		}		
-
-		result += operator;
-
-		if(checkSemanticType(value2.charAt(0))){
-			result += checkSemanticValue(value2);
-		}
-		else{
-			result += value2;
-		}
-
-		return result;
-	}
-
-	public boolean checkSemanticType(char c){
-		if(Character.isDigit(c)){
-			return false;
-		}
-		else{
-			return true;
-		}
-	}
-
 	public String checkSemanticValue(String value) throws ThrillException{
 		String key = scopeName + "." + value;
 		String type = thrillObjects.get(key);
@@ -1062,6 +1020,10 @@ final static String yyrule[] = {
 			ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", "Number", type);
 		}
 		return value;
+	}
+
+	public boolean checkDivideByZero(String value1, String value2){
+		return true;
 	}
 
 	public String generateFunction(String returnType, String functionName, String parameters, String block) throws ThrillException{
@@ -1078,8 +1040,9 @@ final static String yyrule[] = {
 			checkReturn = true;
 		}
 
-		if(checkReturn && !checkReturnType(returnType, returnStmt)){
-			//ThrillException.
+		if(checkReturn && !checkReturnType(returnType, returnStmt) 
+		|| !returnType.equalsIgnoreCase("void") && returnStmt == null){
+			ThrillException.MissingReturnStatementException("Error on line(" + yyline +"): ", " invalid/missing return statement");
 		}
 
 		result = returnType + " " + functionName + "(" + parameters + ")\n" + block;
@@ -1235,7 +1198,7 @@ final static String yyrule[] = {
 			System.out.println(ex.getMessage());			
 		}
 	}
-//#line 1225 "Parser.java"
+//#line 1188 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1882,7 +1845,7 @@ case 123:
 break;
 case 124:
 //#line 358 "thrill_grammar.y"
-{ System.out.println("arithmetic expression " + val_peek(1).sval); yyval.sval = val_peek(1).sval + ";"; }
+{ yyval.sval = val_peek(1).sval; }
 break;
 case 125:
 //#line 359 "thrill_grammar.y"
@@ -1894,19 +1857,19 @@ case 126:
 break;
 case 127:
 //#line 362 "thrill_grammar.y"
-{ yyval.sval = val_peek(2).sval + "+" + val_peek(0).sval; /* $$ = generateArithmeticExpression($1, " + ", $3); */ }
+{ yyval.sval = val_peek(2).sval + "+" + val_peek(0).sval; }
 break;
 case 128:
 //#line 363 "thrill_grammar.y"
-{ yyval.sval = val_peek(2).sval + "-" + val_peek(0).sval; /* $$ = generateArithmeticExpression($1, " - ", $3); */ }
+{ yyval.sval = val_peek(2).sval + "-" + val_peek(0).sval; }
 break;
 case 129:
 //#line 364 "thrill_grammar.y"
-{ yyval.sval = val_peek(2).sval + "*" + val_peek(0).sval; /* $$ = generateArithmeticExpression($1, " * ", $3); */ }
+{ yyval.sval = val_peek(2).sval + "*" + val_peek(0).sval; }
 break;
 case 130:
 //#line 365 "thrill_grammar.y"
-{ yyval.sval = val_peek(2).sval + "/" + val_peek(0).sval; /* $$ = generateArithmeticExpression($1, " / ", $3); */ }
+{ checkDivideByZero(val_peek(2).sval, val_peek(0).sval); yyval.sval = val_peek(2).sval + "/" + val_peek(0).sval; }
 break;
 case 131:
 //#line 366 "thrill_grammar.y"
@@ -1914,236 +1877,237 @@ case 131:
 break;
 case 132:
 //#line 367 "thrill_grammar.y"
-{ boolean exists = checkHashtable(val_peek(0).sval); 
-												   if(exists){ yyval.sval = val_peek(0).sval; } 
+{ System.out.println("Variable " + val_peek(0).sval);
+												   boolean exists = checkHashtable(val_peek(0).sval); 
+												   if(exists){ yyval.sval = checkSemanticValue(val_peek(0).sval); } 
 												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", val_peek(0).sval); }
 												 }
 break;
 case 133:
-//#line 371 "thrill_grammar.y"
+//#line 372 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 134:
-//#line 374 "thrill_grammar.y"
+//#line 375 "thrill_grammar.y"
 { yyval.sval = "if(" + val_peek(2).sval + ")" + val_peek(0).sval; }
 break;
 case 135:
-//#line 375 "thrill_grammar.y"
+//#line 376 "thrill_grammar.y"
 { yyval.sval = "if(" + val_peek(4).sval + ")" + val_peek(2).sval + "\nelse" + val_peek(0).sval; }
 break;
 case 136:
-//#line 377 "thrill_grammar.y"
+//#line 378 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " <= " + val_peek(0).sval;}
 break;
 case 137:
-//#line 378 "thrill_grammar.y"
+//#line 379 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " >= " + val_peek(0).sval;}
 break;
 case 138:
-//#line 379 "thrill_grammar.y"
+//#line 380 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " != " + val_peek(0).sval;}
 break;
 case 139:
-//#line 380 "thrill_grammar.y"
+//#line 381 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " < " + val_peek(0).sval;}
 break;
 case 140:
-//#line 381 "thrill_grammar.y"
+//#line 382 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " > " + val_peek(0).sval;}
 break;
 case 141:
-//#line 384 "thrill_grammar.y"
+//#line 385 "thrill_grammar.y"
 { addDeclVariables(val_peek(2).sval, val_peek(1).sval); yyval.sval = val_peek(2).sval + " " + val_peek(1).sval + ";"; }
 break;
 case 142:
-//#line 385 "thrill_grammar.y"
+//#line 386 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + ", " + val_peek(0).sval; }
 break;
 case 143:
-//#line 386 "thrill_grammar.y"
+//#line 387 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 144:
-//#line 390 "thrill_grammar.y"
+//#line 391 "thrill_grammar.y"
 { yyval.sval = val_peek(3).sval + "(" + val_peek(1).sval + ");" ; }
 break;
 case 145:
-//#line 393 "thrill_grammar.y"
+//#line 394 "thrill_grammar.y"
 { yyval.sval = yyval.sval + "," + val_peek(0).sval; }
 break;
 case 146:
-//#line 394 "thrill_grammar.y"
+//#line 395 "thrill_grammar.y"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 147:
-//#line 395 "thrill_grammar.y"
+//#line 396 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
 case 148:
-//#line 399 "thrill_grammar.y"
+//#line 400 "thrill_grammar.y"
 { addInitVariables(val_peek(2).sval, val_peek(1).sval); yyval.sval = val_peek(2).sval + " " + val_peek(1).sval + ";"; }
 break;
 case 149:
-//#line 403 "thrill_grammar.y"
+//#line 404 "thrill_grammar.y"
 { yyval.sval = val_peek(4).sval + ", " + val_peek(2).sval + " = " + val_peek(0).sval; }
 break;
 case 150:
-//#line 405 "thrill_grammar.y"
+//#line 406 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + " = " + val_peek(0).sval; }
 break;
 case 151:
-//#line 408 "thrill_grammar.y"
+//#line 409 "thrill_grammar.y"
 { addToHashtable(val_peek(3).sval, val_peek(4).sval); yyval.sval = initializeDuration(val_peek(4).sval, val_peek(3).sval, new Double(val_peek(1).dval).toString() ); }
 break;
 case 152:
-//#line 411 "thrill_grammar.y"
+//#line 412 "thrill_grammar.y"
 {yyval.sval = "do" + val_peek(5).sval + "while (" + val_peek(2).sval + ");" ; }
 break;
 case 153:
-//#line 414 "thrill_grammar.y"
+//#line 415 "thrill_grammar.y"
 { yyval.sval = "return " + val_peek(1).sval + ";"; }
 break;
 case 154:
-//#line 415 "thrill_grammar.y"
+//#line 416 "thrill_grammar.y"
 { yyval.sval = "return ;"; }
 break;
 case 155:
-//#line 418 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 156:
 //#line 419 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 157:
+case 156:
 //#line 420 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 157:
+//#line 421 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 158:
-//#line 424 "thrill_grammar.y"
+//#line 425 "thrill_grammar.y"
 {yyval.sval = generateRevenue(val_peek(3).sval, val_peek(1).sval) ; }
 break;
 case 159:
-//#line 427 "thrill_grammar.y"
+//#line 428 "thrill_grammar.y"
 { yyval.sval = "System.out.println(" + val_peek(1).sval + ");" ; }
 break;
 case 160:
-//#line 429 "thrill_grammar.y"
+//#line 430 "thrill_grammar.y"
 {yyval.sval = generateSimulate(val_peek(1).sval); }
 break;
 case 161:
-//#line 432 "thrill_grammar.y"
+//#line 433 "thrill_grammar.y"
 { yyval.sval = val_peek(2).sval + "+" + val_peek(0).sval; }
 break;
 case 162:
-//#line 434 "thrill_grammar.y"
+//#line 435 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 163:
-//#line 437 "thrill_grammar.y"
+//#line 438 "thrill_grammar.y"
 { yyval.sval = "\"" + val_peek(0).sval + "\""; }
 break;
 case 164:
-//#line 438 "thrill_grammar.y"
+//#line 439 "thrill_grammar.y"
 { boolean exists = checkHashtable(val_peek(0).sval); if(exists){ yyval.sval = val_peek(0).sval; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", val_peek(0).sval); } }
 break;
 case 165:
-//#line 441 "thrill_grammar.y"
+//#line 442 "thrill_grammar.y"
 { yyval.sval = "Crowd"; }
 break;
 case 166:
-//#line 442 "thrill_grammar.y"
+//#line 443 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 167:
-//#line 445 "thrill_grammar.y"
+//#line 446 "thrill_grammar.y"
 { yyval.sval = "double"; }
 break;
 case 168:
-//#line 446 "thrill_grammar.y"
+//#line 447 "thrill_grammar.y"
 { yyval.sval = "String"; }
 break;
 case 169:
-//#line 449 "thrill_grammar.y"
+//#line 450 "thrill_grammar.y"
 { yyval.sval = "Days"; }
 break;
 case 170:
-//#line 450 "thrill_grammar.y"
+//#line 451 "thrill_grammar.y"
 { yyval.sval = "Weeks"; }
 break;
 case 171:
-//#line 451 "thrill_grammar.y"
+//#line 452 "thrill_grammar.y"
 { yyval.sval = "Months"; }
 break;
 case 172:
-//#line 452 "thrill_grammar.y"
+//#line 453 "thrill_grammar.y"
 { yyval.sval = "Years"; }
 break;
 case 173:
-//#line 455 "thrill_grammar.y"
+//#line 456 "thrill_grammar.y"
 { yyval.sval = new Double(val_peek(0).dval).toString(); }
 break;
 case 174:
-//#line 456 "thrill_grammar.y"
+//#line 457 "thrill_grammar.y"
 { yyval.sval = "\"" + val_peek(1).sval + "\""; }
 break;
 case 175:
-//#line 459 "thrill_grammar.y"
+//#line 460 "thrill_grammar.y"
 { yyval.sval = val_peek(1).sval + " " + val_peek(0).sval; }
 break;
 case 176:
-//#line 460 "thrill_grammar.y"
+//#line 461 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 177:
-//#line 463 "thrill_grammar.y"
+//#line 464 "thrill_grammar.y"
 { yyval.sval = new Double(val_peek(0).dval).toString(); }
 break;
 case 178:
-//#line 464 "thrill_grammar.y"
+//#line 465 "thrill_grammar.y"
 { boolean exists = checkHashtable(val_peek(0).sval); if(exists){ yyval.sval = val_peek(0).sval; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", val_peek(0).sval); } }
 break;
 case 179:
-//#line 467 "thrill_grammar.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 180:
 //#line 468 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 181:
+case 180:
 //#line 469 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 182:
+case 181:
 //#line 470 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 183:
+case 182:
 //#line 471 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 184:
+case 183:
 //#line 472 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 185:
+case 184:
 //#line 473 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 186:
+case 185:
 //#line 474 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 187:
+case 186:
 //#line 475 "thrill_grammar.y"
 { yyval.sval = val_peek(0).sval; }
 break;
+case 187:
+//#line 476 "thrill_grammar.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
 case 188:
-//#line 477 "thrill_grammar.y"
+//#line 478 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
-//#line 2127 "Parser.java"
+//#line 2091 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
