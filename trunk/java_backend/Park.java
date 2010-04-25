@@ -74,7 +74,7 @@ public class Park
 
 	public double calculateRevenue(Crowd c, Duration d)
 	{
-		double result = 0;
+		double sales = 0;
 
 		//for each land
 		//get cost of operation (include employees)
@@ -84,138 +84,148 @@ public class Park
 		}
 
 		double admissionSales = c.getSize() * admission;
-		
+
 		//assume the crowd enters as soon as park opens
 		c.createpeople();
 		Person p;
 		Random generator = new Random();  //Random Number Generator
-		for(int i =0;i<c.getSize();i++){
-			p = c.people.get(i);
-			//*********************************************************
-			//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-			//*********************************************************
-			System.out.println("Energy = " +p.getEnergyLevel());
-			System.out.println("Thrill = " +p.getThrillLevel());
-			System.out.println("Spending = " +p.getSpendingCapacity());
-			//*********************************************************
-			int num_Lands = LandObjs.size();
-			int decide;
-			//Person p will be simulated for the entire Duration
-			while (p.getTick()>0){
-
-				//*********************************************************
-				//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-				//*********************************************************
-				System.out.println("Tick = " +p.getTick());
-				System.out.println("Energy = " +p.getEnergyLevel());
-				//*********************************************************
-
-				//Choose land to visit
-				int land_choice = generator.nextInt(num_Lands);
-				//Choose Attraction, Store, or Restaurant
-				int type_choice = generator.nextInt(3);
-
-				if (type_choice == 0) {  //choose attraction
-					
+		for(int j = 48; j >0; j--){
+			System.out.println("Master Tick = " +j);
+			for(int i =0;i<c.getSize();i++){
+				p = c.people.get(i);
+				if (p.getTick() == j){
 					//*********************************************************
 					//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
 					//*********************************************************
-					System.out.println("Wants to ride a ride.");
+					System.out.println("Person " +i);
+					System.out.println("Energy = " +p.getEnergyLevel());
+					System.out.println("Thrill = " +p.getThrillLevel());
+					System.out.println("Spending = " +p.getSpendingCapacity());
 					//*********************************************************
-					ArrayList<LandElement> attractions = getPossibleChoices(land_choice, 'a');
-					if(attractions.size() == 0){
-						p.leavePark();
-					}
-					else{
-						int choice = generator.nextInt(attractions.size());
-						LandElement attraction = attractions.get(generator.nextInt(attractions.size()));
-						//Account for time to move to location
-						if(LandObjs.indexOf(attraction.getLand()) == p.getLocation() + 1)
-							p.decreaseTick(1);
-						else
-							p.decreaseTick(2);
+					int num_Lands = LandObjs.size();
 
-						if(attraction.canEnter(p)){
-							attraction.enter(p);
-							System.out.println("Entered Attraction");
-							p.decreaseTick(attraction.getTimeNeeded());
-							attraction.exit(p);
-						}
-					}
-				}
 
-				else if (type_choice ==1 ){ //choose store
 					//*********************************************************
 					//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
 					//*********************************************************
-					System.out.println("Wants to go shopping.");
+					System.out.println("Tick = " +p.getTick());
+					System.out.println("Energy = " +p.getEnergyLevel());
 					//*********************************************************
-					ArrayList<LandElement> stores = getPossibleChoices(land_choice, 's');
-					if(stores.size()==0){
+
+					//Choose land to visit
+					int land_choice = generator.nextInt(num_Lands);
+					//Choose Attraction, Store, or Restaurant
+					int type_choice = generator.nextInt(3);
+
+					if (type_choice == 0) {  //choose attraction
+
+						//*********************************************************
+						//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
+						//*********************************************************
+						System.out.println("Wants to ride a ride.");
+						//*********************************************************
+						ArrayList<LandElement> attractions = getPossibleChoices(land_choice, 'a');
+						if(attractions.size() == 0){
+							p.leavePark();
+						}
+						else{
+							int choice = generator.nextInt(attractions.size());
+							LandElement attraction = attractions.get(choice);
+							//Account for time to move to location
+							if(LandObjs.indexOf(attraction.getLand()) == p.getLocation() + 1)
+								p.decreaseTick(1);
+							else
+								p.decreaseTick(2);
+
+							if(attraction.canEnter(p)){
+								attraction.enter(p);
+								System.out.println("Entered Attraction");
+								p.decreaseTick(attraction.getTimeNeeded());
+								attraction.exit(p);
+							}
+						}
+					}
+
+					else if (type_choice ==1 ){ //choose store
+						//*********************************************************
+						//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
+						//*********************************************************
+						System.out.println("Wants to go shopping.");
+						//*********************************************************
+						ArrayList<LandElement> stores = getPossibleChoices(land_choice, 's');
+						if(stores.size()==0){
+							p.leavePark();
+						}
+						else{
+							int choice = generator.nextInt(stores.size());
+							LandElement store = stores.get(choice);
+							//Account for time to move to location
+							if(LandObjs.indexOf(store.getLand()) == p.getLocation() + 1)
+								p.decreaseTick(1);
+							else
+								p.decreaseTick(2);
+
+							if(store.canEnter(p)){
+								store.enter(p);
+								//*********************************************************
+								//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
+								//*********************************************************
+								System.out.println("Entered Store!");
+								//*********************************************************
+								p.decreaseTick(store.getTimeNeeded());
+								store.exit(p);
+							}
+						}	
+
+					}
+					else { //choose restaurant
+						//*********************************************************
+						//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
+						//*********************************************************
+						System.out.println("Wants to eat.");
+						//*********************************************************
+						ArrayList<LandElement> restaurants = getPossibleChoices(land_choice, 'r');
+						if(restaurants.size()==0){
+							p.leavePark();
+						}
+						else{
+							int choice = generator.nextInt(restaurants.size());
+							LandElement restaurant = restaurants.get(choice);
+							//Account for time to move to location
+							if(LandObjs.indexOf(restaurant.getLand()) == p.getLocation() + 1)
+								p.decreaseTick(1);
+							else
+								p.decreaseTick(2);
+
+							if(restaurant.canEnter(p)){
+								restaurant.enter(p);
+								//*********************************************************
+								//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
+								//*********************************************************
+								System.out.println("Entered Restaurant!");
+								//*********************************************************
+								p.decreaseTick(restaurant.getTimeNeeded());
+								restaurant.exit(p);
+							}
+						}	
+
+					}
+					if (p.getEnergyLevel() <= 1){
 						p.leavePark();
 					}
-					else{
-						int choice = generator.nextInt(stores.size());
-						LandElement store = stores.get(generator.nextInt(stores.size()));
-						//Account for time to move to location
-						if(LandObjs.indexOf(store.getLand()) == p.getLocation() + 1)
-							p.decreaseTick(1);
-						else
-							p.decreaseTick(2);
-
-						if(store.canEnter(p)){
-							store.enter(p);
-							//*********************************************************
-							//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-							//*********************************************************
-							System.out.println("Entered Store!");
-							//*********************************************************
-							p.decreaseTick(store.getTimeNeeded());
-							store.exit(p);
-						}
-					}	
-
-				}
-				else { //choose restaurant
-					//*********************************************************
-					//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-					//*********************************************************
-					System.out.println("Wants to eat.");
-					//*********************************************************
-					ArrayList<LandElement> restaurants = getPossibleChoices(land_choice, 'r');
-					if(restaurants.size()==0){
-						p.leavePark();
-					}
-					else{
-						int choice = generator.nextInt(restaurants.size());
-						LandElement restaurant = restaurants.get(generator.nextInt(restaurants.size()));
-						//Account for time to move to location
-						if(LandObjs.indexOf(restaurant.getLand()) == p.getLocation() + 1)
-							p.decreaseTick(1);
-						else
-							p.decreaseTick(2);
-
-						if(restaurant.canEnter(p)){
-							restaurant.enter(p);
-							//*********************************************************
-							//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-							//*********************************************************
-							System.out.println("Entered Restaurant!");
-							//*********************************************************
-							p.decreaseTick(restaurant.getTimeNeeded());
-							restaurant.exit(p);
-						}
-					}	
-				}
-
-				if (p.getEnergyLevel() <= 1){
-					p.leavePark();
 				}
 			}
-			//ADD Get Revenue for each store and restaurant	
 
 		}
-		return result-cost;
+		//Get Sales figures for all stores and restaurants
+		for(int i = 0; i < LandObjs.size(); i++){
+			ArrayList<LandElement> land_contents = LandObjs.get(i).getContents();
+			for(int j = 0; j < land_contents.size(); j++){
+				sales += land_contents.get(j).calculateRevenue();
+			}
+		}
+		double park_net_revenue = sales - cost;
+		return park_net_revenue;
 	}
 	private ArrayList<LandElement> getAllType(Land l, char type){
 		ArrayList<LandElement> land_contents = l.getContents();
