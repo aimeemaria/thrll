@@ -6,6 +6,7 @@ public class Tester {
 	 */
 	public static void main(String[] args) {
 		Park myPark = new Park();
+		
 		Land Main_Street = new Land();
 		Land Adventureland = new Land();
 		
@@ -33,13 +34,16 @@ public class Tester {
 		Main_Street.add(Gibson_Girl);
 		
 		Crowd myCrowd = new Crowd();
-		myCrowd.setSize(1000);
+		myCrowd.setSize(1);
 		
-		Duration myDuration = new Duration();
-		
-		myPark.calculateRevenue(myCrowd, myDuration);
+		Days myDuration = new Days(1);
+			
+		double revenue = myPark.calculateRevenue(myCrowd, myDuration);
 		
 		System.out.println("Mercantile Sales = " +Adventureland_Mercantile.getSales());
+		System.out.println("Emporium Sales = " +Emporium.getSales());
+		System.out.println("Gibson Girl Sales = " +Gibson_Girl.calculateRevenue());
+		System.out.println("Park Revenue = " +revenue);
 	}
 
 }
