@@ -49,7 +49,7 @@ public class Land {
 	// Create the Land Elements in Land
 	public void add(LandElement t)
 	{
-		if(LandElemObjs.size() < 6){
+		if(LandElemObjs.size() < 9){
 			t.setLand(this);
 			LandElemObjs.add(t);
 		}

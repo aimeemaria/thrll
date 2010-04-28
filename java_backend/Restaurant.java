@@ -20,6 +20,7 @@ public class Restaurant implements LandElement
 	 private Land land;
 	 private Point2D.Double p;
 	 private int timeNeeded;
+	 private Random generator;
 	 /*	Constructor
 	  * To set default values to the members
 	  */
@@ -37,6 +38,7 @@ public class Restaurant implements LandElement
 		sales = 0.0;	
 		timeNeeded = 2;
 		p = new Point2D.Double();
+		generator = new Random();
 	 } 
 	 
 	 
@@ -52,6 +54,8 @@ public class Restaurant implements LandElement
 	  */
 	 public boolean canEnter(Person p) 
 	 {
+		 if(CurrentAttendance > capacity)
+			 System.out.println("Full!");
 	 	 if (p.getSpendingCapacity() >= this.SpendLevel && CurrentAttendance < capacity)
 	 		 return true;
 	 	 else
@@ -67,8 +71,12 @@ public class Restaurant implements LandElement
 	 	if (canEnter(p))
  		{
 			CurrentAttendance++;
-			p.setEnergyLevel(p.getEnergyLevel() + EnergyIncrease);
-			sales += price;
+			//Roll die to see if they purchase food
+			int choice = generator.nextInt(2);
+			if (choice == 0){
+				p.setEnergyLevel(p.getEnergyLevel() + EnergyIncrease);
+				sales += price;
+			}
 		}
 	 }
 	 

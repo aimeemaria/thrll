@@ -7,19 +7,21 @@ public class Person {
 	private int location; // what land this person is in
 	private double x,y; //position
 	private int tick;
+	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in
 
-	
-	
+
+
 	private void setattributes(int energy,int thrill, double spend){
 		energyLevel = energy;
 		thrillLevel = thrill;
 		spendingCapacity = spend;
 	}
-	
+
 	public Person(int energy, int thrill, int spend) {
 		setattributes(energy,thrill,spend);
 		tick = 48;
 		location = 1;
+		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
 	}
 	public Person(){
 		setattributes(10,10,10);
@@ -27,8 +29,9 @@ public class Person {
 		y=0;
 		tick = 48;
 		location = 1; //person enters in Land 1
+		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
 	}
-	
+
 	public void set_position(double x, double y){
 		this.x=x;
 		this.y=y;
@@ -36,15 +39,15 @@ public class Person {
 	public int getEnergyLevel(){
 		return energyLevel;
 	}
-	
+
 	public int getThrillLevel(){
 		return thrillLevel;
 	}
-	
+
 	public double getSpendingCapacity(){
 		return spendingCapacity;
 	}
-	
+
 	public double[] getposition(){
 		double pos[]={x,y};
 		return pos;
@@ -61,28 +64,34 @@ public class Person {
 	public void setThrillLevel(int thrillLevel) {
 		this.thrillLevel = thrillLevel;
 	}
-	
+
 	public void decreaseTick(int dec){
 		tick -= dec;
 	}
-	
+
 	public int getTick(){
 		return tick;
-		
+
 	}
-	
+
 	public void leavePark(){
 		tick = 0;
-		//*********************************************************
-		//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-		//*********************************************************
-		System.out.println("Exited Park!");
-		//*********************************************************
 	}
-	
+
 	public int getLocation(){
 		return location;
 	}
-	
-		
+
+	public void setLocation(int land){
+		location = land;
+	}
+
+	public void setSpecificLocation(LandElement location){
+		whereAmI = location;
+	}
+
+	public LandElement getSpecificLocation(){
+		return whereAmI;
+	}
+
 }
