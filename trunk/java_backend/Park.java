@@ -90,27 +90,16 @@ public class Park
 		Person p;
 		Random generator = new Random();  //Random Number Generator
 		for(int j = 48; j >0; j--){
-			System.out.println("Master Tick = " +j);
 			for(int i =0;i<c.getSize();i++){
 				p = c.people.get(i);
 				if (p.getTick() == j){
-					//*********************************************************
-					//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-					//*********************************************************
-					System.out.println("Person " +i);
-					System.out.println("Energy = " +p.getEnergyLevel());
-					System.out.println("Thrill = " +p.getThrillLevel());
-					System.out.println("Spending = " +p.getSpendingCapacity());
-					//*********************************************************
+
+					//After First Tick
+					//Exit Current Location
+					if (j < 48)
+						p.getSpecificLocation().exit(p);
+
 					int num_Lands = LandObjs.size();
-
-
-					//*********************************************************
-					//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-					//*********************************************************
-					System.out.println("Tick = " +p.getTick());
-					System.out.println("Energy = " +p.getEnergyLevel());
-					//*********************************************************
 
 					//Choose land to visit
 					int land_choice = generator.nextInt(num_Lands);
@@ -119,11 +108,6 @@ public class Park
 
 					if (type_choice == 0) {  //choose attraction
 
-						//*********************************************************
-						//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-						//*********************************************************
-						System.out.println("Wants to ride a ride.");
-						//*********************************************************
 						ArrayList<LandElement> attractions = getPossibleChoices(land_choice, 'a');
 						if(attractions.size() == 0){
 							p.leavePark();
@@ -132,26 +116,22 @@ public class Park
 							int choice = generator.nextInt(attractions.size());
 							LandElement attraction = attractions.get(choice);
 							//Account for time to move to location
-							if(LandObjs.indexOf(attraction.getLand()) == p.getLocation() + 1)
+							if(LandObjs.indexOf(attraction.getLand()) + 1 == p.getLocation())
 								p.decreaseTick(1);
 							else
 								p.decreaseTick(2);
 
+							p.setLocation(LandObjs.indexOf(attraction.getLand()) + 1);
+
 							if(attraction.canEnter(p)){
 								attraction.enter(p);
-								System.out.println("Entered Attraction");
 								p.decreaseTick(attraction.getTimeNeeded());
-								attraction.exit(p);
 							}
+							p.setSpecificLocation(attraction);
 						}
 					}
 
 					else if (type_choice ==1 ){ //choose store
-						//*********************************************************
-						//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-						//*********************************************************
-						System.out.println("Wants to go shopping.");
-						//*********************************************************
 						ArrayList<LandElement> stores = getPossibleChoices(land_choice, 's');
 						if(stores.size()==0){
 							p.leavePark();
@@ -160,30 +140,22 @@ public class Park
 							int choice = generator.nextInt(stores.size());
 							LandElement store = stores.get(choice);
 							//Account for time to move to location
-							if(LandObjs.indexOf(store.getLand()) == p.getLocation() + 1)
+							if(LandObjs.indexOf(store.getLand())+ 1 == p.getLocation())
 								p.decreaseTick(1);
 							else
 								p.decreaseTick(2);
 
+							p.setLocation(LandObjs.indexOf(store.getLand()) + 1);
+
 							if(store.canEnter(p)){
 								store.enter(p);
-								//*********************************************************
-								//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-								//*********************************************************
-								System.out.println("Entered Store!");
-								//*********************************************************
 								p.decreaseTick(store.getTimeNeeded());
-								store.exit(p);
 							}
+							p.setSpecificLocation(store);
 						}	
 
 					}
 					else { //choose restaurant
-						//*********************************************************
-						//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-						//*********************************************************
-						System.out.println("Wants to eat.");
-						//*********************************************************
 						ArrayList<LandElement> restaurants = getPossibleChoices(land_choice, 'r');
 						if(restaurants.size()==0){
 							p.leavePark();
@@ -192,21 +164,18 @@ public class Park
 							int choice = generator.nextInt(restaurants.size());
 							LandElement restaurant = restaurants.get(choice);
 							//Account for time to move to location
-							if(LandObjs.indexOf(restaurant.getLand()) == p.getLocation() + 1)
+							if(LandObjs.indexOf(restaurant.getLand()) + 1 == p.getLocation())
 								p.decreaseTick(1);
 							else
 								p.decreaseTick(2);
 
+							p.setLocation(LandObjs.indexOf(restaurant.getLand()) + 1);
+
 							if(restaurant.canEnter(p)){
 								restaurant.enter(p);
-								//*********************************************************
-								//TESTING CODE.  REMOVE ALL CODE BETWEEN HERE AFTER TESTING
-								//*********************************************************
-								System.out.println("Entered Restaurant!");
-								//*********************************************************
 								p.decreaseTick(restaurant.getTimeNeeded());
-								restaurant.exit(p);
 							}
+							p.setSpecificLocation(restaurant);
 						}	
 
 					}
@@ -225,6 +194,8 @@ public class Park
 			}
 		}
 		double park_net_revenue = sales - cost;
+
+		park_net_revenue = d.getDays() * park_net_revenue;
 		return park_net_revenue;
 	}
 	private ArrayList<LandElement> getAllType(Land l, char type){
