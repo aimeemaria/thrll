@@ -2,7 +2,7 @@
 # byacc/j from http://troi.lincom-asg.com/~rjamison/byacc/
 
 JFLEX  = jflex 
-BYACCJ = yacc -Jthrows=ThrillException -Jnorun -d -v
+BYACCJ = yacc.linux -Jthrows=ThrillException -Jnorun -d -v
 JAVAC  = javac
 
 # targets:
@@ -15,7 +15,7 @@ run: Parser.class
 build: clean Parser.class
 
 clean: 
-	del *.*~ Parser.class Yylex.class ParserTokens.class ParserVal.class Parser.java Yylex.java ParserTokens.java ParserVal.java
+	rm -rf *.*~ Parser.class Yylex.class ParserTokens.class ParserVal.class Parser.java Yylex.java ParserTokens.java ParserVal.java
 
 Parser.class: Yylex.java ThrillException.java Parser.java
 	$(JAVAC) Parser.java
