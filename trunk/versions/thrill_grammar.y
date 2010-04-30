@@ -1,4 +1,3 @@
-
 %{
 import java.lang.Math;
 import java.io.*;
@@ -24,42 +23,42 @@ import java.util.Hashtable;
 %token PLUS             /* + */
 %token MINUS            /* - */
 %token MUL              /* * */
-%token <sval> DIV              /* / */
-%token <sval> LESS             /* < */
-%token <sval> GREAT            /* > */
+%token DIV              /* / */
+%token LESS             /* < */
+%token GREAT            /* > */
 %token OPEN             /* ( */
 %token CLOSE            /* ) */
-%token <sval> Quote            /* " */
+%token Quote            /* " */
 
 /* Keywords */
-%token Admission        	 /* Admission keyword        */
-%token Attraction       	 /* Attraction keyword       */
-%token <dval> Capacity         /* Capacity keyword         */
-%token Crowd            	 /* Crowd keyword            */
-%token <dval> Cost             /* Cost keyword             */
-%token Duration         	 /* Duration keyword         */
-%token Else             	 /* Else keyword             */
-%token Employees        	 /* Employees keyword        */
-%token EnergyIncrease   	 /* EnergyIncrease keyword   */
-%token <dval>EnergyLevel      /* EnergyLevel keyword      */
-%token EnergyLost       	 /* EnergyLost keyword       */
-%token If               	 /* If keyword               */
-%token In               	 /* In keyword               */
-%token Iterate          	 /* Iterate keyword          */
-%token Land             	 /* Land keyword             */
-%token Location         	 /* Location keyword         */
-%token <dval> Number   	 	 /* Number keyword           */
-%token Park             	 /* Park keyword             */
-%token Restaurant       	 /* Restaurant keyword       */
-%token Return           	 /* Return keyword           */
-%token Set              	 /* Set keyword              */
-%token <dval>Size             /* Size keyword             */
+%token Admission        /* Admission keyword        */
+%token Attraction       /* Attraction keyword       */
+%token Capacity         /* Capacity keyword         */
+%token Crowd            /* Crowd keyword            */
+%token Cost             /* Cost keyword             */
+%token Duration         /* Duration keyword         */
+%token Else             /* Else keyword             */
+%token Employees        /* Employees keyword        */
+%token EnergyIncrease   /* EnergyIncrease keyword   */
+%token EnergyLevel      /* EnergyLevel keyword      */
+%token EnergyLost       /* EnergyLost keyword       */
+%token If               /* If keyword               */
+%token In               /* In keyword               */
+%token Iterate          /* Iterate keyword          */
+%token Land             /* Land keyword             */
+%token Location         /* Location keyword         */
+%token <dval> Number   	/* Number keyword           */
+%token Park             /* Park keyword             */
+%token Restaurant       /* Restaurant keyword       */
+%token Return           /* Return keyword           */
+%token Set              /* Set keyword              */
+%token <dval>Size       /* Size keyword             */
 %token SpendLevel       /* SpendLevel keyword       */
-%token <dval> SpendingCapacity /* SpendingCapacity keyword */
+%token SpendingCapacity /* SpendingCapacity keyword */
 %token Start            /* Start keyword            */
 %token Store            /* Store keyword            */
 %token String           /* String keyword           */
-%token <dval> ThrillLevel      /* ThrillLevel keyword      */
+%token ThrillLevel      /* ThrillLevel keyword      */
 %token Until            /* Until keyword            */
 
 /* Functions */
@@ -169,14 +168,15 @@ import java.util.Hashtable;
 %type <sval> land_definitions
 %type <sval> land_definition
 %type <sval> definitions
-%type <sval> empty
+%type <sval> error_production
+%type <sval> empty;
 %%
 
-program: definitions usercode { generateThrillProgram($1, $2); System.out.println("Total number of lines in the input: " + yyline); };
+program: definitions usercode { generateThrillProgram($1, $2); System.out.println("Total number of lines in the input: " + (yyline-1)); };
 
 definitions: crowd_definitions park_definition crowd_definitions { $$ = $1 + $2 + $3; } ;
 crowd_definitions: crowd_definitions crowd_definition { $$ += $2; }
-                 | empty { $$ = "";}
+                 | error_production { $$ = $1; }
                  ;
 
 usercode: start functions { $$ = $1 + $2; };
@@ -191,7 +191,7 @@ crowd_elements: SEMICOLON {}
               ;
               
 crowd_attributes: crowd_attributes crowd_attribute { $$ += $2;}
-                | empty	{ $$ = "";}
+                | error_production	{ $$ = "";}
                 ;
                 
 crowd_attribute: c1 { $$ = $1; }
@@ -213,7 +213,7 @@ park_elements: SEMICOLON {}
              ;
              
 park_attributes: park_attributes park_attribute { $$ += $2; }
-               | empty { $$ = ""; }
+               | error_production { $$ = ""; }
                ;
                
 park_attribute: p1 { $$ = $1; }
@@ -226,7 +226,7 @@ p2: Set Capacity NUMBER SEMICOLON  { $$ = ":Capacity:" + $3;};
 p3: Set Cost NUMBER SEMICOLON      { $$ = ":Cost:" + $3;};
 
 land_definitions: land_definitions land_definition { $$ += $2; }
-                | empty { $$ = ""; }
+                | error_production { $$ = ""; }
 		    ;
 land_definition: Land land_name { addToHashtable($2, "Land"); } 
 		     land_attributes 
@@ -235,7 +235,7 @@ land_definition: Land land_name { addToHashtable($2, "Land"); }
 					 } ;
 land_attributes: Set Location NUMBER SEMICOLON { $$ = ":Location:" + $3; };
 land_elements: land_elements land_element { $$ += $2; }
-             | empty { $$ = ""; }
+             | error_production { $$ = ""; }
 		 ;
 land_element: attraction_definition { $$ = $1; }
             | restaurant_definition { $$ = $1; }
@@ -247,7 +247,7 @@ attraction_definition: Attraction attraction_name { addToHashtable($2, "Attracti
 			     attraction_attributes { $$ = createAttractionDefinition($5, $2) + generateSetAttribute($2, $6); };
 attraction_attributes: SEMICOLON { $$ = ""; }
 			   | attraction_attributes attraction_attribute { $$ += $2; }
-                     | empty { $$ = ""; }
+                     | error_production { $$ = ""; }
                      ;
 attraction_attribute: a1 { $$ = $1; }
                     | a2 { $$ = $1; }
@@ -267,7 +267,7 @@ restaurant_definition: Restaurant restaurant_name { addToHashtable($2, "Restaura
 			     ;
 restaurant_attributes: SEMICOLON { $$ = ""; }
 			   | restaurant_attributes restaurant_attribute { $$ += $2; }
-                     | empty { $$ = ""; }
+                     | error_production { $$ = ""; }
 			   ;
 restaurant_attribute: r1 { $$ = $1; }
                     | r2 { $$ = $1; }
@@ -287,7 +287,7 @@ store_definition: Store store_name { addToHashtable($2, "Store"); }
 			;
 store_attributes: SEMICOLON { $$ = ""; }
 		    | store_attributes store_attribute { $$ += $2; }
-                | empty { $$ = ""; }
+                | error_production { $$ = ""; }
 		    ;
 store_attribute: s1 { $$ = $1; }
                | s2 { $$ = $1; }
@@ -303,7 +303,7 @@ s4: Set SpendLevel NUMBER SEMICOLON; { $$ = ":SpendLevel:" + $3;};
 start: Start { scopeName = "Start"; } COLON block { $$ = $4; };
 
 functions: functions function { $$ = $1 + $2; }
-	   | empty { $$ = ""; }
+	   | error_production { $$ = ""; }
 	   ;
 
 function: return_type function_name { scopeName = $2; addToHashtable($2, "Function"); } COLON actual_parameters block 
@@ -313,11 +313,11 @@ function: return_type function_name { scopeName = $2; addToHashtable($2, "Functi
         ;
 return_type: Number { $$ = "double"; }
            | String { $$ = "String"; }
-           | empty {$$ = "void"; }
+           | error_production {$$ = "void"; }
            ;
 actual_parameters: actual_parameters COMMA data_type variable_name { addToHashtable($4, $3); $$ = $1 + ", " + $3 + " " + $4; }
 		     | data_type variable_name { addToHashtable($2, $1); $$ = $1 + " " + $2; }
-                 | empty { $$ = ""; }
+                 | error_production { $$ = ""; }
 		     ;
 
 block: start_block statements end_block { $$ = "{" + $2 + "\n}"; }
@@ -326,7 +326,7 @@ start_block: OPEN_PARAN;
 end_block: CLOSE_PARAN;
 
 statements: statements statement { $$ = $$ + "\n" +  $2; }
-          | empty { $$ = ""; }
+          | error_production { $$ = ""; }
 	    ;
 statement: add_attribute 	 { $$ = $1; }
 	   | assignment 	 	 { $$ = $1; }
@@ -340,17 +340,17 @@ statement: add_attribute 	 { $$ = $1; }
 	   | thrill_functions 	 { $$ = $1; }
          ;
 
-add_attribute: Set Capacity value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "Capacity", $3); }
-		 | Set Cost value In variable_name SEMICOLON			{ $$ = generateAttribute($5, "Cost", $3); }
-		 | Set Employees value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "Employees", $3); }
-		 | Set EnergyIncrease value In variable_name SEMICOLON	{ $$ = generateAttribute($5, "EnergyIncrease", $3); }
-	       | Set EnergyLevel value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "EnergyLevel", $3); }
-             | Set EnergyLost value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "EnergyLost", $3); }
-		 | Set Size value In variable_name SEMICOLON			{ $$ = generateAttribute($5, "Size", $3); }
+add_attribute: Set Capacity value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "Capacity", $3); }
+		     | Set Cost value In variable_name SEMICOLON			    { $$ = generateAttribute($5, "Cost", $3); }
+		     | Set Employees value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "Employees", $3); }
+		     | Set EnergyIncrease value In variable_name SEMICOLON	    { $$ = generateAttribute($5, "EnergyIncrease", $3); }
+	         | Set EnergyLevel value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "EnergyLevel", $3); }
+             | Set EnergyLost value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "EnergyLost", $3); }
+		     | Set Size value In variable_name SEMICOLON			    { $$ = generateAttribute($5, "Size", $3); }
              | Set SpendingCapacity value In variable_name SEMICOLON	{ $$ = generateAttribute($5, "SpendingCapacity", $3); }
-		 | Set SpendLevel value In variable_name SEMICOLON		{ $$ = generateAttribute($5, "SpendLevel", $3); }
-             | Set ThrillLevel value In variable_name SEMICOLON	      { $$ = generateAttribute($5, "ThrillLevel", $3); }
-		 ;
+		     | Set SpendLevel value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "SpendLevel", $3); }
+             | Set ThrillLevel value In variable_name SEMICOLON	        { $$ = generateAttribute($5, "ThrillLevel", $3); }
+    		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
 left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
@@ -393,7 +393,7 @@ function_call: function_name COLON formal_parameters SEMICOLON
 
 formal_parameters: formal_parameters COMMA variable_name { $$ = $$ + "," + $3; }
                  | variable_name {$$ = $1;}
-		     | empty { $$ = ""; }
+		     | error_production { $$ = ""; }
 		     ;
 
 initialization: primitive_type initialization_list SEMICOLON 
@@ -475,11 +475,15 @@ restaurant_name: variable_name { $$ = $1; } ;
 store_name: variable_name 	 { $$ = $1; } ;
 variable_name: ID 		 { $$ = $1; } ;
 
-empty: { $$ = ""; } ;
+error_production: empty { $$ = $1; }
+                ;
+                
+empty: ; { $$ = ""; }                
 
 %%
 	private Yylex lexer;
-	public int yyline = 0;
+	public int yyline = 1;
+	public int yycolumn = 0;
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	int noOfParks = 0, noOfLands = 0;
 	String parkName = null;
@@ -498,14 +502,21 @@ empty: { $$ = ""; } ;
 		}
 		return yyl_return;
 	}
-
-	public void yyerror (String error) {
-		System.err.println ("Error: " + error);
+	
+	public void yyerror(String error) {
+		try{			
+			if(stateptr > 0) {
+				String line = "line(" + yyline + ")";
+				String column = "column(" + yycolumn + ")";
+				System.out.print(error + " on " + line + " and " + column);
+                System.out.println(": Illegal token '" + lexer.yytext() + "'");
+			}
+		}
+		catch(Exception ex){			
+		}
 	}
 
 	public Parser(Reader r) {
-		//yydebug = true;
-		//System.out.println("yydebug = " + yydebug);
 		lexer = new Yylex(r, this);
 	}
 
@@ -991,6 +1002,14 @@ empty: { $$ = ""; } ;
 		return result;
 	}
 
+	public boolean checkParseErrors(){
+		boolean flag = false;
+		if(yynerrs > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
 	public static void main(String args[]) throws IOException {
 
 		Parser yyparser;
@@ -1006,8 +1025,12 @@ empty: { $$ = ""; } ;
 
 		try{
 			yyparser.yyparse();
-
-			System.out.println("\nThrillProgram.java generated successfully.\n");;
+			if(yyparser.checkParseErrors()){
+				System.out.println("\nCompilation failed!!\n");
+			}
+			else{
+				System.out.println("\nThrillProgram.java generated successfully.\n");;
+			}
 
 		}catch(ThrillException ex){
 			System.out.println(ex.getMessage());			
