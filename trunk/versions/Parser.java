@@ -1864,11 +1864,11 @@ case 122:
 break;
 case 123:
 //#line 357 "thrill_grammar.y"
-{ boolean exists = checkHashtable(val_peek(1).sval); if(exists) { yyval.sval = val_peek(1).sval; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", val_peek(1).sval); } }
+{ boolean exists = checkHashtable(val_peek(1).sval); if(exists) { yyval.sval = val_peek(1).sval + ";"; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", val_peek(1).sval); } }
 break;
 case 124:
 //#line 358 "thrill_grammar.y"
-{ yyval.sval = val_peek(1).sval; }
+{ yyval.sval = val_peek(1).sval + ";"; }
 break;
 case 125:
 //#line 359 "thrill_grammar.y"
