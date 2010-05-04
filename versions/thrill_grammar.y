@@ -354,8 +354,8 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		    { $$ = generat
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
 left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
-right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
-          | arithmetic_expression SEMICOLON { $$ = $1; }
+right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1 + ";"; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
+          | arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
  	    | function_call { $$ = $1; }
 	    | calculate_revenue { $$ = $1; }
 	   ;
