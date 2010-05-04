@@ -429,13 +429,11 @@ output: Print constant_variable_chain SEMICOLON { $$ = "System.out.println(" + $
 
 simulate: Simulate COLON crowd_name SEMICOLON {$$ = generateSimulate($3); };
 
-constant_variable_chain: constant_variable_chain COMMA constant_or_variable 
-				 { $$ = $1 + "+" + $3; }
-                       | constant_or_variable 
-				 { $$ = $1; }
+constant_variable_chain: constant_variable_chain COMMA constant_or_variable { $$ = $1 + "+" + $3;}
+                       | constant_or_variable { $$ = $1; }
 			     ;
 
-constant_or_variable: constant { $$ = "\"" + $1 + "\""; }
+constant_or_variable: constant { $$ = $1; }
                     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }
 			  ;
 
