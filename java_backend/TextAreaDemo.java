@@ -38,6 +38,7 @@
 import javax.swing.*;
 import java.util.*;
 import java.io.*;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -51,20 +52,25 @@ public class TextAreaDemo extends JFrame{
     private JScrollPane jScrollPane1;
     private JTextArea textArea;
     private DisplayPanel graph;
-    private JButton button;
+    private JButton execute,simulate;
     private JTextField text;
     
     public TextAreaDemo() {
-	initComponents();
+	try {
+		initComponents();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     }
-    
+        
     private class BListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent a)
 		{
 			String message = textArea.getText();
 
-			if(a.getSource() == button){
+			if(a.getSource() == execute){
 				FileOutputStream fout;		
 				text.setText("Executing now . . . ");
 				try
@@ -84,17 +90,15 @@ public class TextAreaDemo extends JFrame{
 					System.err.println ("Unable to write to file");
 					System.exit(-1);
 				}
-
-
 			}
-					
 		}
 	}
-    private void initComponents() {
+    private void initComponents() throws InterruptedException {
         jLabel1 = new JLabel("Enter your Program Code  below . . . ");
-        text = new JTextField ();
+        text = new JTextField (5);
         textArea = new JTextArea();
 	    graph = new DisplayPanel();
+	    //graph.setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         textArea.setColumns(50);
         textArea.setLineWrap(true);
@@ -102,13 +106,15 @@ public class TextAreaDemo extends JFrame{
         textArea.setWrapStyleWord(true);
         
         jScrollPane1 = new JScrollPane(textArea);
-        button = new JButton("Execute");
-        button.addActionListener(new BListener());
+        execute = new JButton("Execute");
+        simulate = new JButton("Simulate");
+        execute.addActionListener(new BListener());
+        simulate.addActionListener(new BListener());
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
  
        layout.setAutoCreateGaps(true);
-       layout.setAutoCreateContainerGaps(true);
+     //  layout.setAutoCreateContainerGaps(true);
 
   
        layout.setHorizontalGroup(
@@ -119,8 +125,9 @@ public class TextAreaDemo extends JFrame{
              .addComponent(text))
              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(graph)
-                  .addComponent(button))
-       );
+                  .addComponent(execute)
+                  .addComponent(simulate))
+           );
        layout.setVerticalGroup(
           layout.createSequentialGroup()
           .addComponent(jLabel1)
@@ -129,10 +136,20 @@ public class TextAreaDemo extends JFrame{
                   .addComponent(graph))
              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
             		 .addComponent(text)
-            		 .addComponent(button))
+            		 .addComponent(execute))
+             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            		 .addComponent(simulate))
        );
         pack();
-
+        //setVisible(true);
+       // Thread.sleep(2000);
+		//paintppl();
+		
+    }
+    
+    public void paintppl(){
+    	text.setText("Executing now . . . ");
+    	graph.paintppl(100,100);
     }
 
 
