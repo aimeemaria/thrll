@@ -177,7 +177,7 @@ public class Store implements LandElement {
 		//set location within land
 		Random r = new Random();
 		int radius = r.nextInt(3)+2;
-		int angle = r.nextInt(60) + 60*(land.getlocation()-1);
+		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
 		p.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
 	} 
 	

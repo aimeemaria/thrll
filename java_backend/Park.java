@@ -230,7 +230,7 @@ public class Park
 		this.salary = salary;
 	}
 
-	public void add(Land t)
+	public void addLand(Land t)
 	{
 		LandObjs.add(t);
 	}

@@ -10,7 +10,7 @@ public class Land {
 
 	private int location; // possible locations 1-6; 60*location-1 < angle < 60*location
 	private String LandName;
-	
+	private Park park;	
 	
 	//list of land element objects
 	private ArrayList <LandElement> LandElemObjs = new ArrayList<LandElement>();
@@ -31,7 +31,7 @@ public class Land {
 		return LandName; 
  	}
 	
-	public int getlocation() 
+	public int getLocation() 
 	{
 		return location;	
 	}
@@ -41,7 +41,7 @@ public class Land {
 		this.LandName = LandName; 
  	} 
 	
-	public void setlocation(int location) 
+	public void setLocation(int location) 
 	{
 		this.location = location;	
 	}	
@@ -56,6 +56,7 @@ public class Land {
 		else
 			System.out.println("Land is full!");
 	}
+	
 	public double getcost(int hours, double salary){
 		double cost = 0;
 		//for each land element in land
@@ -70,4 +71,19 @@ public class Land {
 		return LandElemObjs;
 	}
 
+    public void addAttraction(Attraction a){
+        add((LandElement)a);
+    }
+
+    public void addRestaurant(Restaurant r){
+        add((LandElement)r);
+    }
+
+    public void addStore(Store s){
+        add((LandElement)s);
+    }
+    
+    public void setPark(Park park){
+        this.park = park;
+    }
 }
