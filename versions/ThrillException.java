@@ -12,22 +12,22 @@ public class ThrillException extends Exception {
 	}
 	
 	public static void RedefinitionException(String lineInfo, String identifier) throws ThrillException{
-		ThrillException e = new ThrillException(lineInfo + identifier + " already defined");
+		ThrillException e = new ThrillException(lineInfo + "'" + identifier + "' already defined");
 		throw e;
 	}
 	
 	public static void ObjectNotFoundException(String lineInfo, String identifier) throws ThrillException{
-		ThrillException e = new ThrillException(lineInfo + " definition of identifier " + identifier + " not known");
+		ThrillException e = new ThrillException(lineInfo + " definition of identifier '" + identifier + "' not known");
 		throw e;
 	}
 	
 	public static void UnexpectedTypeException(String lineInfo, String expectedObjType, String foundObjType) throws ThrillException{
-		ThrillException e = new ThrillException(lineInfo + " expected object type " + expectedObjType + ". Found type " + foundObjType);
+		ThrillException e = new ThrillException(lineInfo + " expected object type '" + expectedObjType + "'. Found type '" + foundObjType + "'");
 		throw e;
 	}
 	
 	public static void InvalidStringConstantException(String lineInfo, String identifier, String value) throws ThrillException{
-		ThrillException e = new ThrillException(lineInfo + " string constant " + identifier + " has invalid value " + value);
+		ThrillException e = new ThrillException(lineInfo + " string constant '" + identifier + "' has invalid value " + value);
 		throw e;
 	}
 	
