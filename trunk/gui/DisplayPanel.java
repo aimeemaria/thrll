@@ -63,7 +63,7 @@ public class DisplayPanel extends JPanel {
 		//GradientPaint grad2 = new GradientPaint(0, 0, Color.green, 175, 175, Color.cyan, true);
 		
 		
-		String boy = "People_043.gif", girl = "People_052.gif";
+		String boy = "boy.gif", girl = "girl.gif";
 		ImageIcon boyicon = createImageIcon(boy);
 				
 		//hub for circle
@@ -185,6 +185,14 @@ public class DisplayPanel extends JPanel {
 			//Thread.sleep(1000);
 		}
 		//repaint();
+		
+		String phrase = "the music made   it   hard      to        concentrate";
+		String delims = "[ ]+";
+		String[] tokens = phrase.split(delims);
+		for (int i = 0; i < tokens.length; i++)
+		    System.out.println(tokens[i]);
+
+
 	}
 
 }
