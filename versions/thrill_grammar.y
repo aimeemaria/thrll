@@ -28,7 +28,8 @@ import java.util.Hashtable;
 %token GREAT            /* > */
 %token OPEN             /* ( */
 %token CLOSE            /* ) */
-%token Quote            /* " */
+%token Quote                /* " */
+%token STRING_CONST   /* String literal constants */
 
 /* Keywords */
 %token Admission        /* Admission keyword        */
@@ -126,7 +127,6 @@ import java.util.Hashtable;
 %type <sval> s4
 %type <sval> value
 %type <sval> constant
-%type <sval> string_constant
 %type <sval> primitive_type
 %type <sval> data_type
 %type <sval> constant_or_variable
@@ -170,6 +170,7 @@ import java.util.Hashtable;
 %type <sval> definitions
 %type <sval> error_production
 %type <sval> empty;
+%type <sval> STRING_CONST;
 %%
 
 program: definitions usercode { generateThrillProgram($1, $2); System.out.println("Total number of lines in the input: " + (yyline-1)); };
@@ -431,7 +432,7 @@ simulate: Simulate COLON crowd_name SEMICOLON {$$ = generateSimulate($3); };
 
 constant_variable_chain: constant_variable_chain COMMA constant_or_variable { $$ = $1 + "+" + $3;}
                        | constant_or_variable { $$ = $1; }
-			     ;
+			           ;
 
 constant_or_variable: constant { $$ = $1; }
                     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }
@@ -452,12 +453,8 @@ duration_type: Days   { $$ = "Days"; }
 		 ;
 
 constant: NUMBER { $$ = new Double($1).toString(); }
-        | Quote string_constant Quote { $$ = "\"" + $2 + "\""; }
-	  ;
-
-string_constant: string_constant ID { $$ = $1 + " " + $2; }
-		   | ID			 { $$ = $1; }
-		   ; 
+        | STRING_CONST { $$ = $1; }
+	    ;
 
 value: NUMBER 	   { $$ = new Double($1).toString(); }
      | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }

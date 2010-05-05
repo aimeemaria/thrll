@@ -88,7 +88,11 @@ Years               { yyparser.yycolumn += yytext().length(); return Parser.Year
 
 :                   { yyparser.yycolumn++; return Parser.COLON;          }
 
-"\""                { yyparser.yycolumn++; return Parser.Quote;          }
+"\""[^\"]*"\""      { 
+                        yyparser.yycolumn += yytext().length();                
+                        yyparser.yylval = new ParserVal(yytext()); 
+                        return Parser.STRING_CONST;   
+                    }
 
 "{"                 { yyparser.yycolumn++; return Parser.OPEN_PARAN;     }
 
