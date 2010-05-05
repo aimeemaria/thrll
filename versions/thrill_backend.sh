@@ -4,11 +4,11 @@ cd ../java_backend
 
 javac *.java
 
-sudo mkdir backend_classes
+mkdir backend_classes
 
-sudo chmod -R 777 backend_classes
+chmod -R 777 backend_classes
 
-sudo mv *.class backend_classes/
+mv *.class backend_classes/
 
 cd backend_classes
 
@@ -18,5 +18,4 @@ cp thrill.jar ../../run
 
 cd ../../versions
 
-sudo rm -rf ../java_backend/backend_classes
-
+rm -rf ../java_backend/backend_classes
