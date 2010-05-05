@@ -76,7 +76,7 @@ public class TextAreaDemo extends JFrame{
 				try
 				{
 				    // Open an output stream
-				    fout = new FileOutputStream ("code.txt");
+				    fout = new FileOutputStream ("code.txt");//("/thrill/runthrill/code.txt");
 
 				    // Print a line of text
 				    new PrintStream(fout).print (message);
@@ -90,28 +90,14 @@ public class TextAreaDemo extends JFrame{
 					System.err.println ("Unable to write to file");
 					System.exit(-1);
 				}
-				/*
+				
 				//run shell script to compile, and execute showing output on the screen
-				Runtime r = Runtime.getRuntime();
-						Process p = null;
-						try {
-							p = r.exec("echo hello");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						try {
-							p.waitFor();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				*/
+			
 				 String s = null;
 
 			        try {
-				  Process p = Runtime.getRuntime().exec("./shell.sh");
-		            
+				  //Process p = Runtime.getRuntime().exec("./shell.sh");
+			        	 Process p = Runtime.getRuntime().exec("./shell.sh");
 		            BufferedReader stdInput = new BufferedReader(new 
 		                 InputStreamReader(p.getInputStream()));
 
@@ -119,15 +105,17 @@ public class TextAreaDemo extends JFrame{
 		                 InputStreamReader(p.getErrorStream()));
 
 		            // read the output from the command
-		            System.out.println("Here is the standard output of the command:\n");
+		            //System.out.println("Here is the standard output of the command:\n");
 		            while ((s = stdInput.readLine()) != null) {
-		                System.out.println(s);
+		                //System.out.println(s);
+		            	text.setText(s);
 		            }
 		            
 		            // read any errors from the attempted command
-		            System.out.println("Here is the standard error of the command (if any):\n");
+		            //System.out.println("Here is the standard error of the command (if any):\n");
 		            while ((s = stdError.readLine()) != null) {
-		                System.out.println(s);
+		                //System.out.println(s);
+		                text.setText(s);
 		            }
 		            
 		          //  System.exit(0);
@@ -137,10 +125,13 @@ public class TextAreaDemo extends JFrame{
 		            e.printStackTrace();
 		            System.exit(-1);
 		        }
-
-					
-			
 			}
+
+		        if(a.getSource() == simulate){
+		        	text.setText("Simlulating . . . ");
+		        }
+			
+			
 		}
 	}
     private void initComponents() throws InterruptedException {
