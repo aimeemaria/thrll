@@ -8,7 +8,7 @@ java -cp ./thrill_parser.jar Parser code.txt
 
 if [ -f $thrill_source ]
 then
-    echo $result
+    echo 
 else
     echo $result
 
