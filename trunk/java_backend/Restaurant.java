@@ -84,9 +84,7 @@ public class Restaurant implements LandElement
 	  */
 	 public void exit(Person p) 
 	 {
-		 //People will "exit" if they weren't able to enter due to steps of simulation.
-		 //Thus, we need to check to ensure we don't get a negative attendance
-		if (CurrentAttendance > 0)
+		 if (CurrentAttendance > 0)
 			CurrentAttendance--;
 	 }
 	 
@@ -200,6 +198,10 @@ public class Restaurant implements LandElement
 	 */
 	public void setTimeNeeded(int timeNeeded) {
 		this.timeNeeded = timeNeeded;
+	}
+	
+	public void setPrice(double price){
+		this.price = price;
 	}
 	
 	public void reset(){

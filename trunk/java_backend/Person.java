@@ -8,7 +8,7 @@ public class Person {
 	private double x,y; //position
 	private int tick;
 	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in
-
+	private boolean didEnter;
 
 
 	private void setattributes(int energy,int thrill, double spend){
@@ -22,6 +22,7 @@ public class Person {
 		tick = 48;
 		location = 1;
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
+		didEnter = false;
 	}
 	public Person(){
 		setattributes(10,10,10);
@@ -30,6 +31,7 @@ public class Person {
 		tick = 48;
 		location = 1; //person enters in Land 1
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
+		didEnter = false;
 	}
 
 	public void set_position(double x, double y){
@@ -94,4 +96,11 @@ public class Person {
 		return whereAmI;
 	}
 
+	public void setDidEnter(boolean value){
+		didEnter = value;
+	}
+	
+	public boolean getDidEnter(){
+		return didEnter;
+	}
 }
