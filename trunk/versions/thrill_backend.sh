@@ -14,7 +14,7 @@ cd backend_classes
 
 jar -cf thrill.jar *.class
 
-cp thrill.jar ../../run
+cp thrill.jar ../../gui
 
 cd ../../versions
 
