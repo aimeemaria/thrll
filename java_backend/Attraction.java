@@ -66,7 +66,10 @@ public class Attraction implements LandElement {
 	public void exit(Person p){
 		if (canEnter(p)){//not necessary?
 			p.setEnergyLevel(p.getEnergyLevel() - energyLoss);
-			currentAttendance--;
+			 //People will "exit" if they weren't able to enter due to steps of simulation.
+			 //Thus, we need to check to ensure we don't get a negative attendance
+			if (currentAttendance>0)
+				currentAttendance--;
 		}
 	}
 
@@ -207,5 +210,8 @@ public class Attraction implements LandElement {
 	
 	public char getType(){
 		return 'a';
+	}
+	public void reset(){
+		currentAttendance = 0;
 	}
 }

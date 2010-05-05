@@ -23,5 +23,6 @@ public interface LandElement {
 	public char getType();
 	public int getTimeNeeded();
 	public Land getLand();
+	public void reset();
 	
 }

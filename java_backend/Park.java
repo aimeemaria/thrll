@@ -75,15 +75,19 @@ public class Park
 	public double calculateRevenue(Crowd c, Duration d)
 	{
 		double sales = 0;
-
+		
 		//for each land
 		//get cost of operation (include employees)
+		//and reset sales values
 		double cost=0;
 		for(int i = 0 ; i < LandObjs.size();i++){
-			cost += LandObjs.get(i).getcost(hours,salary);//returns operation cost for all elements in the land
+			Land land = LandObjs.get(i);
+			cost += land.getcost(hours,salary);//returns operation cost for all elements in the land
+			land.resetSales();
 		}
 
 		double admissionSales = c.getSize() * admission;
+		sales += admissionSales;
 
 		//assume the crowd enters as soon as park opens
 		c.createpeople();
@@ -193,6 +197,7 @@ public class Park
 				sales += land_contents.get(j).calculateRevenue();
 			}
 		}
+				
 		double park_net_revenue = sales - cost;
 
 		park_net_revenue = d.getDays() * park_net_revenue;

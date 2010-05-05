@@ -76,7 +76,10 @@ public class Store implements LandElement {
 	 * 
 	 */
 	public void exit(Person p) {
-		currentAttendance--;
+		 //People will "exit" if they weren't able to enter due to steps of simulation.
+		 //Thus, we need to check to ensure we don't get a negative attendance
+		if (currentAttendance>0)
+			currentAttendance--;
 	}
 
 	/*
@@ -221,6 +224,11 @@ public class Store implements LandElement {
 	
 	public double getSales(){
 		return sales;
+	}
+	
+	public void reset(){
+		sales = 0;
+		currentAttendance = 0;
 	}
 	
 }

@@ -67,6 +67,14 @@ public class Land {
 		return cost;
 	}
 	
+	public void resetSales(){
+		//for each land element in land
+		//reset sales value to 0
+		for(int i = 0 ; i<LandElemObjs.size();i++){
+			LandElemObjs.get(i).reset();
+		}
+	}
+	
 	public ArrayList<LandElement> getContents(){
 		return LandElemObjs;
 	}
