@@ -76,7 +76,7 @@ public class TextAreaDemo extends JFrame{
 				try
 				{
 				    // Open an output stream
-				    fout = new FileOutputStream ("code.txt");//("/thrill/runthrill/code.txt");
+				    fout = new FileOutputStream ("../run/code.txt");//("/thrill/runthrill/code.txt");
 
 				    // Print a line of text
 				    new PrintStream(fout).print (message);
@@ -97,7 +97,7 @@ public class TextAreaDemo extends JFrame{
 
 			        try {
 				  //Process p = Runtime.getRuntime().exec("./shell.sh");
-			        	 Process p = Runtime.getRuntime().exec("./shell.sh");
+			        	 Process p = Runtime.getRuntime().exec("../run/thrill_run.sh");
 		            BufferedReader stdInput = new BufferedReader(new 
 		                 InputStreamReader(p.getInputStream()));
 
