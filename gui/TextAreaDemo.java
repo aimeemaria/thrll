@@ -53,7 +53,7 @@ public class TextAreaDemo extends JFrame{
     private JScrollPane textscroll;
     private JTextArea textArea;
     private DisplayPanel graph;
-    private JButton execute,simulate;
+    private JButton execute,simulate,clear;
     private JTextArea text;
     
     public TextAreaDemo() {
@@ -77,7 +77,7 @@ public class TextAreaDemo extends JFrame{
 				try
 				{
 				    // Open an output stream
-				    fout = new FileOutputStream ("../run/code.txt");//("/thrill/runthrill/code.txt");
+				    fout = new FileOutputStream ("./code.txt");//("/thrill/runthrill/code.txt");
 
 				    // Print a line of text
 				    new PrintStream(fout).print (message);
@@ -94,11 +94,11 @@ public class TextAreaDemo extends JFrame{
 				
 				//run shell script to compile, and execute showing output on the screen
 			
-				 String s = null;
+				 String s = "", output="";
 
 			        try {
 				  //Process p = Runtime.getRuntime().exec("./shell.sh");
-			        	 Process p = Runtime.getRuntime().exec("../run/thrill_run.sh");
+			        	 Process p = Runtime.getRuntime().exec("./thrill_run.sh");//("./thrill_run.sh");
 		            BufferedReader stdInput = new BufferedReader(new 
 		                 InputStreamReader(p.getInputStream()));
 
@@ -109,20 +109,22 @@ public class TextAreaDemo extends JFrame{
 		            //System.out.println("Here is the standard output of the command:\n");
 		            while ((s = stdInput.readLine()) != null) {
 		                //System.out.println(s);
-		            	text.setText(s);
+		            	output = output + s + "\n";
 		            }
-		            
+		    
 		            // read any errors from the attempted command
 		            //System.out.println("Here is the standard error of the command (if any):\n");
 		            while ((s = stdError.readLine()) != null) {
 		                //System.out.println(s);
-		                text.setText(s);
+		            	output = output + s + "\n";
 		            }
 		            
+		            text.setText(output);
 		          //  System.exit(0);
 		        }
 		        catch (IOException e) {
-		            System.out.println("exception happened - here's what I know: ");
+		          // System.out.println("exception happened - here's what I know: ");
+		            text.setText("exception happened ");
 		            e.printStackTrace();
 		            System.exit(-1);
 		        }
@@ -130,6 +132,7 @@ public class TextAreaDemo extends JFrame{
 
 		        if(a.getSource() == simulate){
 		        	text.setText("Simlulating . . . ");
+		        	paintppl();
 		        }
 			
 			
@@ -155,6 +158,7 @@ public class TextAreaDemo extends JFrame{
         jScrollPane1 = new JScrollPane(textArea);
         textscroll = new JScrollPane(text);
         execute = new JButton("Execute");
+        clear = new JButton("Clear");
         simulate = new JButton("Simulate");
         execute.addActionListener(new BListener());
         simulate.addActionListener(new BListener());
@@ -198,6 +202,7 @@ public class TextAreaDemo extends JFrame{
     public void paintppl(){
     	text.setText("Executing now . . . ");
     	graph.paintppl(100,100);
+    	repaint();
     }
 
 
