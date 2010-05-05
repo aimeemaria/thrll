@@ -54,9 +54,7 @@ public class Restaurant implements LandElement
 	  */
 	 public boolean canEnter(Person p) 
 	 {
-		 if(CurrentAttendance > capacity)
-			 System.out.println("Full!");
-	 	 if (p.getSpendingCapacity() >= this.SpendLevel && CurrentAttendance < capacity)
+		 if (p.getSpendingCapacity() >= this.SpendLevel && CurrentAttendance < capacity)
 	 		 return true;
 	 	 else
 	 		 return false;
@@ -86,7 +84,10 @@ public class Restaurant implements LandElement
 	  */
 	 public void exit(Person p) 
 	 {
-		CurrentAttendance--;
+		 //People will "exit" if they weren't able to enter due to steps of simulation.
+		 //Thus, we need to check to ensure we don't get a negative attendance
+		if (CurrentAttendance > 0)
+			CurrentAttendance--;
 	 }
 	 
 	 public String getRestaurantName() 
@@ -200,5 +201,9 @@ public class Restaurant implements LandElement
 	public void setTimeNeeded(int timeNeeded) {
 		this.timeNeeded = timeNeeded;
 	}
-	  
+	
+	public void reset(){
+		sales = 0;
+		CurrentAttendance = 0;
+	}
 }		

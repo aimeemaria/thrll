@@ -18,7 +18,6 @@ public class Crowd {
 	
 	//default values
 	public Crowd(){
-		people=new ArrayList<Person>();
 		setattributes(1000,10,10,10);
 	}
 	/*
@@ -26,6 +25,8 @@ public class Crowd {
 	 * Right now I am just taking a normal distribution.
 	 */
 	public void createpeople(){
+		
+		people=new ArrayList<Person>();
 		
 		NormalDistribution n = new NormalDistribution();
 		
