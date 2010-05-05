@@ -1,0 +1,42 @@
+If only crowd definition are ther and no park is defined then it displays, illegal token
+It should display no park definition.Although it is ok with that too.
+
+When a semicolon is missing, it throws error unrecognixed token, which is of next statement. It should display missing semicolon. Although it is fine, but can we have displaying missing semicolon, instead of above. We can add an exception, where it sees that a ; should come but is not there, so will print missing ;.
+
+Number b = 10, c; ---> Not Working, are we not allowing this?
+
+We are not doing Polymorphism right?
+function a : Number b,Numberc
+function d : Number e,Number g, Number h
+
+Also, same name for Number and String type is not being allowed. Is it ok?
+
+Are we not having return 0 statement?
+Not recognizing the return identifier?It has not been put in the token.
+Return is proper, but return is not correct. It gives wrong error. It should print error like for other identifiers/Keywords like Crowd.
+
+
+Not Working
+If there is a function with three arguments and if I call same function with two arguments, then no error is thrown.
+
+Not checking the type of the formal parameter and the actual parameter, when calling function.
+
+If the value of vaariable is not defined and a print statement is issued, then no error is thrown.
+
+When comparing a Number type with a String type, not showing any errors.
+
+While defining another land, one production is added that points to the previous land and it does not throw error?(landattribute_test).
+
+Need to put limit check for SpendingCapacity
+
+The grammar is not taking negative values for variables(value_statement_test)
+
+For nested functions, it is displaying error of unreognized token of the next function. But, it should display some other error.
+In the return statement only one value is allowed, there is no expression that ca be passes via return statement. Is it ok?
+
+If no value is defined, even then the operators are working.
+
+
+If the location of two land is same, no error thrown.
+
+Are we only doing calling of a function inside start and defining it outside?Function definition inside start is giving error.
