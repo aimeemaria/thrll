@@ -65,9 +65,8 @@ public class DisplayPanel extends JPanel {
 		
 		ImageIcon boy = createImageIcon("boy.gif"), girl =createImageIcon("girl.gif"), female = createImageIcon("female.gif"), 
 		male = createImageIcon("boss.gif"),	attraction = createImageIcon("flag.gif"), store = createImageIcon("Shopping car.gif"),
-				restaurant = createImageIcon("home.gif");
-
-				
+		restaurant = createImageIcon("home.gif");
+		
 		//hub for circle
 		Ellipse2D.Double circle = new Ellipse2D.Double(cx-cr,cy-cr,cr*2,cr*2);
 		
@@ -75,7 +74,6 @@ public class DisplayPanel extends JPanel {
 		g.setColor(Color.black); //set color and fonts
 		Font MyFont = new Font("Serif",Font.ROMAN_BASELINE,25);
 		g.setFont(MyFont);
-		g.drawString("Theme Park Layout",cx - 150,50);
 		
 		double rad=0 ; //radians
 		int x=0,x1=0,y=0,y2=0 ;
@@ -110,17 +108,6 @@ public class DisplayPanel extends JPanel {
 		g.drawLine(cx, cy, x1, y2);
 		
 		
-		degrees = 270;
-		idx = 3;
-		String t = "Land ";
-		for (int i = 0 ; i < 6 ; i++){
-			rad = degrees * Math.PI / 180; 
-			x=(int)( (idx*cr) * Math.cos(rad)+ cx);
-			y=(int)( (idx*cr) * Math.sin(rad)+ cy);
-			degrees += 60;
-			g.setColor(Color.black);
-			g.drawString(t+(i+1), x-40, y);
-		}
 		  
 		
 		// g.translate(0, 0);
@@ -139,17 +126,29 @@ public class DisplayPanel extends JPanel {
 		double r=0.5;
 		degrees = 0;
 		if(flag){
-		for (int i = 1 ; i < 7 ; i++){
-			rad = degrees * Math.PI / 180; 
-			xpos=(int)( (r*cr) * Math.cos(rad)+ cx);
-			ypos=(int)( (r*cr) * Math.sin(rad)+ cy);
-			degrees +=60;
-		boy.paintIcon(this,g,xpos,ypos);
-		
-		}
+			g.drawString("Your Park Snapshot",cx - 150,50);
+			for (int i = 1 ; i < 7 ; i++){
+				rad = degrees * Math.PI / 180; 
+				xpos=(int)( (r*cr) * Math.cos(rad)+ cx);
+				ypos=(int)( (r*cr) * Math.sin(rad)+ cy);
+				degrees +=60;
+				boy.paintIcon(this,g,xpos,ypos);
+			}
 		}
 		else{
+			g.drawString("Theme Park Layout",cx - 150,50);
 			g.drawString("Hub",cx-25,cy+10);
+			degrees = 30;
+			idx = 3;
+			String t = "Land ";
+			for (int i = 0 ; i < 6 ; i++){
+				rad = degrees * Math.PI / 180; 
+				x=(int)( (idx*cr) * Math.cos(rad)+ cx);
+				y=(int)( (idx*cr) * Math.sin(rad)+ cy);
+				degrees += 60;
+				g.setColor(Color.black);
+				g.drawString(t+(i+1), x-40, y);
+			}
 		}
 			
 
@@ -157,10 +156,6 @@ public class DisplayPanel extends JPanel {
 	}//end of drawhub
 	
 	public void paintppl(int x, int y){
-		setBackground(Color.gray);
-		//g.setColor(Color.black);
-		//g.drawLine(0,0,100,100);
-		//paintBorder(g);
 		flag = true;
 		int degrees = 15;
 		double rad = 0;
