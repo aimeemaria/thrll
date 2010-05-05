@@ -63,9 +63,9 @@ public class DisplayPanel extends JPanel {
 		//GradientPaint grad2 = new GradientPaint(0, 0, Color.green, 175, 175, Color.cyan, true);
 		
 		
-		ImageIcon boy = createImageIcon("boy.gif"), girl =createImageIcon("girl.gif"), female = createImageIcon("female.gif"), 
-		male = createImageIcon("boss.gif"),	attraction = createImageIcon("flag.gif"), store = createImageIcon("Shopping car.gif"),
-		restaurant = createImageIcon("home.gif");
+		ImageIcon boy = createImageIcon("boy.gif"), girl =createImageIcon("girl.gif"), female = createImageIcon("Female.gif"), 
+		male = createImageIcon("Boss.gif"),	attraction = createImageIcon("Flag.gif"), store = createImageIcon("Shopping cart.gif"),
+		restaurant = createImageIcon("Home.gif");
 		
 		//hub for circle
 		Ellipse2D.Double circle = new Ellipse2D.Double(cx-cr,cy-cr,cr*2,cr*2);
