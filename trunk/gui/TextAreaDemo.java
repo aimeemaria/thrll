@@ -50,10 +50,11 @@ public class TextAreaDemo extends JFrame{
     
     private JLabel jLabel1;
     private JScrollPane jScrollPane1;
+    private JScrollPane textscroll;
     private JTextArea textArea;
     private DisplayPanel graph;
     private JButton execute,simulate;
-    private JTextField text;
+    private JTextArea text;
     
     public TextAreaDemo() {
 	try {
@@ -136,7 +137,7 @@ public class TextAreaDemo extends JFrame{
 	}
     private void initComponents() throws InterruptedException {
         jLabel1 = new JLabel("Enter your Program Code  below . . . ");
-        text = new JTextField (5);
+        text = new JTextArea();
         textArea = new JTextArea();
 	    graph = new DisplayPanel();
 	    //graph.setVisible(true);
@@ -146,7 +147,13 @@ public class TextAreaDemo extends JFrame{
         textArea.setRows(25);
         textArea.setWrapStyleWord(true);
         
+        text.setColumns(10);
+        text.setLineWrap(true);
+        text.setRows(25);
+        text.setWrapStyleWord(true);
+        
         jScrollPane1 = new JScrollPane(textArea);
+        textscroll = new JScrollPane(text);
         execute = new JButton("Execute");
         simulate = new JButton("Simulate");
         execute.addActionListener(new BListener());
@@ -163,7 +170,7 @@ public class TextAreaDemo extends JFrame{
              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
              .addComponent(jLabel1)
              .addComponent(jScrollPane1)
-             .addComponent(text))
+             .addComponent(textscroll))
              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(graph)
                   .addComponent(execute)
@@ -176,7 +183,7 @@ public class TextAreaDemo extends JFrame{
             	  .addComponent(jScrollPane1)
                   .addComponent(graph))
              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            		 .addComponent(text)
+            		 .addComponent(textscroll)
             		 .addComponent(execute))
              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
             		 .addComponent(simulate))
