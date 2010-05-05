@@ -1,0 +1,35 @@
+Crowd MyCrowdOne
+Set Size 100;
+Set EnergyLevel 10;  
+
+Crowd MyCrowdTwo     
+Set Size 100;     
+Set ThrillLevel 10;      
+
+Park ThrillPark      
+Set Admission 100;     
+Set Capacity  1000;     
+Set Cost      10;          
+
+Land ParkLand         
+Set Location 6;         
+
+Attraction GiantWheel In ParkLand;                
+
+Restaurant Hotel In ParkLand;           
+
+Store KidsStuff In ParkLand;                    
+
+Crowd MyCrowdThree     
+Set Size 100;     
+Set SpendingCapacity 10;      
+
+Crowd MyCrowdOne     
+Set ThrillLevel 10;     
+Set SpendingCapacity 10;
+Set ThrillLevel 10;
+
+Start:
+{
+Set Cost 100 In GiantWheel;      
+}

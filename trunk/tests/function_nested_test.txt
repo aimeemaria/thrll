@@ -1,0 +1,58 @@
+Crowd MyCrowdOne
+Set Size 100;
+Set EnergyLevel 10;  
+
+Crowd MyCrowdTwo     
+Set Size 100;     
+Set ThrillLevel 10;      
+
+Park ThrillPark      
+Set Admission 100;     
+Set Capacity  1000;     
+Set Cost      10;          
+
+Land ParkLand         
+Set Location 1;         
+
+Attraction GiantWheel In ParkLand;                
+
+Restaurant Hotel In ParkLand;           
+
+Store KidsStuff In ParkLand;                    
+
+Crowd MyCrowdThree     
+Set Size 100;     
+Set SpendingCapacity 10;      
+
+Crowd MyCrowdFour     
+Set ThrillLevel 0;     
+Set SpendingCapacity 10;
+
+Start:
+{
+Number a = 10;
+Number b = 10;
+String c = "The";
+String d = "Wall";
+Set Cost 100 In GiantWheel;      
+a = Myfunction1: a, b ;
+}
+
+Number MyFunction2: Number a, Number b
+{
+a=a+b;
+Print a;
+Print b;
+Return a;
+String MyFunction1: String c, String d
+{
+c = d;
+Print d;
+Return d;
+}
+}
+String MyFunction: String c, String d
+{
+c = c;
+Return d;
+}
