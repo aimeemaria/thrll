@@ -17,7 +17,7 @@ public class DisplayPanel extends JPanel {
 	int SCREEN_HEIGHT=(int)dim.getHeight();
 	ImageIcon girlicon;
 	Graphics2D g;
-	boolean flag=false; //flag if girl needs to be painted
+	boolean flag=false; //flag if graphics needs to be painted
 	
 	public DisplayPanel() {	
 		setBackground(Color.white);
@@ -63,8 +63,10 @@ public class DisplayPanel extends JPanel {
 		//GradientPaint grad2 = new GradientPaint(0, 0, Color.green, 175, 175, Color.cyan, true);
 		
 		
-		String boy = "boy.gif", girl = "girl.gif";
-		ImageIcon boyicon = createImageIcon(boy);
+		ImageIcon boy = createImageIcon("boy.gif"), girl =createImageIcon("girl.gif"), female = createImageIcon("female.gif"), 
+		male = createImageIcon("boss.gif"),	attraction = createImageIcon("flag.gif"), store = createImageIcon("Shopping car.gif"),
+				restaurant = createImageIcon("home.gif");
+
 				
 		//hub for circle
 		Ellipse2D.Double circle = new Ellipse2D.Double(cx-cr,cy-cr,cr*2,cr*2);
@@ -127,39 +129,30 @@ public class DisplayPanel extends JPanel {
 		g.fill(circle);
 		g.setColor(Color.black);
 		g.draw(circle);
-		//g.drawString("Hub",cx-25,cy+10);
 		
 		
-		if(flag){
-			girlicon = createImageIcon(girl);
-		girlicon.paintIcon(this,g,100,100);
-		}
+
 		
 		//draw people icons
 		int xpos=cx; //position of person
 		int ypos=cy;
 		double r=0.5;
 		degrees = 0;
+		if(flag){
 		for (int i = 1 ; i < 7 ; i++){
 			rad = degrees * Math.PI / 180; 
 			xpos=(int)( (r*cr) * Math.cos(rad)+ cx);
 			ypos=(int)( (r*cr) * Math.sin(rad)+ cy);
 			degrees +=60;
-		boyicon.paintIcon(this,g,xpos,ypos);
+		boy.paintIcon(this,g,xpos,ypos);
 		
 		}
-		/*
-		degrees = 30;
-		r = 2.0/3.0;
-		for (int i = 1 ; i < 7 ; i++){
-			rad = degrees * Math.PI / 180; 
-			xpos=(int)( (r*cr) * Math.cos(rad)+ cx);
-			ypos=(int)( (r*cr) * Math.sin(rad)+ cy);
-			degrees +=60;
-			girlicon.paintIcon(this,g,xpos,ypos);
-			//Thread.sleep(1000);
 		}
-		*/
+		else{
+			g.drawString("Hub",cx-25,cy+10);
+		}
+			
+
 	
 	}//end of drawhub
 	
