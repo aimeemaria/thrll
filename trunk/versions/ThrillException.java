@@ -41,6 +41,11 @@ public class ThrillException extends Exception {
 		throw e;
 	}
 	
+	public static void InsufficientParamsException(String functionName, int actualParams) throws ThrillException{
+	        ThrillException e = new ThrillException("Insufficient params supplied to " + functionName + ". Expected " + actualParams + " parameters");
+                throw e;
+	}
+	
 	public String getMessage() {
 		return message;
 	}

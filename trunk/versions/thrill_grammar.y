@@ -310,16 +310,17 @@ functions: functions function { $$ = $1 + $2; }
 function: return_type function_name { scopeName = $2; addToHashtable($2, "Function"); } COLON actual_parameters block 
 	  {
 		$$ = "\n" + "public static " + generateFunction($1, $2, $5, $6);
+		actualParams = 0;
 	  }
         ;
 return_type: Number { $$ = "double"; }
            | String { $$ = "String"; }
            | error_production {$$ = "void"; }
            ;
-actual_parameters: actual_parameters COMMA data_type variable_name { addToHashtable($4, $3); $$ = $1 + ", " + $3 + " " + $4; }
-		     | data_type variable_name { addToHashtable($2, $1); $$ = $1 + " " + $2; }
+actual_parameters: actual_parameters COMMA data_type variable_name { addToHashtable($4, $3); $$ = $1 + ", " + $3 + " " + $4; ++actualParams; System.out.println("Number of parameters = " + actualParams);}
+		 | data_type variable_name { addToHashtable($2, $1); $$ = $1 + " " + $2; ++actualParams; }
                  | error_production { $$ = ""; }
-		     ;
+		 ;
 
 block: start_block statements end_block { $$ = "{" + $2 + "\n}"; }
      ;
@@ -330,13 +331,13 @@ statements: statements statement { $$ = $$ + "\n" +  $2; }
           | error_production { $$ = ""; }
 	    ;
 statement: add_attribute 	 { $$ = $1; }
-	   | assignment 	 	 { $$ = $1; }
+	   | assignment 	 { $$ = $1; }
 	   | condition 	 	 { $$ = $1; }
-         | declaration 	 	 { $$ = $1; }
+           | declaration 	 { $$ = $1; }
 	   | function_call 	 { $$ = $1; }
-         | initialization 	 { $$ = $1; }
+           | initialization 	 { $$ = $1; }
 	   | initialize_duration { $$ = $1; }
-	   | loop 			 { $$ = $1; }
+	   | loop 		 { $$ = $1; }
 	   | return 		 { $$ = $1; }
 	   | thrill_functions 	 { $$ = $1; }
          ;
@@ -354,8 +355,8 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		    { $$ = generat
     		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
-left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
-right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1 + ";"; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } };
+left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } };
+right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1 + ";"; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } };
           | arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
  	    | function_call { $$ = $1; }
 	    | calculate_revenue { $$ = $1; }
@@ -368,7 +369,7 @@ arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = 
                      | variable_name 						 { 
 												   boolean exists = checkHashtable($1); 
 												   if(exists){ $$ = checkSemanticValue($1); } 
-												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); }
+												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); }
 												 }
                      | constant 							 { $$ = $1; }
                      ;
@@ -394,8 +395,8 @@ function_call: function_name COLON formal_parameters SEMICOLON
 
 formal_parameters: formal_parameters COMMA variable_name { $$ = $$ + "," + $3; }
                  | variable_name {$$ = $1;}
-		     | error_production { $$ = ""; }
-		     ;
+		 | error_production { $$ = ""; }
+		 ;
 
 initialization: primitive_type initialization_list SEMICOLON 
                 { addInitVariables($1, $2); $$ = $1 + " " + $2 + ";"; }
@@ -435,7 +436,7 @@ constant_variable_chain: constant_variable_chain COMMA constant_or_variable { $$
 			           ;
 
 constant_or_variable: constant { $$ = $1; }
-                    | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }
+                    | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } }
 			  ;
 
 data_type: Crowd { $$ = "Crowd"; }
@@ -457,7 +458,7 @@ constant: NUMBER { $$ = new Double($1).toString(); }
 	    ;
 
 value: NUMBER 	   { $$ = new Double($1).toString(); }
-     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", $1); } }
+     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } }
      ;
 
 attraction_name: variable_name { $$ = $1; } ;
@@ -483,6 +484,7 @@ empty: ; { $$ = ""; }
 	int noOfParks = 0, noOfLands = 0;
 	String parkName = null;
 	String scopeName = null;
+        private int actualParams = 0;
 	final int MAX_LIMIT_PARK = 1;
 	final int MAX_LIMIT_LANDS = 6;
 
@@ -853,6 +855,16 @@ empty: ; { $$ = ""; }
 		String returnStmt = null;
 		int beginIndex = 0;
 		int endIndex = 0;
+		String[] params = parameters.split(",");
+		if(actualParams != params.length){
+			ThrillException.InsufficientParamsException(functionName, actualParams);
+		}
+
+		/*
+		if(checkParametersType()){
+			//ThrillException.IllegalParamTypeException(lineInfo, functionName, actualParams, params.length);
+		}
+		*/
 
 		if(block.contains("return")){
 			beginIndex = block.indexOf("return");
@@ -863,7 +875,7 @@ empty: ; { $$ = ""; }
 
 		if(checkReturn && !checkReturnType(returnType, returnStmt) 
 		|| !returnType.equalsIgnoreCase("void") && returnStmt == null){
-			ThrillException.MissingReturnStatementException("Error on line(" + yyline +"): ", " invalid/missing return statement");
+			ThrillException.MissingReturnStatementException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", "Invalid/Missing return statement");
 		}
 
 		result = returnType + " " + functionName + "(" + parameters + ")\n" + block;
@@ -882,7 +894,7 @@ empty: ; { $$ = ""; }
 			if(retVal.length() > 0){
 
 				if(type == null){
-					ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", retVal);
+					ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", retVal);
 				}
 
 				if(Character.isDigit(retVal.charAt(0)) && type.equalsIgnoreCase("Number")){
@@ -892,11 +904,11 @@ empty: ; { $$ = ""; }
 					result = true;
 				}
 				else{
-					ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", returnType, type);
+					ThrillException.UnexpectedTypeException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", returnType, type);
 				}				
 			}
 			else{
-				ThrillException.UnexpectedTypeException("Error on line(" + yyline + "): ", returnType, "void");
+				ThrillException.UnexpectedTypeException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", returnType, "void");
 			}
 		}
 		else{			
@@ -917,26 +929,25 @@ empty: ; { $$ = ""; }
 		if(attribute.equalsIgnoreCase("Admission") ||
 				attribute.equalsIgnoreCase("Cost")){	
 			if(d < 0)
-				ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");
+				ThrillException.InvalidArgumentException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", attribute + " cannot be less than zero");
 			result = value;
 		}
 		else{
 			int i = (int)d;
 			if(attribute.equalsIgnoreCase("Location")){
 				if(i < 1 || i > 6)
-					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " should be a value between 1 and 6");			
+					ThrillException.InvalidArgumentException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", attribute + " should be a value between 1 and 6");			
 			}
 			else if(attribute.equalsIgnoreCase("Capacity")  || 
 					attribute.equalsIgnoreCase("Employees") ||
-					attribute.equalsIgnoreCase("SpendingCapacity") ||
 					attribute.equalsIgnoreCase("Size")){
 				if(i < 0)
-					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero");
+					ThrillException.InvalidArgumentException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", attribute + " cannot be less than zero");
 
 			}
 			else {
 				if(i < 0 || i > 20)
-					ThrillException.InvalidArgumentException("Error on line(" + yyline +"): ", attribute + " cannot be less than zero or greater than 20");
+					ThrillException.InvalidArgumentException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", attribute + " cannot be less than zero or greater than 20");
 			}
 			result = new Integer(i).toString();
 		}
@@ -948,12 +959,12 @@ empty: ; { $$ = ""; }
 		String result = null;
 		String c = thrillObjects.get("Global." + crowdName);
 		if(c == null){
-			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", crowdName);
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", crowdName);
 		}		
 		
 		String d = thrillObjects.get(scopeName + "." + duration);
 		if(d == null){
-			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", duration);	
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", duration);	
 		}
 		
 		result = parkName + ".calculateRevenue(" + crowdName + ", " + duration + ");";
@@ -964,7 +975,7 @@ empty: ; { $$ = ""; }
 		String result = null;
 		String c = thrillObjects.get("Global." + crowdName);
 		if(c == null){
-			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", crowdName);
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", crowdName);
 		}		
 		result = parkName + ".simulate(" + crowdName + ");";
 		return result;
@@ -988,7 +999,7 @@ empty: ; { $$ = ""; }
 	public String initializeDuration(String durationType, String durationName, String value) throws ThrillException{
 		String result = null;
 		if(!checkHashtable(durationName)){
-			ThrillException.ObjectNotFoundException("Error on line(" + yyline +"): ", durationName);
+			ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", durationName);
 		}
 
 		double temp = Double.parseDouble(value);
