@@ -17,13 +17,13 @@ build: clean Parser.class
 clean: 
 	rm -rf *.*~ Parser.class Yylex.class ParserTokens.class ParserVal.class Parser.java Yylex.java ParserTokens.java ParserVal.java
 
-Parser.class: Yylex.java ThrillException.java Parser.java
+Parser.class: Yylex.java ThrillException.class Parser.java
 	$(JAVAC) Parser.java
 	
 Yylex.java: thrill_lexer.flex
 	$(JFLEX) thrill_lexer.flex
 
-ThrillException.class: ThrillException.java
+ThrillException.class:
 	$(JAVAC) ThrillException.java
 
 Parser.java: thrill_grammar.y
