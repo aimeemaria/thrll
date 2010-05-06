@@ -6,6 +6,9 @@
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Park 
 {
@@ -15,7 +18,8 @@ public class Park
 	private double cost;
 	public int hours;  		//the number of hours the park operates in a day.
 	public double salary;  	//the salary of park employees
-
+    static FileWriter positionFile = null; 
+    
 	// internal list of land objects
 	private ArrayList<Land> LandObjs = new ArrayList<Land>();
 
@@ -89,9 +93,27 @@ public class Park
 		double admissionSales = c.getSize() * admission;
 		sales += admissionSales;
 
+        System.out.println("Should be here.. ");
+ 		//write the number of people inside the positionFile, first thing. Also, this overwrites an existing position file
+		try{
+		    System.out.println("Creating a file\n");
+			positionFile = new FileWriter(new File("../gui/position.txt"));
+		}catch(Exception e){
+				
+		}
+		
+		try{
+			String posLine = Integer.toString(c.getSize()) + "\n";
+			positionFile.write(posLine);
+		}catch(IOException io){
+
+		}
+
 		//assume the crowd enters as soon as park opens
 		c.createpeople();
 		Person p;
+		
+
 		Random generator = new Random();  //Random Number Generator
 		//Iterate through the day's ticks (1 tick = 15 minutes)
 		for(int j = 48; j >0; j--){

@@ -22,7 +22,7 @@ public class Attraction implements LandElement {
 	private int energyLost; //Energy Lost during this attraction
 	private int timeNeeded; //The amount of time it takes to experience the attraction
 	private Land land; //The land object to which this attraction belongs to
-	private Point2D p;
+	private Point2D position;
 	/**The Constructor
 	 * Constructs an attraction with default values
 	 */
@@ -136,8 +136,8 @@ public class Attraction implements LandElement {
 	public int getCapacity() {
 		return capacity;
 	}
-	public Point2D get_position(){
-		return p;
+	public Point2D getPosition(){
+		return position;
 	}
 
 	/**
@@ -195,10 +195,10 @@ public class Attraction implements LandElement {
 		
 		//set location within land
 		Random r = new Random();
-		int radius = r.nextInt(3)+2;
+		int radius = r.nextInt(150)+2;
 		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
-		p=new Point2D.Double();
-		p.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
+		position=new Point2D.Double();
+		position.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
 	}	
 
 	/**

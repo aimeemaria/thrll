@@ -18,7 +18,7 @@ public class Restaurant implements LandElement
 	 private double price;
 	 private double sales;
 	 private Land land;
-	 private Point2D.Double p;
+	 private Point2D position;
 	 private int timeNeeded;
 	 private Random generator;
 	 /*	Constructor
@@ -37,7 +37,7 @@ public class Restaurant implements LandElement
 		price = 10.00;
 		sales = 0.0;	
 		timeNeeded = 2;
-		p = new Point2D.Double();
+		position = new Point2D.Double();
 		generator = new Random();
 	 } 
 	 
@@ -158,9 +158,9 @@ public class Restaurant implements LandElement
 		this.land = land; 
 		//set location within land
 		Random r = new Random();
-		int radius = r.nextInt(3)+2;
+		int radius = r.nextInt(150)+2;
 		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
-		p.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
+		position.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
 	 } 
 	  
 	 public Land getLand()
@@ -174,9 +174,9 @@ public class Restaurant implements LandElement
 	}
 
 	@Override
-	public Point2D get_position() {
+	public Point2D getPosition() {
 		// TODO Auto-generated method stub
-		return null;
+		return position;
 	}
 	public char getType(){
 		return 'r';

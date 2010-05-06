@@ -16,7 +16,7 @@ public interface LandElement {
 	public double calculateRevenue();
 	public double getcost(int hours, double salary);
 	public boolean canEnter(Person p);
-	public Point2D get_position();
+	public Point2D getPosition();
 	public void setLand(Land land);
 	public void enter(Person p);
 	public void exit(Person p);
