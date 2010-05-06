@@ -11,6 +11,11 @@ public class ThrillException extends Exception {
 		throw e;
 	}
 
+	public static void AlreadyDefinedLocationException(String lineInfo, int location) throws ThrillException {
+		ThrillException e = new ThrillException(lineInfo + "location " + location + " has already been set before.");
+		throw e;
+	}
+	
 	public static void RedefinitionException(String lineInfo, String identifier) throws ThrillException{
 		ThrillException e = new ThrillException(lineInfo + "'" + identifier + "' already defined");
 		throw e;
@@ -41,24 +46,29 @@ public class ThrillException extends Exception {
 		throw e;
 	}
 
-	public static void UndefinedFunctionException(String functionName, String[] parameters, String[] types) throws ThrillException{
+	public static void UndefinedFunctionException(String functionName, String[] types) throws ThrillException{
 		String paramsList = "";
 		
-		for(int i = 0; i < parameters.length - 1; ++i){
-			paramsList += types[i] + " " + parameters[i] + ", ";
+		for(int i = 0; i < types.length - 1; ++i){
+			paramsList += types[i] + ", ";
 		}
 		
-		paramsList += types[parameters.length - 1] + " " + parameters[parameters.length - 1];
+		paramsList += types[types.length - 1];
 		
-		ThrillException e = new ThrillException("Undefined function " + functionName + "(" + paramsList + ")" );
+		ThrillException e = new ThrillException("Function type: '" + functionName + "(" + paramsList + ")' undefined in the source");
 		throw e;
 	}
 
-	public static void InsufficientParamsException(String lineInfo, String functionName, int parameters) throws ThrillException{
-		ThrillException e = new ThrillException(lineInfo + functionName + " has insufficient formal parameters. Expected " + parameters + " parameters" );
+	public static void InsufficientParamsException(String lineInfo, String functionName) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + "'" + functionName + "' has insufficient parameters");
 		throw e;
 	}
 
+	public static void TypesMismatchException(String lineInfo, String type1, String type2) throws ThrillException{
+		ThrillException e = new ThrillException(lineInfo + " type mismatch between '" + type1 + "' and '" + type2 + "'");
+		throw e;
+	}
+	
 	public String getMessage() {
 		return message;
 	}

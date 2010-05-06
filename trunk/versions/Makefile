@@ -15,9 +15,9 @@ run: Parser.class
 build: clean Parser.class
 
 clean: 
-	rm -rf *.*~ Parser.class Yylex.class ParserTokens.class ParserVal.class Parser.java Yylex.java ParserTokens.java ParserVal.java
+	rm -rf *.*~ *.class Parser.java Yylex.java ParserTokens.java ParserVal.java
 
-Parser.class: Yylex.java ThrillException.class Parser.java
+Parser.class: Yylex.java ThrillUserFunction.class ThrillException.class Parser.java
 	$(JAVAC) Parser.java
 	
 Yylex.java: thrill_lexer.flex
@@ -25,6 +25,9 @@ Yylex.java: thrill_lexer.flex
 
 ThrillException.class:
 	$(JAVAC) ThrillException.java
+
+ThrillUserFunction.class:
+	$(JAVAC) ThrillUserFunction.java
 
 Parser.java: thrill_grammar.y
 	$(BYACCJ) thrill_grammar.y
