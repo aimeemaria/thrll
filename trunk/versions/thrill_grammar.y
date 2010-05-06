@@ -240,14 +240,14 @@ land_elements: land_elements land_element { $$ += $2; }
 		 ;
 land_element: attraction_definition { $$ = $1; }
             | restaurant_definition { $$ = $1; }
-            | store_definition 	{ $$ = $1; }
+            | store_definition 	    { $$ = $1; }
             ;
 
 attraction_definition: Attraction attraction_name { addToHashtable($2, "Attraction"); }
-			     In land_name
-			     attraction_attributes { $$ = createAttractionDefinition($5, $2) + generateSetAttribute($2, $6); };
+			         In land_name
+			         attraction_attributes { $$ = createAttractionDefinition($5, $2) + generateSetAttribute($2, $6); };
 attraction_attributes: SEMICOLON { $$ = ""; }
-			   | attraction_attributes attraction_attribute { $$ += $2; }
+			         | attraction_attributes attraction_attribute { $$ += $2; }
                      | error_production { $$ = ""; }
                      ;
 attraction_attribute: a1 { $$ = $1; }
@@ -256,7 +256,7 @@ attraction_attribute: a1 { $$ = $1; }
                     | a4 { $$ = $1; }
                     | a5 { $$ = $1; }
                     ;                     
-a1: Set Cost NUMBER SEMICOLON 	 { $$ = ":Cost:" + $3;};
+a1: Set Cost NUMBER SEMICOLON 	     { $$ = ":Cost:" + $3;};
 a2: Set Capacity NUMBER SEMICOLON 	 { $$ = ":Capacity:" + $3;};
 a3: Set Employees NUMBER SEMICOLON 	 { $$ = ":Employees:" + $3;};
 a4: Set ThrillLevel NUMBER SEMICOLON { $$ = ":ThrillLevel:" + $3;};
@@ -276,11 +276,11 @@ restaurant_attribute: r1 { $$ = $1; }
                     | r4 { $$ = $1; }
                     | r5 { $$ = $1; }
                     ;
-r1: Set Cost NUMBER SEMICOLON 		{ $$ = ":Cost:" + $3;};
+r1: Set Cost NUMBER SEMICOLON 		    { $$ = ":Cost:" + $3;};
 r2: Set Capacity NUMBER SEMICOLON;		{ $$ = ":Capacity:" + $3;};
 r3: Set Employees NUMBER SEMICOLON;		{ $$ = ":Employees:" + $3;};
 r4: Set SpendLevel NUMBER SEMICOLON;	{ $$ = ":SpendLevel:" + $3;};
-r5: Set EnergyIncrease NUMBER SEMICOLON;	{ $$ = ":EnergyIncrease:" + $3;};
+r5: Set EnergyIncrease NUMBER SEMICOLON;{ $$ = ":EnergyIncrease:" + $3;};
 
 store_definition: Store store_name { addToHashtable($2, "Store"); }
 			In land_name
@@ -296,7 +296,7 @@ store_attribute: s1 { $$ = $1; }
                | s4 { $$ = $1; }
                ;
                
-s1: Set Cost NUMBER SEMICOLON		 { $$ = ":Cost:" + $3;};
+s1: Set Cost NUMBER SEMICOLON		 { $$ = ":Cost:" + $3; };
 s2: Set Capacity NUMBER SEMICOLON;	 { $$ = ":Capacity:" + $3;};
 s3: Set Employees NUMBER SEMICOLON;	 { $$ = ":Employees:" + $3;};
 s4: Set SpendLevel NUMBER SEMICOLON; { $$ = ":SpendLevel:" + $3;}; 
@@ -317,9 +317,10 @@ return_type: Number { $$ = "double"; }
            | String { $$ = "String"; }
            | error_production {$$ = "void"; }
            ;
-actual_parameters: actual_parameters COMMA data_type variable_name { addToHashtable($4, $3); $$ = $1 + ", " + $3 + " " + $4; ++actualParams; System.out.println("Number of parameters = " + actualParams);}
+actual_parameters: actual_parameters COMMA data_type variable_name 
+{ addToHashtable($4, $3); $$ = $1 + ", " + $3 + " " + $4; ++actualParams; }
 		 | data_type variable_name { addToHashtable($2, $1); $$ = $1 + " " + $2; ++actualParams; }
-                 | error_production { $$ = ""; }
+         | error_production { $$ = ""; }
 		 ;
 
 block: start_block statements end_block { $$ = "{" + $2 + "\n}"; }
@@ -331,15 +332,15 @@ statements: statements statement { $$ = $$ + "\n" +  $2; }
           | error_production { $$ = ""; }
 	    ;
 statement: add_attribute 	 { $$ = $1; }
-	   | assignment 	 { $$ = $1; }
-	   | condition 	 	 { $$ = $1; }
-           | declaration 	 { $$ = $1; }
-	   | function_call 	 { $$ = $1; }
-           | initialization 	 { $$ = $1; }
-	   | initialize_duration { $$ = $1; }
-	   | loop 		 { $$ = $1; }
-	   | return 		 { $$ = $1; }
-	   | thrill_functions 	 { $$ = $1; }
+	     | assignment 	 { $$ = $1; }
+	     | condition 	 	 { $$ = $1; }
+         | declaration 	 { $$ = $1; }
+	     | function_call 	 { $$ = $1; }
+         | initialization 	 { $$ = $1; }
+	     | initialize_duration { $$ = $1; }
+	     | loop 		       { $$ = $1; }
+	     | return 		     { $$ = $1; }
+	     | thrill_functions 	 { $$ = $1; }
          ;
 
 add_attribute: Set Capacity value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "Capacity", $3); }
@@ -355,23 +356,37 @@ add_attribute: Set Capacity value In variable_name SEMICOLON		    { $$ = generat
     		 ;
 
 assignment: left_side EQUAL right_side { $$ = $1 + " = " + $3;};
-left_side: variable_name { boolean exists = checkHashtable($1); if(exists) { $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } };
-right_side: variable_name SEMICOLON { boolean exists = checkHashtable($1); if(exists) { $$ = $1 + ";"; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } };
-          | arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
- 	    | function_call { $$ = $1; }
-	    | calculate_revenue { $$ = $1; }
-	   ;
-arithmetic_expression: arithmetic_expression PLUS arithmetic_expression  { $$ = $1 + "+" + $3; }
-			   | arithmetic_expression MINUS arithmetic_expression { $$ = $1 + "-" + $3; }
-			   | arithmetic_expression MUL arithmetic_expression   { $$ = $1 + "*" + $3; }
-			   | arithmetic_expression DIV arithmetic_expression   { checkDivideByZero($1, $3); $$ = $1 + "/" + $3; }
-                     | OPEN arithmetic_expression CLOSE 			 { $$ = "(" + $2 + ")"; }
-                     | variable_name 						 { 
-												   boolean exists = checkHashtable($1); 
-												   if(exists){ $$ = checkSemanticValue($1); } 
-												   else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); }
-												 }
-                     | constant 							 { $$ = $1; }
+
+left_side: variable_name 
+{ 
+    boolean exists = checkHashtable($1); 
+    if(exists) { $$ = $1; } 
+    else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } 
+};
+
+right_side: variable_name SEMICOLON 
+{ 
+    boolean exists = checkHashtable($1); 
+    if(exists) { $$ = $1 + ";"; } 
+    else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } 
+}
+         | arithmetic_expression SEMICOLON { $$ = $1 + ";"; }
+ 	     | function_call { $$ = $1; }
+	     | calculate_revenue { $$ = $1; }
+	     ;
+	     
+arithmetic_expression: arithmetic_expression PLUS arithmetic_expression { $$ = $1 + "+" + $3; }
+			         | arithmetic_expression MINUS arithmetic_expression { $$ = $1 + "-" + $3; }
+			         | arithmetic_expression MUL arithmetic_expression   { $$ = $1 + "*" + $3; }
+			         | arithmetic_expression DIV arithmetic_expression   { checkDivideByZero($1, $3); $$ = $1 + "/" + $3; }
+                     | OPEN arithmetic_expression CLOSE 			       { $$ = "(" + $2 + ")"; }
+                     | variable_name 	
+                     { 
+                        boolean exists = checkHashtable($1); 
+                        if(exists){ $$ = checkSemanticValue($1); } 
+                        else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); }
+                     }
+                     | constant { $$ = $1; }
                      ;
 
 condition: If OPEN relational_expression CLOSE block 		    { $$ = "if(" + $3 + ")" + $5; }
@@ -389,24 +404,30 @@ declaration_list: declaration_list COMMA variable_name { $$ = $1 + ", " + $3; }
                 | variable_name { $$ = $1; }
 		    ;
 
-function_call: function_name COLON formal_parameters SEMICOLON 
-		 { $$ = $1 + "(" + $3 + ");" ; }
-		 ;
+function_call: function_name COLON formal_parameters SEMICOLON { 
+                                                                 addFunctionToHashtable($1, formalParams);
+                                                                 $$ = $1 + "(" + $3 + ");" ;
+                                                               }
+		                                                       ;
 
-formal_parameters: formal_parameters COMMA variable_name { $$ = $$ + "," + $3; }
-                 | variable_name {$$ = $1;}
-		 | error_production { $$ = ""; }
-		 ;
+formal_parameters: formal_parameters COMMA variable_name { $$ = $$ + "," + $3; ++formalParams; }
+                 | variable_name { $$ = $1; ++formalParams; }
+		         | error_production { $$ = ""; }
+		         ;
 
 initialization: primitive_type initialization_list SEMICOLON 
-                { addInitVariables($1, $2); $$ = $1 + " " + $2 + ";"; }
-		  ;
+                { 
+                    addInitVariables($1, $2); $$ = $1 + " " + $2 + ";"; 
+                }
+		        ;
 
 initialization_list: initialization_list COMMA variable_name EQUAL constant 
                      { $$ = $1 + ", " + $3 + " = " + $5; }
-		       | variable_name EQUAL constant 
-			   { $$ = $1 + " = " + $3; }
-		       ;
+		           | variable_name EQUAL constant 
+			         { 
+			            $$ = $1 + " = " + $3; 
+			         }
+		           ;
 
 initialize_duration: duration_type variable_name EQUAL NUMBER SEMICOLON { addToHashtable($2, $1); $$ = initializeDuration($1, $2, new Double($4).toString() ); }
 
@@ -458,7 +479,11 @@ constant: NUMBER { $$ = new Double($1).toString(); }
 	    ;
 
 value: NUMBER 	   { $$ = new Double($1).toString(); }
-     | variable_name { boolean exists = checkHashtable($1); if(exists){ $$ = $1; } else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } }
+     | variable_name 
+     { 
+        boolean exists = checkHashtable($1); if(exists){ $$ = $1; } 
+        else{ ThrillException.ObjectNotFoundException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", $1); } 
+     }
      ;
 
 attraction_name: variable_name { $$ = $1; } ;
@@ -481,10 +506,12 @@ empty: ; { $$ = ""; }
 	public int yyline = 1;
 	public int yycolumn = 0;
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
+    private Hashtable<String, String[]> userFunctions = new Hashtable<String, String[]>();
 	int noOfParks = 0, noOfLands = 0;
 	String parkName = null;
 	String scopeName = null;
-        private int actualParams = 0;
+    private int actualParams = 0;
+    private int formalParams = 0;
 	final int MAX_LIMIT_PARK = 1;
 	final int MAX_LIMIT_LANDS = 6;
 
@@ -565,6 +592,10 @@ empty: ; { $$ = ""; }
 		result += setName + setLand + addStore;
 
 		return result;
+	}
+	
+	public void addFunctionToHashtable(String functionName, int formalParams) {
+	
 	}
 
 	public void addToHashtable(String identifier, String type) throws ThrillException{
@@ -855,16 +886,27 @@ empty: ; { $$ = ""; }
 		String returnStmt = null;
 		int beginIndex = 0;
 		int endIndex = 0;
-		String[] params = parameters.split(",");
-		if(actualParams != params.length){
-			ThrillException.InsufficientParamsException(functionName, actualParams);
-		}
+		String[] params = null;
 
-		/*
-		if(checkParametersType()){
-			//ThrillException.IllegalParamTypeException(lineInfo, functionName, actualParams, params.length);
+		if(userFunctions.containsKey(functionName)){
+			params = userFunctions.get(functionName);
+
+			if(actualParams != params.length){
+				String[] types = new String[params.length];
+				for(int i = 0; i < params.length; ++i){
+					types[i] = thrillObjects.get("Start.".concat(params[i]));
+				} 
+				ThrillException.UndefinedFunctionException(functionName, params, types);
+			}
 		}
-		*/
+		
+		if(params != null && !validParametersType(functionName, parameters.split(","), params)){
+			String[] types = new String[params.length];
+			for(int i = 0; i < params.length; ++i){
+				types[i] = thrillObjects.get("Start.".concat(params[i]));
+			}
+			ThrillException.UndefinedFunctionException(functionName, params, types);
+		}
 
 		if(block.contains("return")){
 			beginIndex = block.indexOf("return");
@@ -873,14 +915,33 @@ empty: ; { $$ = ""; }
 			checkReturn = true;
 		}
 
-		if(checkReturn && !checkReturnType(returnType, returnStmt) 
-		|| !returnType.equalsIgnoreCase("void") && returnStmt == null){
+		if(checkReturn && !checkReturnType(returnType, returnStmt) || 
+		   !returnType.equalsIgnoreCase("void") && returnStmt == null){
 			ThrillException.MissingReturnStatementException("Error on line(" + yyline + ") and column(" + yycolumn + "): ", "Invalid/Missing return statement");
 		}
 
 		result = returnType + " " + functionName + "(" + parameters + ")\n" + block;
 
 		return result;
+	}
+
+	boolean validParametersType(String functionName, String[] parameters, String[] params) {
+		String[] paramTypes = new String[parameters.length];
+		
+		for(int i = 0; i < params.length; ++i){
+			String type = parameters[i].trim().split(" ")[0];
+			paramTypes[i] = (type.equalsIgnoreCase("double")) ? "Number" : "String"; 
+
+			String identifier = "Start.".concat(params[i]);
+			if(thrillObjects.containsKey(identifier)){
+				type = thrillObjects.get(identifier);
+				if(!type.equalsIgnoreCase(paramTypes[i])){
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	boolean checkReturnType(String returnType, String returnStmt) throws ThrillException{
