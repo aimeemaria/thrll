@@ -1,5 +1,9 @@
 import java.util.Random;
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Person {
 	private int energyLevel;
 	private int thrillLevel;
@@ -7,20 +11,21 @@ public class Person {
 	private int location; // what land this person is in
 	private double x,y; //position
 	private int tick;
-	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in
-	private boolean didEnter;
-
-
+	private int id;
+	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in	
+	static FileWriter positionFile = null; 
+	
 	private void setattributes(int energy,int thrill, double spend){
 		energyLevel = energy;
 		thrillLevel = thrill;
 		spendingCapacity = spend;
 	}
 
-	public Person(int energy, int thrill, int spend) {
+	public Person(int energy, int thrill, int spend, int id) {
 		setattributes(energy,thrill,spend);
 		tick = 48;
 		location = 1;
+		this.id = id;
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
 		didEnter = false;
 	}
@@ -90,17 +95,35 @@ public class Person {
 
 	public void setSpecificLocation(LandElement location){
 		whereAmI = location;
+		//this should happen only when simulate button is clicked. 
+		Point2D currentlocation = whereAmI.getPosition();
+		
+		System.out.println("Current Location: x, y:" + currentlocation.getX() + ","+ currentlocation.getY());
+		//write the person number and the position into the file.
+		if(positionFile == null){
+			try{
+			    System.out.println("Creating a file\n");
+				positionFile = Park.positionFile;
+			}catch(Exception e){
+				
+			}
+		}
+		
+		try{
+			String posLine = Integer.toString(id) 
+			+ ":" + Double.toString(currentlocation.getX()) 
+			+ ":" + Double.toString(currentlocation.getY()) 
+			+ "\n"
+			;
+
+			positionFile.write(posLine);
+		}catch(IOException io){
+
+		}
 	}
 
 	public LandElement getSpecificLocation(){
 		return whereAmI;
 	}
 
-	public void setDidEnter(boolean value){
-		didEnter = value;
-	}
-	
-	public boolean getDidEnter(){
-		return didEnter;
-	}
 }

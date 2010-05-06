@@ -35,7 +35,7 @@ public class Crowd {
 		int thrill[] = n.generateNumbers(thrillLevel, size);
 		int spend[] = n.generateNumbers(spendingCapacity, size);
 		for(int i = 0; i < size; i++){
-			people.add(new Person(energy[i],thrill[i],spend[i]));
+			people.add(new Person(energy[i],thrill[i],spend[i],i));
 		}
 	}
 	public int getEnergyLevel(){

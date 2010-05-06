@@ -20,7 +20,7 @@ public class Store implements LandElement {
 	private int currentAttendance;  //the current number of people in the store
 	private double price;  //the average purchase price of the store
 	private Land land;
-	private Point2D.Double p;
+	private Point2D.Double position;
 	private int timeNeeded;
 	private Random generator;
 	
@@ -34,7 +34,7 @@ public class Store implements LandElement {
 		price = 10.00;
 		employees = 2;
 		sales = 0;	
-		p = new Point2D.Double();
+		position = new Point2D.Double();
 		timeNeeded=1;
 		generator = new Random();
 	}
@@ -179,9 +179,9 @@ public class Store implements LandElement {
 		this.land = land; 
 		//set location within land
 		Random r = new Random();
-		int radius = r.nextInt(3)+2;
+		int radius = r.nextInt(150)+2;
 		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
-		p.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
+		position.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
 	} 
 	
 	public double getcost(int hours, double salary){
@@ -199,9 +199,9 @@ public class Store implements LandElement {
 	}
 
 	@Override
-	public Point2D get_position() {
+	public Point2D getPosition() {
 		// TODO Auto-generated method stub
-		return null;
+		return position;
 	} 
 	
 	public char getType(){
