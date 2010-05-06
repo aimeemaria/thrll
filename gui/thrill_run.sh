@@ -35,7 +35,7 @@ else
 fi
 
 #clean up the files now
-rm -rf ThrillProgram.*
+#rm -rf ThrillProgram.*
 
 
     

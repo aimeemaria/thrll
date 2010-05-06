@@ -202,6 +202,8 @@ public class TextAreaDemo extends JFrame{
     public void paintppl(){
     	text.setText("Executing now . . . ");
     	graph.paintppl(100,100);
+    	
+    	
     	repaint();
     }
 
