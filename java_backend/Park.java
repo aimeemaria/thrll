@@ -111,16 +111,18 @@ public class Park
 
 
 		Random generator = new Random();  //Random Number Generator
+		//Iterate through the day's ticks (1 tick = 15 minutes)
 		for(int j = 48; j >0; j--){
+			//Iterate through each person
 			for(int i =0;i<c.getSize();i++){
 				p = c.people.get(i);
 				if (p.getTick() == j){
 
-					//After First Tick
-					//Exit Current Location
-					if (j < 48)
+					if (p.getDidEnter())
+					{
 						p.getSpecificLocation().exit(p);
-
+						p.setDidEnter(false);
+					}
 					int num_Lands = LandObjs.size();
 
 					//Choose land to visit
@@ -148,6 +150,7 @@ public class Park
 							if(attraction.canEnter(p)){
 								attraction.enter(p);
 								p.decreaseTick(attraction.getTimeNeeded());
+								p.setDidEnter(true);
 							}
 							p.setSpecificLocation(attraction);
 						}
@@ -172,6 +175,7 @@ public class Park
 							if(store.canEnter(p)){
 								store.enter(p);
 								p.decreaseTick(store.getTimeNeeded());
+								p.setDidEnter(true);
 							}
 							p.setSpecificLocation(store);
 						}	
@@ -196,6 +200,7 @@ public class Park
 							if(restaurant.canEnter(p)){
 								restaurant.enter(p);
 								p.decreaseTick(restaurant.getTimeNeeded());
+								p.setDidEnter(true);
 							}
 							p.setSpecificLocation(restaurant);
 						}	
@@ -208,11 +213,12 @@ public class Park
 			}
 
 		}
-		
+		/**
 		for(int i =0;i<c.getSize();i++){
 			Person pe = c.people.get(i);
 			pe.leavePark();
 		}
+		**/
 		
 		//Get Sales figures for all stores and restaurants
 		for(int i = 0; i < LandObjs.size(); i++){

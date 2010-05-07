@@ -12,7 +12,8 @@ public class Person {
 	private double x,y; //position
 	private int tick;
 	private int id;
-	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in	
+	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in
+	private boolean didEnter;
 	static FileWriter positionFile = null; 
 
 	private void setattributes(int energy,int thrill, double spend){
@@ -27,6 +28,7 @@ public class Person {
 		location = 1;
 		this.id = id;
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
+		didEnter=false;
 	}
 	public Person(){
 		setattributes(10,10,10);
@@ -35,6 +37,7 @@ public class Person {
 		tick = 48;
 		location = 1; //person enters in Land 1
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
+		didEnter = false;
 	}
 
 	public void set_position(double x, double y){
@@ -103,7 +106,7 @@ public class Person {
 			this.x = currentlocation.getX();
 			this.y = currentlocation.getY();
 		}
-		
+
 		//System.out.println("Current Location: x, y:" + currentlocation.getX() + ","+ currentlocation.getY());
 		//write the person number and the position into the file.
 		if(Park.createPositionFile){
@@ -130,5 +133,13 @@ public class Person {
 	public LandElement getSpecificLocation(){
 		return whereAmI;
 	}
+	public void setDidEnter(boolean value){
+		didEnter = value;
+	}
+
+	public boolean getDidEnter(){
+		return didEnter;
+	}
+
 
 }
