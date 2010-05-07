@@ -18,7 +18,8 @@ public class Restaurant implements LandElement
 	 private double price;
 	 private double sales;
 	 private Land land;
-	 private Point2D position;
+
+	 private Point2D.Double position;
 	 private int timeNeeded;
 	 private Random generator;
 	 /*	Constructor
@@ -160,7 +161,10 @@ public class Restaurant implements LandElement
 		Random r = new Random();
 		int radius = r.nextInt(150)+2;
 		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
-		position.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
+		double x = radius*Math.cos(Math.toRadians(angle));
+		double y = radius*Math.sin(Math.toRadians(angle));
+		
+		position.setLocation(x,y);
 	 } 
 	  
 	 public Land getLand()
@@ -175,9 +179,9 @@ public class Restaurant implements LandElement
 
 	@Override
 	public Point2D getPosition() {
-		// TODO Auto-generated method stub
 		return position;
 	}
+ 
 	public char getType(){
 		return 'r';
 	}
