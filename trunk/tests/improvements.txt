@@ -3,18 +3,27 @@ It should display no park definition.Although it is ok with that too.
 
 When a semicolon is missing, it throws error unrecognixed token, which is of next statement. It should display missing semicolon. Although it is fine, but can we have displaying missing semicolon, instead of above. We can add an exception, where it sees that a ; should come but is not there, so will print missing ;.
 
+This can be done with error productions only. We don't have such things and everything is handled in the parser error handling functions.
+
 Number b = 10, c; ---> Not Working, are we not allowing this?
+
+We can have only declarations or initializations but not both. So its working as expected.
 
 We are not doing Polymorphism right?
 function a : Number b,Numberc
 function d : Number e,Number g, Number h
 
+No polymorphism.
+
 Also, same name for Number and String type is not being allowed. Is it ok?
+
+Yes, we cannot have have an identifier of two different data types.
 
 Are we not having return 0 statement?
 Not recognizing the return identifier?It has not been put in the token.
 Return is proper, but return is not correct. It gives wrong error. It should print error like for other identifiers/Keywords like Crowd.
 
+No 'return 0' statement. Our keyword is Return and not return. So, parser will throw a synatx error.
 
 Not Working
 If there is a function with three arguments and if I call same function with two arguments, then no error is thrown.
@@ -27,16 +36,20 @@ When comparing a Number type with a String type, not showing any errors.
 
 While defining another land, one production is added that points to the previous land and it does not throw error?(landattribute_test).
 
-Need to put limit check for SpendingCapacity
+Need to put limit check for SpendingCapacity - done. Now SpendingCapacity is between 0  and 20.
 
 The grammar is not taking negative values for variables(value_statement_test)
 
 For nested functions, it is displaying error of unreognized token of the next function. But, it should display some other error.
 In the return statement only one value is allowed, there is no expression that ca be passes via return statement. Is it ok?
 
+Yes. We return constants or variables, but no expressions.
+
 If no value is defined, even then the operators are working.
+This is hard to do, but can be done using some sort of a symbol table. javac will throw errors when the intermediate code is compiled. I think we should fix this.
 
-
-If the location of two land is same, no error thrown.
+If the location of two land is same, no error thrown. : need to fix this.
 
 Are we only doing calling of a function inside start and defining it outside?Function definition inside start is giving error.
+
+Yes. No Nested functions.
