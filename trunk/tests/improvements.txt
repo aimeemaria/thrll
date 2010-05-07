@@ -1,14 +1,18 @@
+Done
 If only crowd definition are ther and no park is defined then it displays, illegal token
 It should display no park definition.Although it is ok with that too.
 
+Done
 When a semicolon is missing, it throws error unrecognixed token, which is of next statement. It should display missing semicolon. Although it is fine, but can we have displaying missing semicolon, instead of above. We can add an exception, where it sees that a ; should come but is not there, so will print missing ;.
 
 This can be done with error productions only. We don't have such things and everything is handled in the parser error handling functions.
 
+Done
 Number b = 10, c; ---> Not Working, are we not allowing this?
 
 We can have only declarations or initializations but not both. So its working as expected.
 
+Done
 We are not doing Polymorphism right?
 function a : Number b,Numberc
 function d : Number e,Number g, Number h
@@ -18,6 +22,7 @@ No polymorphism.
 Also, same name for Number and String type is not being allowed. Is it ok?
 
 Yes, we cannot have have an identifier of two different data types.
+
 
 Are we not having return 0 statement?
 Not recognizing the return identifier?It has not been put in the token.
@@ -36,6 +41,7 @@ When comparing a Number type with a String type, not showing any errors.
 
 While defining another land, one production is added that points to the previous land and it does not throw error?(landattribute_test).
 
+Done
 Need to put limit check for SpendingCapacity - done. Now SpendingCapacity is between 0  and 20.
 
 The grammar is not taking negative values for variables(value_statement_test)
@@ -48,8 +54,38 @@ Yes. We return constants or variables, but no expressions.
 If no value is defined, even then the operators are working.
 This is hard to do, but can be done using some sort of a symbol table. javac will throw errors when the intermediate code is compiled. I think we should fix this.
 
+
 If the location of two land is same, no error thrown. : need to fix this.
 
 Are we only doing calling of a function inside start and defining it outside?Function definition inside start is giving error.
 
 Yes. No Nested functions.
+
+----------------------------------05/07----------------------------------------------
+
+We are not having a grammar production like this, is it ok?
+if(a)
+{
+}
+
+How is one defining a constant?Is there a keyword for it?
+
+If two variables are declared but not defined and we use them later in expression, then it is not producing any error.
+
+We are not allowing any expressions to be checked by relational operators.
+
+Printing error for
+if ( a < 0)
+{}
+basically no constant is being allowed in the right or left hand places. We need to correct this.
+
+Are the priorities set for operators used in arithmetic expressions?
+a*b+c/d should be (a*b) + (c/d)
+
+a=-b,or a = -2 not allowed
+
+For duration types we are only having a production where declaration and definition both have to be done. One can not have only declaration.Need to fix this.
+
+Is CalculateRevenue returning something? We want it to return some values right? There is no type defined for it and there is a production in assignment statements thats calling the calculate revenue function.
+
+We are not having any production or system to do a = b =1;
