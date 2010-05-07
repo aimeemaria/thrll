@@ -678,6 +678,7 @@ final static String yyrule[] = {
 	private int formalParams = 0;
 	final int MAX_LIMIT_PARK = 1;
 	final int MAX_LIMIT_LANDS = 6;
+	boolean createPositionFile = false;
 
 	private int yylex () {
 		int yyl_return = -1;
@@ -709,8 +710,9 @@ final static String yyrule[] = {
 		}
 	}
 
-	public Parser(Reader r) {
+	public Parser(Reader r, boolean createFile) {
 		lexer = new Yylex(r, this);
+		this.createPositionFile = createFile;
 	}
 
 	static boolean interactive;
@@ -939,6 +941,11 @@ final static String yyrule[] = {
 			result += p + ".set" + attributes[i] + "(" + value + ");\n";
 		}
 
+		if(createPositionFile){
+			String createFileString = p + ".setCreateFile(true);\n";
+			result += createFileString;
+		}
+		
 		return result;
 	}
 
@@ -1353,13 +1360,18 @@ final static String yyrule[] = {
 	public static void main(String args[]) throws IOException {
 
 		Parser yyparser;
+		boolean createFile = false;
+		
 		if(args.length < 1){
 			System.out.println("Usage: java Parser <thrill_program.txt>");
 			return;
 		}
+		else if(args.length == 2){
+			createFile = Boolean.parseBoolean(args[1]);
+		}
 
 		// parse a file
-		yyparser = new Parser(new FileReader(args[0]));
+		yyparser = new Parser(new FileReader(args[0]), createFile);
 
 		System.out.println("\nCompiling ...\n");
 
@@ -1376,7 +1388,7 @@ final static String yyrule[] = {
 			System.out.println(ex.getMessage() + "\n");			
 		}
 	}
-//#line 1367 "Parser.java"
+//#line 1379 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -2303,7 +2315,7 @@ case 188:
 //#line 506 "thrill_grammar.y"
 { yyval.sval = ""; }
 break;
-//#line 2288 "Parser.java"
+//#line 2300 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
