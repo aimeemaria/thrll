@@ -3,6 +3,10 @@
 thrill_source=ThrillProgram.java
 thrill_class=ThrillProgram.class
 
+#clean up position and input  files
+#rm -rf position.txt
+#rm -rf code.txt
+
 # Compile the input to generate the intermediate code - ThrillProgram.java
 java -cp ./thrill_parser.jar Parser code.txt
 
@@ -35,7 +39,7 @@ else
 fi
 
 #clean up the files now
-#rm -rf ThrillProgram.*
+rm -rf ThrillProgram.*
 
 
     
