@@ -1,0 +1,38 @@
+Crowd MyCrowdOne
+Set Size 100;
+Set EnergyLevel 10;
+
+Crowd MyCrowdTwo     
+Set Size 100;     
+Set ThrillLevel 10;      
+
+Park ThrillPark      
+Set Admission 100;     
+Set Capacity  1000;     
+Set Cost      10;          
+
+Land MyLand         
+Set Location 1.5;       
+
+Attraction GiantWheel In MyLand;                
+
+Restaurant Hotel In MyLand;           
+
+Store KidsStuff In MyLand;
+
+Crowd MyCrowdThree     
+Set Size 100;     
+Set SpendingCapacity 10;
+Set ThrillLevel 10;
+
+Crowd MyCrowdFour     
+Set Size 100;     
+Set SpendingCapacity 10;      
+
+Start:
+{
+Set Cost 100 In GiantWheel;
+Number b = 10;
+Number a = MyFunction: b;
+Number c = { a + b };
+}
