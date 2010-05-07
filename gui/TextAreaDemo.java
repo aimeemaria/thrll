@@ -38,6 +38,7 @@
 import javax.swing.*;
 import java.util.*;
 import java.io.*;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,165 +48,200 @@ import javax.swing.GroupLayout.*;
 
 
 public class TextAreaDemo extends JFrame{
-    
-    private JLabel jLabel1;
-    private JScrollPane jScrollPane1;
-    private JScrollPane textscroll;
-    private JTextArea textArea;
-    private DisplayPanel graph;
-    private JButton execute,simulate,clear;
-    private JTextArea text;
-    
-    public TextAreaDemo() {
-	try {
-		initComponents();
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-    }
-        
-    private class BListener implements ActionListener
-	{
-		public void actionPerformed(ActionEvent a)
-		{
-			String message = textArea.getText();
 
-			if(a.getSource() == execute){
-				FileOutputStream fout;		
-				text.setText("Executing now . . . ");
-				try
-				{
-				    // Open an output stream
-				    fout = new FileOutputStream ("./code.txt");//("/thrill/runthrill/code.txt");
+	private JLabel jLabel1;
+	private JScrollPane jScrollPane1;
+	private JScrollPane textscroll;
+	private JTextArea textArea;
+	private DisplayPanel graph;
+	private JButton execute,simulate,clear,generate;
+	private JTextArea text;
 
-				    // Print a line of text
-				    new PrintStream(fout).print (message);
-
-				    // Close our output stream
-				    fout.close();		
-				
-				}
-				catch (IOException e)
-				{
-					System.err.println ("Unable to write to file");
-					System.exit(-1);
-				}
-				
-				//run shell script to compile, and execute showing output on the screen
-			
-				 String s = "", output="";
-
-			        try {
-				  //Process p = Runtime.getRuntime().exec("./shell.sh");
-			        	 Process p = Runtime.getRuntime().exec("./thrill_run.sh");//("./thrill_run.sh");
-		            BufferedReader stdInput = new BufferedReader(new 
-		                 InputStreamReader(p.getInputStream()));
-
-		            BufferedReader stdError = new BufferedReader(new 
-		                 InputStreamReader(p.getErrorStream()));
-
-		            // read the output from the command
-		            //System.out.println("Here is the standard output of the command:\n");
-		            while ((s = stdInput.readLine()) != null) {
-		                //System.out.println(s);
-		            	output = output + s + "\n";
-		            }
-		    
-		            // read any errors from the attempted command
-		            //System.out.println("Here is the standard error of the command (if any):\n");
-		            while ((s = stdError.readLine()) != null) {
-		                //System.out.println(s);
-		            	output = output + s + "\n";
-		            }
-		            
-		            text.setText(output);
-		          //  System.exit(0);
-		        }
-		        catch (IOException e) {
-		          // System.out.println("exception happened - here's what I know: ");
-		            text.setText("exception happened ");
-		            e.printStackTrace();
-		            System.exit(-1);
-		        }
-			}
-
-		        if(a.getSource() == simulate){
-		        	text.setText("Simlulating . . . ");
-		        	paintppl();
-		        }
-			
-			
+	public TextAreaDemo() {
+		try {
+			initComponents();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-    private void initComponents() throws InterruptedException {
-        jLabel1 = new JLabel("Enter your Program Code  below . . . ");
-        text = new JTextArea();
-        textArea = new JTextArea();
-	    graph = new DisplayPanel();
-	    //graph.setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        textArea.setColumns(50);
-        textArea.setLineWrap(true);
-        textArea.setRows(25);
-        textArea.setWrapStyleWord(true);
-        
-        text.setColumns(10);
-        text.setLineWrap(true);
-        text.setRows(25);
-        text.setWrapStyleWord(true);
-        
-        jScrollPane1 = new JScrollPane(textArea);
-        textscroll = new JScrollPane(text);
-        execute = new JButton("Execute");
-        clear = new JButton("Clear");
-        simulate = new JButton("Simulate");
-        execute.addActionListener(new BListener());
-        simulate.addActionListener(new BListener());
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
- 
-       layout.setAutoCreateGaps(true);
-     //  layout.setAutoCreateContainerGaps(true);
 
-  
-       layout.setHorizontalGroup(
-          layout.createSequentialGroup()
-             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-             .addComponent(jLabel1)
-             .addComponent(jScrollPane1)
-             .addComponent(textscroll))
-             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                  .addComponent(graph)
-                  .addComponent(execute)
-                  .addComponent(simulate))
-           );
-       layout.setVerticalGroup(
-          layout.createSequentialGroup()
-          .addComponent(jLabel1)
-             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            	  .addComponent(jScrollPane1)
-                  .addComponent(graph))
-             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            		 .addComponent(textscroll)
-            		 .addComponent(execute))
-             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            		 .addComponent(simulate))
-       );
-        pack();
-        //setVisible(true);
-       // Thread.sleep(2000);
-		//paintppl();
+	private class BListener implements ActionListener
+	{
+		public void helloProfAho(String thrillCode, String command){
+			
+			FileOutputStream fout = null;
+			
+			simulate.setEnabled(true);
+			try
+			{
+				// Open an output stream
+				fout = new FileOutputStream ("./code.txt");//("/thrill/runthrill/code.txt");
+
+				// Print a line of text
+				new PrintStream(fout).print(thrillCode);
+
+				// Close our output stream
+				fout.close();		
+
+			}
+			catch (IOException e)
+			{
+				System.err.println ("Unable to write to file");
+				System.exit(-1);
+			}
+
+			//run shell script to compile, and execute showing output on the screen
+
+			String s = "", output="";
+
+			try {
+				String script = null;
+				
+				// we either execute or execute and generate position file.
+				if(command.equalsIgnoreCase("Execute")) {
+					script = "./thrill_execute.sh";
+				}
+				else{
+					script = "./thrill_generate.sh";
+				}
+				
+				Process p = Runtime.getRuntime().exec(script);
+				
+				BufferedReader stdInput = new BufferedReader(new 
+						InputStreamReader(p.getInputStream()));
+
+				BufferedReader stdError = new BufferedReader(new 
+						InputStreamReader(p.getErrorStream()));
+
+				// read the output from the command
+				while ((s = stdInput.readLine()) != null) {
+					//System.out.println(s);
+					output = output + s + "\n";
+				}
+
+				// read any errors from the attempted command
+				//System.out.println("Here is the standard error of the command (if any):\n");
+				while ((s = stdError.readLine()) != null) {
+					//System.out.println(s);
+					output = output + s + "\n";
+				}
+
+				text.setText(output);
+			}
+			catch (IOException e) {
+				text.setText(e.getMessage());
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+			
+		public void actionPerformed(ActionEvent a)
+		{
+			if(a.getSource() == execute){
+				text.setText("Executing now . . . ");
+				helloProfAho(textArea.getText(), "Execute");
+			}
+			if(a.getSource() == simulate){
+				text.setText("Simlulating . . . ");
+				paintppl();
+			}
+
+			if(a.getSource() == generate) {
+				text.setText("Generating now <Hope Prof likes this> ");
+				helloProfAho(textArea.getText(), "Generate");
+			}
+
+			if(a.getSource() == clear) {
+				textArea.setText("");
+			}
+		}
+	}
+	private void initComponents() throws InterruptedException {
+		jLabel1 = new JLabel("Enter your Program Code  below . . . ");
+		text = new JTextArea();
+		textArea = new JTextArea();
+		graph = new DisplayPanel();
+		//graph.setVisible(true);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		textArea.setColumns(50);
+		textArea.setLineWrap(true);
+		textArea.setRows(25);
+		textArea.setWrapStyleWord(true);
+
+		text.setColumns(10);
+		text.setLineWrap(true);
+		text.setRows(25);
+		text.setWrapStyleWord(true);
+
+		jScrollPane1 = new JScrollPane(textArea);
+		textscroll = new JScrollPane(text);
+		execute = new JButton("Execute");
+		clear = new JButton("Clear");
+		simulate = new JButton("Simulate");
+		generate = new JButton("Generate");
+
+		// set dimension
+		Dimension bDimension = new Dimension(100, 25);
+		simulate.setMinimumSize(bDimension);
+		execute.setMinimumSize(bDimension);
+		clear.setMinimumSize(bDimension);		
+		generate.setMinimumSize(bDimension);
 		
-    }
-    
-    public void paintppl(){
-    	text.setText("Executing now . . . ");
-    	graph.paintppl(100,100);
-    	
-    	
-    	repaint();
-    }
+		// add event listener
+		execute.addActionListener(new BListener());
+		simulate.addActionListener(new BListener());
+		generate.addActionListener(new BListener());
+		clear.addActionListener(new BListener());
+
+		// disable simulate
+		simulate.setEnabled(false);
+		
+		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+
+		layout.setAutoCreateGaps(true);
+		//  layout.setAutoCreateContainerGaps(true);
+
+
+		layout.setHorizontalGroup(
+				layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(jLabel1)
+						.addComponent(jScrollPane1)
+						.addComponent(textscroll))
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(graph)
+								.addComponent(execute)
+								.addComponent(simulate)
+								.addComponent(clear)
+								.addComponent(generate))
+		);
+		layout.setVerticalGroup(
+				layout.createSequentialGroup()
+				.addComponent(jLabel1)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(jScrollPane1)
+						.addComponent(graph))
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+								.addComponent(textscroll)
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(execute)
+										.addComponent(simulate)
+										.addComponent(clear)
+										.addComponent(generate)))
+		);
+
+		pack();
+	}
+
+	public void paintppl(){
+		text.setText("Executing now . . . ");
+		graph.paintppl(100,100);
+
+
+		repaint();
+	}
 
 
 }
