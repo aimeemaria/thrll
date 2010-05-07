@@ -2,13 +2,23 @@ Crowd MyCrowdOne
     Set Size 300;
     Set EnergyLevel 7;
     Set ThrillLevel 4;
-    Set SpendingCapacity 2000;
+    Set SpendingCapacity 20;
 
 Park ParkOne
     Set Admission 100;
     Set Capacity  1000;
     Set Cost      10;
 
+    Land LandOne
+    Set Location 2;
+    Store Walmart In LandOne;
+    Set Cost 100;
+    
+    Land LandTwo
+    Set Location 4;
+    Store Walmart2 In LandTwo;
+    Set Cost 100;
+    
     Land LandFour
 	Set Location 3;
 	Store Macys In LandFour
@@ -30,9 +40,19 @@ Start:
     Print z;
 
     function: x,y;
+    
+    String name = "missing function";
+    
+    someFunction: name;
 }
 
-Number function: String a, String b
+Number function: Number a, Number b
+{
+    Number result = 0;
+    Return result;    
+}
+
+Number function1: String a, String b
 {
     Number name = 10.6;
     Number x = 10, y = 5;
@@ -45,11 +65,11 @@ Number function: String a, String b
     }
     Else
     {
-	Return y;
+	    Return y;
     }
 }
 
-Number MyFunction: String a, String b
+Number someFunction:
 {   
     Number name = 10;
     Return name;
