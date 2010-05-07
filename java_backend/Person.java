@@ -14,7 +14,7 @@ public class Person {
 	private int id;
 	private LandElement whereAmI; //The exact store, restaurant, or attraction this person is in	
 	static FileWriter positionFile = null; 
-	
+
 	private void setattributes(int energy,int thrill, double spend){
 		energyLevel = energy;
 		thrillLevel = thrill;
@@ -27,7 +27,6 @@ public class Person {
 		location = 1;
 		this.id = id;
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
-		didEnter = false;
 	}
 	public Person(){
 		setattributes(10,10,10);
@@ -36,7 +35,6 @@ public class Person {
 		tick = 48;
 		location = 1; //person enters in Land 1
 		whereAmI = new Store(); //the entrance, used a store as it does not effect the person's attributes
-		didEnter = false;
 	}
 
 	public void set_position(double x, double y){
@@ -83,6 +81,10 @@ public class Person {
 
 	public void leavePark(){
 		tick = 0;
+		set_position(0,0);
+		setSpecificLocation(null);
+		System.out.println("x, y" + x + ", " + y);
+		System.out.println("Leaving park " + id);
 	}
 
 	public int getLocation(){
@@ -95,30 +97,33 @@ public class Person {
 
 	public void setSpecificLocation(LandElement location){
 		whereAmI = location;
-		//this should happen only when simulate button is clicked. 
-		Point2D currentlocation = whereAmI.getPosition();
-		
-		System.out.println("Current Location: x, y:" + currentlocation.getX() + ","+ currentlocation.getY());
-		//write the person number and the position into the file.
-		if(positionFile == null){
-			try{
-			    System.out.println("Creating a file\n");
-				positionFile = Park.positionFile;
-			}catch(Exception e){
-				
-			}
+		//this should happen only when simulate button is clicked.
+		if(location!=null) {			
+			Point2D currentlocation = whereAmI.getPosition();
+			this.x = currentlocation.getX();
+			this.y = currentlocation.getY();
 		}
 		
-		try{
-			String posLine = Integer.toString(id) 
-			+ ":" + Double.toString(currentlocation.getX()) 
-			+ ":" + Double.toString(currentlocation.getY()) 
-			+ "\n"
-			;
-
-			positionFile.write(posLine);
-		}catch(IOException io){
-
+		//System.out.println("Current Location: x, y:" + currentlocation.getX() + ","+ currentlocation.getY());
+		//write the person number and the position into the file.
+		if(Park.createPositionFile){
+			if(positionFile == null){			
+				//System.out.println("Person: Opening file \n");
+				positionFile = Park.positionFile;
+			}
+			else{
+				try{
+					String posLine = Integer.toString(id) 
+					+ ":" + Double.toString(x) 
+					+ ":" + Double.toString(y) 
+					+ "\n"
+					;
+					positionFile.write(posLine);
+				}catch(IOException io){
+					System.out.println(io.getMessage());
+					System.out.println(io.getStackTrace());
+				}
+			}
 		}
 	}
 

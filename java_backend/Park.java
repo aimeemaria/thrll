@@ -18,8 +18,9 @@ public class Park
 	private double cost;
 	public int hours;  		//the number of hours the park operates in a day.
 	public double salary;  	//the salary of park employees
-    static FileWriter positionFile = null; 
-    
+	static FileWriter positionFile = null; 
+	static boolean createPositionFile = false;
+
 	// internal list of land objects
 	private ArrayList<Land> LandObjs = new ArrayList<Land>();
 
@@ -79,7 +80,7 @@ public class Park
 	public double calculateRevenue(Crowd c, Duration d)
 	{
 		double sales = 0;
-		
+
 		//for each land
 		//get cost of operation (include employees)
 		//and reset sales values
@@ -93,43 +94,32 @@ public class Park
 		double admissionSales = c.getSize() * admission;
 		sales += admissionSales;
 
-        System.out.println("Should be here.. ");
- 		//write the number of people inside the positionFile, first thing. Also, this overwrites an existing position file
-		try{
-		    System.out.println("Creating a file\n");
-			positionFile = new FileWriter(new File("../gui/position.txt"));
-		}catch(Exception e){
-				
-		}
-		
-		try{
-			String posLine = Integer.toString(c.getSize()) + "\n";
-			positionFile.write(posLine);
-		}catch(IOException io){
-
+		if(createPositionFile){
+			//write the number of people inside the positionFile, first thing. Also, this overwrites an existing position file
+			try{
+				//System.out.println("Park: Creating a file\n");
+				positionFile = new FileWriter(new File("../gui/position.txt"));
+				String posLine = Integer.toString(c.getSize()) + "\n";
+				positionFile.write(posLine);
+			}catch(IOException io){
+			}
 		}
 
 		//assume the crowd enters as soon as park opens
 		c.createpeople();
 		Person p;
-		
+
 
 		Random generator = new Random();  //Random Number Generator
-		//Iterate through the day's ticks (1 tick = 15 minutes)
 		for(int j = 48; j >0; j--){
-			
-			//Iterate through each person
 			for(int i =0;i<c.getSize();i++){
 				p = c.people.get(i);
 				if (p.getTick() == j){
 
 					//After First Tick
 					//Exit Current Location
-					if (p.getDidEnter())
-					{
+					if (j < 48)
 						p.getSpecificLocation().exit(p);
-						p.setDidEnter(false);
-					}
 
 					int num_Lands = LandObjs.size();
 
@@ -158,7 +148,6 @@ public class Park
 							if(attraction.canEnter(p)){
 								attraction.enter(p);
 								p.decreaseTick(attraction.getTimeNeeded());
-								p.setDidEnter(true);
 							}
 							p.setSpecificLocation(attraction);
 						}
@@ -183,7 +172,6 @@ public class Park
 							if(store.canEnter(p)){
 								store.enter(p);
 								p.decreaseTick(store.getTimeNeeded());
-								p.setDidEnter(true);
 							}
 							p.setSpecificLocation(store);
 						}	
@@ -204,11 +192,10 @@ public class Park
 								p.decreaseTick(2);
 
 							p.setLocation(LandObjs.indexOf(restaurant.getLand()) + 1);
-							
+
 							if(restaurant.canEnter(p)){
 								restaurant.enter(p);
 								p.decreaseTick(restaurant.getTimeNeeded());
-								p.setDidEnter(true);
 							}
 							p.setSpecificLocation(restaurant);
 						}	
@@ -221,6 +208,12 @@ public class Park
 			}
 
 		}
+		
+		for(int i =0;i<c.getSize();i++){
+			Person pe = c.people.get(i);
+			pe.leavePark();
+		}
+		
 		//Get Sales figures for all stores and restaurants
 		for(int i = 0; i < LandObjs.size(); i++){
 			ArrayList<LandElement> land_contents = LandObjs.get(i).getContents();
@@ -228,9 +221,16 @@ public class Park
 				sales += land_contents.get(j).calculateRevenue();
 			}
 		}
-				
+
 		double park_net_revenue = sales - cost;
 
+		if(createPositionFile){
+			try{
+				positionFile.close();
+			}
+			catch(Exception e){
+			}
+		}
 		park_net_revenue = d.getDays() * park_net_revenue;
 		return park_net_revenue;
 	}
@@ -295,5 +295,9 @@ public class Park
 				isChoosing = false;
 		}
 		return choices;
+	}
+
+	public void setCreateFile(boolean createFile){
+		createPositionFile = createFile;
 	}
 }

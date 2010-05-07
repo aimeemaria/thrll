@@ -181,7 +181,11 @@ public class Store implements LandElement {
 		Random r = new Random();
 		int radius = r.nextInt(150)+2;
 		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
-		position.setLocation(radius*Math.cos(angle),radius*Math.sin(angle));
+	
+		double x=radius*Math.cos(Math.toRadians(angle));
+		double y = radius*Math.sin(Math.toRadians(angle));
+		
+		position.setLocation(x,y);
 	} 
 	
 	public double getcost(int hours, double salary){
