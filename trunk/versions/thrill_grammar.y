@@ -520,6 +520,7 @@ empty: ; { $$ = ""; }
 	private int formalParams = 0;
 	final int MAX_LIMIT_PARK = 1;
 	final int MAX_LIMIT_LANDS = 6;
+	boolean createPositionFile = false;
 
 	private int yylex () {
 		int yyl_return = -1;
@@ -551,8 +552,9 @@ empty: ; { $$ = ""; }
 		}
 	}
 
-	public Parser(Reader r) {
+	public Parser(Reader r, boolean createFile) {
 		lexer = new Yylex(r, this);
+		this.createPositionFile = createFile;
 	}
 
 	static boolean interactive;
@@ -781,6 +783,11 @@ empty: ; { $$ = ""; }
 			result += p + ".set" + attributes[i] + "(" + value + ");\n";
 		}
 
+		if(createPositionFile){
+			String createFileString = p + ".setCreateFile(true);\n";
+			result += createFileString;
+		}
+		
 		return result;
 	}
 
@@ -1195,13 +1202,18 @@ empty: ; { $$ = ""; }
 	public static void main(String args[]) throws IOException {
 
 		Parser yyparser;
+		boolean createFile = false;
+		
 		if(args.length < 1){
 			System.out.println("Usage: java Parser <thrill_program.txt>");
 			return;
 		}
+		else if(args.length == 2){
+			createFile = Boolean.parseBoolean(args[1]);
+		}
 
 		// parse a file
-		yyparser = new Parser(new FileReader(args[0]));
+		yyparser = new Parser(new FileReader(args[0]), createFile);
 
 		System.out.println("\nCompiling ...\n");
 
