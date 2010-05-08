@@ -1,14 +1,24 @@
 # !/usr/bin
 
+echo
+echo "              THRLL Regression Tests         "
+
+if [ $# -lt 1 ]
+then
+    echo
+    echo "*** Missing tests file ***"
+    echo "Usage: runalltests.sh tests_file"
+    echo "Usage: runalltests.sh tests_file <build>"
+    echo
+    exit
+fi
+
+# initialize all the variables
 rundir=../gui
 result=.result
 testList=$1
 passRate=0
 testFiles=`cat $testList`
-count=1
-
-# remove the results
-rm -rf results*
 
 if [ $# -eq 2 ]
 then
@@ -17,10 +27,15 @@ then
     echo "Building the thrill parser, thrill backend, creating required jars."
     $rundir/gui_build.sh
 else
-    echo "Build skipped. Running all the tests."
+    echo "Build skipped."
 fi
 
+# remove the prev results
+rm -rf results*
+
 mkdir results
+
+echo "Starting all tests."
 
 for testFile in $testFiles
 do
@@ -33,4 +48,3 @@ mv *$result results/
 
 # create a tar.gz file
 tar -czf result.tar.gz results/
-
