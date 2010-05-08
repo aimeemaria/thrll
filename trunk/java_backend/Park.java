@@ -7,6 +7,9 @@
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,7 +25,9 @@ public class Park
 	public double salary;  	//the salary of park employees
 	static FileWriter positionFile = null; 
 	static boolean createPositionFile = false;
-
+	private int cx,cy; //center of park graphics, same as in display panel
+	private int cr = 40;//hub radius (must match value in display panel)
+	
 	// internal list of land objects
 	private ArrayList<Land> LandObjs = new ArrayList<Land>();
 
@@ -37,6 +42,12 @@ public class Park
 		cost = 100000;
 		hours = 12;  	
 		salary = 15.0;
+
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); 
+		int SCREEN_WIDTH=(int)dim.getWidth(); //screen size for panel
+		int SCREEN_HEIGHT=(int)dim.getHeight();
+		cx = (int)SCREEN_WIDTH/3;
+		cy = (int) SCREEN_HEIGHT/3;
 	}
 
 	public String getParkName() 
@@ -78,7 +89,7 @@ public class Park
 	{
 		this.cost = cost;
 	}	
-
+	
 	public double calculateRevenue(Crowd c, Duration d)
 	{
 		sortLands();
@@ -99,12 +110,34 @@ public class Park
 		sales += admissionSales;
 
 		if(createPositionFile){
-			//write the number of people inside the positionFile, first thing. Also, this overwrites an existing position file
+			//write the number of people and number of land elements inside the positionFile, first thing. Also, this overwrites an existing position file
 			try{
 				//System.out.println("Park: Creating a file\n");
 				positionFile = new FileWriter(new File("../gui/position.txt"));
-				String posLine = Integer.toString(c.getSize()) + "\n";
-				positionFile.write(posLine);
+				String numobjs;
+				int total=0; //total count of land elements in park
+				for(int i =0;i<LandObjs.size();i++){
+					total+=LandObjs.get(i).getContents().size();
+				}
+				numobjs= Integer.toString(total) + "\n";
+				positionFile.write(numobjs);
+				//for each element write the position to the file
+				
+				for(int i = 0 ; i < LandObjs.size();i++){
+					Point2D p;
+					LandElement e;
+					char type;
+					String position;
+					for(int j =0; j < LandObjs.get(i).getContents().size();j++){//for each element in this land, write position to file
+						e = LandObjs.get(i).getContents().get(j);
+						p = e.getPosition();
+						position = Integer.toString((int)p.getX()*cr + cx) + " " + Integer.toString((int)p.getY()*cr + cy);
+						type = e.getType();
+						positionFile.write( type + " " + position + "\n");
+					}
+				}
+				String numpeople = Integer.toString(c.getSize()) + "\n";	
+				positionFile.write(numpeople);
 			}catch(IOException io){
 			}
 		}
