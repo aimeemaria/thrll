@@ -334,16 +334,16 @@ end_block: CLOSE_PARAN;
 statements: statements statement { $$ = $$ + "\n" +  $2; }
           | error_production { $$ = ""; }
 	    ;
-statement: add_attribute 	 { $$ = $1; }
-	     | assignment 	 { $$ = $1; }
-	     | condition 	 	 { $$ = $1; }
-         | declaration 	 { $$ = $1; }
-	     | function_call 	 { $$ = $1; }
-         | initialization 	 { $$ = $1; }
+statement: add_attribute 	   { $$ = $1; }
+	     | assignment 	       { $$ = $1; }
+	     | condition 	 	   { $$ = $1; }
+         | declaration 	       { $$ = $1; }
+	     | function_call 	   { $$ = $1; }
+         | initialization 	   { $$ = $1; }
 	     | initialize_duration { $$ = $1; }
 	     | loop 		       { $$ = $1; }
-	     | return 		     { $$ = $1; }
-	     | thrill_functions 	 { $$ = $1; }
+	     | return 		       { $$ = $1; }
+	     | thrill_functions    { $$ = $1; }
          ;
 
 add_attribute: Set Capacity value In variable_name SEMICOLON		    { $$ = generateAttribute($5, "Capacity", $3); }
