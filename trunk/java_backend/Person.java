@@ -121,6 +121,7 @@ public class Person {
 					+ ":" + Double.toString(y) 
 					+ "\n"
 					;
+					
 					positionFile.write(posLine);
 				}catch(IOException io){
 					System.out.println(io.getMessage());

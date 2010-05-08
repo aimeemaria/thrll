@@ -270,6 +270,7 @@ public class Park
 
 		if(createPositionFile){
 			try{
+			    //System.out.println("Closing file");
 				positionFile.close();
 				positionFile = null;
 				Person.positionFile = null;
