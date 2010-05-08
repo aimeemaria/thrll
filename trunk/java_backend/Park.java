@@ -271,6 +271,8 @@ public class Park
 		if(createPositionFile){
 			try{
 				positionFile.close();
+				positionFile = null;
+				Person.positionFile = null;
 			}
 			catch(Exception e){
 			}
