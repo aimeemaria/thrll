@@ -60,9 +60,17 @@ public class LandSortingTester {
 		
 		Days oneDay = new Days(1);
 		
-		System.out.println(myPark.calculateRevenue(myCrowd, oneDay));
+		double revenue = myPark.calculateRevenue(myCrowd, oneDay);
+		
+		//listLands();
 
-
+		System.out.print("Revenue = " +revenue);
+		
+		if (revenue == myCrowd.getSize() * myPark.getAdmission() * oneDay.getDays())
+			System.out.println("\tOK");
+		else
+			System.out.println("\tFAIL!!\nRevenue should equal crowd size * admission price * duration");
+		
 	}
 
 	public static void listLands(){

@@ -86,8 +86,8 @@ public class Person {
 		tick = 0;
 		set_position(0,0);
 		setSpecificLocation(null);
-		System.out.println("x, y" + x + ", " + y);
-		System.out.println("Leaving park " + id);
+		//System.out.println("x, y" + x + ", " + y);
+		//System.out.println("Leaving park " + id);
 	}
 
 	public int getLocation(){
