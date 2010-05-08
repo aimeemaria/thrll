@@ -6,7 +6,7 @@ passRate=0
 testFiles=`cat $testList`
 count=1
 # build the parser, create jars etc - initial setup
-# $rundir/gui_build.sh
+$rundir/gui_build.sh
 mkdir results
 
 for testFile in $testFiles
