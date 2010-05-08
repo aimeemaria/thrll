@@ -251,12 +251,12 @@ public class Park
 			}
 
 		}
-		/**
+		
 		for(int i =0;i<c.getSize();i++){
 			Person pe = c.people.get(i);
 			pe.leavePark();
 		}
-		 **/
+		
 
 		//Get Sales figures for all stores and restaurants
 		for(int i = 0; i < LandObjs.size(); i++){
