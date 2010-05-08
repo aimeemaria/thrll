@@ -27,7 +27,7 @@ public class Park
 	static boolean createPositionFile = false;
 	private int cx,cy; //center of park graphics, same as in display panel
 	private int cr = 40;//hub radius (must match value in display panel)
-	
+
 	// internal list of land objects
 	private ArrayList<Land> LandObjs = new ArrayList<Land>();
 
@@ -89,7 +89,7 @@ public class Park
 	{
 		this.cost = cost;
 	}	
-	
+
 	public double calculateRevenue(Crowd c, Duration d)
 	{
 		sortLands();
@@ -122,7 +122,7 @@ public class Park
 				numobjs= Integer.toString(total) + "\n";
 				positionFile.write(numobjs);
 				//for each element write the position to the file
-				
+
 				for(int i = 0 ; i < LandObjs.size();i++){
 					Point2D p;
 					LandElement e;
@@ -220,6 +220,8 @@ public class Park
 					}
 					else { //choose restaurant
 						ArrayList<LandElement> restaurants = getPossibleChoices(land_choice, 'r');
+
+						System.out.println(restaurants.size());
 						if(restaurants.size()==0){
 							p.leavePark();
 						}
@@ -318,18 +320,19 @@ public class Park
 		boolean isChoosing= true;
 		int num_Lands = LandObjs.size();
 		ArrayList<LandElement> choices = new ArrayList<LandElement>();
+		ArrayList<Land> emptyLands = new ArrayList<Land>();
 		while(isChoosing){
 			choices = getAllType(LandObjs.get(land_choice), type);
 			//An ArrayList of lands that do not contain elements of this choice
-			ArrayList<Integer> emptyLands = new ArrayList<Integer>();
 			Random generator = new Random();
+
 			if (choices.size()==0){
-				emptyLands.add(land_choice);
+				emptyLands.add(LandObjs.get(land_choice));
 				if (emptyLands.size() != num_Lands){
 					do{
-						land_choice = generator.nextInt(num_Lands);	
+						land_choice = generator.nextInt(num_Lands);
 					}
-					while(emptyLands.contains(land_choice));
+					while(emptyLands.contains(LandObjs.get(land_choice)));
 				}
 				else
 					return choices;
@@ -373,14 +376,14 @@ public class Park
 				sortedLands[index] = currentLand;
 			else{
 				if(!suppressLaterOutput){
-				System.out.println("Land already defined for Land " +location
-						+"\nLand will be placed in an available position.");
+					System.out.println("Land already defined for Land " +location
+							+"\nLand will be placed in an available position.");
 				}
 				landBuffer.addLast(currentLand);
 			}
 
 		}
-		
+
 		//Fill in undefined lands with conflictingly labeled lands from above
 		for (int i = 0; i < 6; i++){
 			if (sortedLands[i] == null){
