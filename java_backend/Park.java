@@ -221,8 +221,7 @@ public class Park
 					else { //choose restaurant
 						ArrayList<LandElement> restaurants = getPossibleChoices(land_choice, 'r');
 
-						System.out.println(restaurants.size());
-						if(restaurants.size()==0){
+					if(restaurants.size()==0){
 							p.leavePark();
 						}
 						else{
