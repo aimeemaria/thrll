@@ -18,11 +18,15 @@ public class DisplayPanel extends JPanel {
 	ImageIcon girlicon;
 	Graphics2D g;
 	ImageIcon[] boys;
-	int xposition[], yposition[];
+	int xposition[], yposition[];//array of people positions
+	int eposx[],eposy[];//array of land element positions
+	char type[];//array that holds type of each land element at index
 	boolean flag=false; //flag if graphics needs to be painted
 
-	//
+	//peopleSize = crowd size
 	int peopleSize;
+	//numObjs = LandObjs.size()
+	int numObjs;
 
 	public DisplayPanel() {	
 		setBackground(Color.white);
@@ -64,7 +68,7 @@ public class DisplayPanel extends JPanel {
 		//center and radius of hub
 		int cx = (int)SCREEN_WIDTH/3;
 		int cy = (int) SCREEN_HEIGHT/3;
-		int cr = 40; //radius
+		int cr = 40; //hub radius
 		g.setStroke(new BasicStroke(5));
 		//GradientPaint grad1 = new GradientPaint(0, 0, Color.cyan, 175, 175, Color.green, true);
 		//GradientPaint grad2 = new GradientPaint(0, 0, Color.green, 175, 175, Color.cyan, true);
@@ -132,15 +136,27 @@ public class DisplayPanel extends JPanel {
 			for(int i = 0; i < peopleSize; i++ ) {
 				//System.out.println("xposition: " + xposition[i] + " yposition: " + yposition[i]);
 				g.setColor(Color.red);
-				g.drawOval(xposition[i], yposition[i], 1, 1);
-				//boys[i].paintIcon(this,g,xposition[i],yposition[i]);
+				//g.drawOval(xposition[i], yposition[i], 1, 1);
+				boy.paintIcon(this,g,xposition[i],yposition[i]);
+			}
+			
+			for(int j = 0;j < numObjs;j++){
+				switch(type[j]){
+				case 'a': 
+					attraction.paintIcon(this,g,eposx[j],eposy[j]);
+					break;
+				case 's':
+					store.paintIcon(this,g,eposx[j],eposy[j]);
+					break;
+				case 'r':restaurant.paintIcon(this,g,eposx[j],eposy[j]);
+				}
 			}
 
 			//draw people icons
-			int xpos=cx; //position of person
-			int ypos=cy;
-			double r=0.5;
-			degrees = 0;
+		//	int xpos=cx; //position of person
+			//int ypos=cy;
+			//double r=0.5;
+			//degrees = 0;
 
 //			for (int i = 1 ; i < 18 ; i++){
 //				rad = degrees * Math.PI / 180; 
@@ -185,22 +201,40 @@ public class DisplayPanel extends JPanel {
 			Random generator = new Random();
 			BufferedReader reader =  new BufferedReader(new FileReader(new File("position.txt")));
 
-			//read in the first line with the number of people.
+			//read first line with number of land elements
+			read = reader.readLine();
+			numObjs = Integer.parseInt(read);
+			eposx = new int[numObjs];
+			eposy = new int[numObjs];
+			type = new char[numObjs];
+			for(int i = 0 ; i < numObjs;i++){
+				read = reader.readLine();
+				String[] line = read.split(" ");
+				type[i] = line[0].charAt(0);
+				eposx[i] = Integer.parseInt(line[1]);
+				eposy[i] = Integer.parseInt(line[2]);
+				
+			}
+			
+			//read with the number of people.
 			read = reader.readLine();
 			peopleSize = Integer.parseInt(read);
-
+			
 			//create Everyone, with position things...
 			//may not need all these boys... only the position may be sufficient. Not sure of this one.
-			boys = new ImageIcon[peopleSize];
+			//boys = new ImageIcon[peopleSize];
 			xposition = new int[peopleSize];
 			yposition = new int[peopleSize];
-			for(int i=0;i<peopleSize;i++) {
-				boys[i] = createImageIcon("boy.gif");
-			}
+			//for(int i=0;i<peopleSize;i++) {
+			//	boys[i] = createImageIcon("boy.gif");
+			//}
 
 			Thread.sleep(200);
 			paintImmediately(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			
+			//next few lines are positions of the elements(store, attraction, store)
 
+			//read people positions
 			while ((read = reader.readLine()) != null) {
 				String[] line = read.split(":");
 				prevId = id;
