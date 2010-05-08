@@ -184,8 +184,8 @@ crowd_definitions: crowd_definitions crowd_definition { $$ += $2; }
 usercode: start functions { $$ = $1 + $2; };
 
 crowd_definition: Crowd crowd_name crowd_elements 
-			{ scopeName = "Global"; addToHashtable($2, "Crowd"); 
-			  $$ = "\nCrowd " + $2 + " = " + "new Crowd();\n" + generateSetAttribute($2, $3); 
+			{ scopeName = "Global"; addToHashtable($2, "Crowd"); globalObjects.add("Crowd " + $2);
+			  $$ = "\n" + $2 + " = " + "new Crowd();\n" + generateSetAttribute($2, $3); 
 			};
                 
 crowd_elements: SEMICOLON {}
@@ -207,8 +207,9 @@ c2: Set Size NUMBER SEMICOLON 		 { $$ = ":Size:" + $3; };
 c3: Set EnergyLevel NUMBER SEMICOLON	 { $$ = ":EnergyLevel:" + $3;};
 c4: Set ThrillLevel NUMBER SEMICOLON   	 { $$ = ":ThrillLevel:" + $3;};
 
-park_definition: Park park_name park_elements { scopeName = "Global"; addToHashtable($2, "Park"); };
-		     land_definitions { $$ = "\nPark " + $2 + " = " + "new Park();\n" + generateSetAttribute($2, $3) + $5; }
+park_definition: Park park_name park_elements { scopeName = "Global"; addToHashtable($2, "Park"); 
+                                                globalObjects.add("Park " + $2);};
+		     land_definitions { $$ = "\n" + $2 + " = " + "new Park();\n" + generateSetAttribute($2, $3) + $5; };
 
 park_elements: SEMICOLON {}
              | park_attributes { $$ = $1; }
@@ -230,11 +231,11 @@ p3: Set Cost NUMBER SEMICOLON      { $$ = ":Cost:" + $3;};
 land_definitions: land_definitions land_definition { $$ += $2; }
                 | error_production { $$ = ""; }
 		    ;
-land_definition: Land land_name { addToHashtable($2, "Land"); } 
+land_definition: Land land_name { addToHashtable($2, "Land"); globalObjects.add("Land " + $2); } 
 		         land_attributes 
 		         land_elements 
 		         {
-			        $$ = "\nLand " + $2 + " = " + "new Land();\n" + generateSetAttribute($2, $4) + $5; 					   					 };
+			        $$ = "\n" + $2 + " = " + "new Land();\n" + generateSetAttribute($2, $4) + $5; 					   					 };
 			     
 land_attributes: Set Location NUMBER SEMICOLON { $$ = ":Location:" + $3; };
 land_elements: land_elements land_element { $$ += $2; }
@@ -509,6 +510,7 @@ empty: ; { $$ = ""; }
 	private Yylex lexer;
 	public int yyline = 1;
 	public int yycolumn = 0;
+	private ArrayList<String> globalObjects = new ArrayList<String>();
 	private Hashtable<String, String> thrillObjects = new Hashtable<String, String>();
 	private ArrayList<ThrillUserFunction> userFunctions = new ArrayList<ThrillUserFunction>();
 	private Hashtable<String, String[]> definedFunctions = new Hashtable<String, String[]>();
@@ -561,12 +563,14 @@ empty: ; { $$ = ""; }
 	static boolean interactive;
 
 	public String createAttractionDefinition(String landName, String attractionName) throws ThrillException{ 
-		String result = "\nAttraction " + attractionName + " = new Attraction();\n";
-		String key = "Global." + landName;
+		String result = "\n" + attractionName + " = new Attraction();\n";
+		String key = "Global." + landName;        
 
 		if(!thrillObjects.containsKey(key)){
 			errorList.add(ThrillException.ObjectNotFoundException(getErrorLocationInfo(false), landName));
 		}
+		
+		globalObjects.add("Attraction " + attractionName);
 
 		String setName = attractionName + ".setAttractionName(\"" + attractionName + "\");\n";
 		String setLand = attractionName + ".setLand(" + landName + ");\n";
@@ -577,12 +581,14 @@ empty: ; { $$ = ""; }
 	}
 
 	public String createRestaurantDefinition(String landName, String restaurantName) throws ThrillException { 
-		String result = "\nRestaurant " + restaurantName + " = new Restaurant();\n";
+		String result = "\n" + restaurantName + " = new Restaurant();\n";
 		String key = "Global." + landName;
 
 		if(!thrillObjects.containsKey(key)){
 			errorList.add(ThrillException.ObjectNotFoundException(getErrorLocationInfo(false), landName));
 		}
+		
+		globalObjects.add("Restaurant " + restaurantName);
 
 		String setName = restaurantName + ".setRestaurantName(\"" + restaurantName + "\");\n";
 		String setLand = restaurantName + ".setLand(" + landName + ");\n";
@@ -593,13 +599,15 @@ empty: ; { $$ = ""; }
 	}
 
 	public String createStoreDefinition(String landName, String storeName) throws ThrillException{ 
-		String result = "\nStore " + storeName + " = new Store();\n";
+		String result = "\n" + storeName + " = new Store();\n";
 		String key = "Global." + landName;
 
 		if(!thrillObjects.containsKey(key)){
 			errorList.add(ThrillException.ObjectNotFoundException(getErrorLocationInfo(false), landName));
 		}
 
+		globalObjects.add("Store " + storeName);
+		
 		String setName = storeName + ".setStoreName(\"" + storeName + "\");\n";
 		String setLand = storeName + ".setLand(" + landName + ");\n";
 		String addStore = landName + ".addStore(" + storeName + ");\n";
@@ -614,13 +622,13 @@ empty: ; { $$ = ""; }
 		if(parameters != null) {
 			formalParameters = parameters.split(",");
 		}
-		
+
 		ThrillUserFunction userFunction = new ThrillUserFunction(functionName);
 		userFunction.setLine(yyline);
 		userFunction.setFormalParameters(formalParameters);
 		userFunction.setParameters(formalParams);
 		userFunction.setScopeName(scopeName);
-				
+
 		// adding the function and the parameters to the list of user functions		
 		userFunctions.add(userFunction);				
 		formalParams = 0;
@@ -788,7 +796,7 @@ empty: ; { $$ = ""; }
 			String createFileString = p + ".setCreateFile(true);\n";
 			result += createFileString;
 		}
-		
+
 		return result;
 	}
 
@@ -837,7 +845,7 @@ empty: ; { $$ = ""; }
 				if(obj.equalsIgnoreCase("Crowd")){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), variable, "Crowd"));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");
+				result = variable.concat(".set" + function + "((int)" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Cost")){
 				if(obj.equalsIgnoreCase("Crowd")){
@@ -849,7 +857,7 @@ empty: ; { $$ = ""; }
 				if(obj.equalsIgnoreCase("Crowd")){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), variable, "Crowd"));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");
+				result = variable.concat(".set" + function + "((int)" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("EnergyIncrease")){
 				if(!(obj.equalsIgnoreCase("Restaurant"))){
@@ -862,37 +870,37 @@ empty: ; { $$ = ""; }
 				if(!(obj.equalsIgnoreCase("Crowd"))){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), "Crowd", variable));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");				
+				result = variable.concat(".set" + function + "((int)" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("EnergyLost")){
 				if(!(obj.equalsIgnoreCase("Attraction"))){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), "Attraction", variable));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");
+				result = variable.concat(".set" + function + "((int)" + value + ");");
 			}
 			else if(function.equalsIgnoreCase("Size")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), "Crowd", variable));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");				
+				result = variable.concat(".set" + function + "((int)" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendingCapacity")){
 				if(!(obj.equalsIgnoreCase("Crowd"))){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), "Crowd", variable));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");				
+				result = variable.concat(".set" + function + "((int)" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("SpendLevel")){
 				if(!(obj.equalsIgnoreCase("Restaurant") || obj.equalsIgnoreCase("Store"))){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), "Restaurant/Store", variable));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");				
+				result = variable.concat(".set" + function + "((int)" + value + ");");				
 			}
 			else if(function.equalsIgnoreCase("ThrillLevel")){
 				if(!(obj.equalsIgnoreCase("Attraction") || obj.equalsIgnoreCase("Crowd"))){
 					errorList.add(ThrillException.UnexpectedTypeException(getErrorLocationInfo(false), "Attraction/Crowd", variable));
 				}
-				result = variable.concat(".set" + function + "(" + value + ");");				
+				result = variable.concat(".set" + function + "((int)" + value + ");");				
 			}
 			else{
 				// error condition
@@ -1056,11 +1064,11 @@ empty: ; { $$ = ""; }
 		}
 		return types;
 	}
-	
+
 	public String validateAttributeValue(String attribute, String value) throws ThrillException{
 		String result = "";;
 		double d = 0;
-		
+
 		if(Character.isDigit(value.charAt(0))) {
 			d = Double.parseDouble(value);
 
@@ -1124,21 +1132,31 @@ empty: ; { $$ = ""; }
 	}
 
 	public void generateThrillProgram(String definitions, String usercode) throws ThrillException{
-		String classStart = "public class ThrillProgram {\n";
+		String classStart = "public class ThrillProgram {\n\n";
 		String classEnd = "\n}";
+		String staticLine = "public static ";
+		String globalObjectDefns = "";
 		String main = "public static void main(String[] args){\n";		
 		usercode = usercode.substring(1);
 
 		validateAllUserFunctions();
-		
+
 		if(errorList.size() != 0){
 			listParserErrors();
 			throw new ThrillException("Compilation Failed");
 		}
+		
+		for(int i = 0; i < globalObjects.size(); ++i){
+			globalObjectDefns += staticLine + globalObjects.get(i) + ";\n";
+		}
 
+		globalObjectDefns += "\n";
+		
+		System.out.println();
+		
 		try{
 			FileWriter writer = new FileWriter(new File("ThrillProgram.java"));
-			String buffer = classStart + main + definitions +  usercode + classEnd;
+			String buffer = classStart + globalObjectDefns + main + definitions +  usercode + classEnd;
 			writer.write(buffer);
 			writer.close();
 		}catch(IOException io){			
@@ -1146,23 +1164,23 @@ empty: ; { $$ = ""; }
 	}
 
 	public void validateAllUserFunctions() throws ThrillException{
-	
+
 		// Need to check all the function definitions before generating the intermediate code.
 		Iterator<ThrillUserFunction> userFunctionsList = userFunctions.iterator();
-		
+
 		while(userFunctionsList.hasNext()){
 			ThrillUserFunction userFunction = userFunctionsList.next();
-			
+
 			// Get all the relevant info
 			String[] formalParameters = userFunction.getFormalParameters();
 			String functionName = userFunction.getFunctionName();
-			
+
 			if(definedFunctions.containsKey(functionName)){
 				// We need to compare the actual and formal parameters
 				// We need to compare the parameters of these functions				
 				String[] actualParameters = definedFunctions.get(functionName);
 				actualParameters = (actualParameters[0].equalsIgnoreCase("") ? null : actualParameters);
-	
+
 				if(formalParameters == null && actualParameters == null){
 					// found a match
 					continue;
@@ -1179,17 +1197,17 @@ empty: ; { $$ = ""; }
 					}
 				}
 				else{
-				    // function has not been defined.
-				    String[] types = generateParamTypes(formalParameters);
-				    String lineInfo = "Error on line(" + userFunction.getLine() + "): ";
-				    errorList.add(ThrillException.UndefinedFunctionException(lineInfo, functionName, types));
+					// function has not been defined.
+					String[] types = generateParamTypes(formalParameters);
+					String lineInfo = "Error on line(" + userFunction.getLine() + "): ";
+					errorList.add(ThrillException.UndefinedFunctionException(lineInfo, functionName, types));
 				}					
 			}
 			else{
 				// function has not been defined.
 				String[] types = generateParamTypes(formalParameters);						
-			    String lineInfo = "Error on line(" + userFunction.getLine() + "): ";
-			    errorList.add(ThrillException.UndefinedFunctionException(lineInfo, functionName, types));
+				String lineInfo = "Error on line(" + userFunction.getLine() + "): ";
+				errorList.add(ThrillException.UndefinedFunctionException(lineInfo, functionName, types));
 			}
 		}		
 	}
@@ -1205,7 +1223,7 @@ empty: ; { $$ = ""; }
 		result = durationType + " " + durationName + " = new " + durationType + "(" + days + ");"; 
 		return result;
 	}
-	
+
 	public void listParserErrors(){
 		for(int i = 0; i < errorList.size(); ++i){
 			System.out.println(errorList.get(i).getMessage());
@@ -1224,7 +1242,7 @@ empty: ; { $$ = ""; }
 
 		Parser yyparser;
 		boolean createFile = false;
-		
+
 		if(args.length < 1){
 			System.out.println("Usage: java Parser <thrill_program.txt>");
 			return;
