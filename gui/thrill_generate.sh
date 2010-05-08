@@ -34,12 +34,12 @@ else
     echo "Sorry, $thrill_class file does not exist"
     
     #clean up the files now
-    rm -rf ThrillProgram.*
+    #rm -rf ThrillProgram.*
     exit
 fi
 
 #clean up the files now
-rm -rf ThrillProgram.*
+#rm -rf ThrillProgram.*
 
 
     

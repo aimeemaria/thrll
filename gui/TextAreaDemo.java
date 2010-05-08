@@ -97,7 +97,6 @@ public class TextAreaDemo extends JFrame{
 
 			try {
 				String script = null;
-				
 				// we either execute or execute and generate position file.
 				if(command.equalsIgnoreCase("Execute")) {
 					script = "./thrill_execute.sh";
@@ -127,7 +126,7 @@ public class TextAreaDemo extends JFrame{
 					output = output + s + "\n";
 				}
 
-				text.setText(output);
+				text.append(output);
 			}
 			catch (IOException e) {
 				text.setText(e.getMessage());
@@ -145,15 +144,17 @@ public class TextAreaDemo extends JFrame{
 			if(a.getSource() == simulate){
 				text.setText("Simlulating . . . ");
 				paintppl();
+				text.append("Wicked COOL!");
 			}
 
 			if(a.getSource() == generate) {
-				text.setText("Generating now <Hope Prof likes this> ");
+				text.setText("Generating now... <Hope Prof likes this>\n");
 				helloProfAho(textArea.getText(), "Generate");
 			}
 
 			if(a.getSource() == clear) {
 				textArea.setText("");
+				text.setText("");
 			}
 		}
 	}
