@@ -355,7 +355,7 @@ public class Park
 		int upperbound;
 		//check to ensure 6 or less lands have been defined
 		if (LandObjs.size() > 6){
-			System.out.println("More than six lands define.  Only first 6 defined will be used");
+			//System.out.println("More than six lands define.  Only first 6 defined will be used");
 			upperbound = 6;
 		}
 		else
@@ -367,7 +367,7 @@ public class Park
 			Land currentLand = LandObjs.get(i);
 			int location = currentLand.getLocation();
 			if (location >6){
-				System.out.println("Set location is out of bounds.  Land will be added at an available position");
+				//System.out.println("Set location is out of bounds.  Land will be added at an available position");
 				location = 1;
 				suppressLaterOutput = true;
 			}
@@ -378,8 +378,8 @@ public class Park
 				sortedLands[index] = currentLand;
 			else{
 				if(!suppressLaterOutput){
-					System.out.println("Land already defined for Land " +location
-							+"\nLand will be placed in an available position.");
+					//System.out.println("Land already defined for Land " +location
+						//	+"\nLand will be placed in an available position.");
 				}
 				landBuffer.addLast(currentLand);
 			}
