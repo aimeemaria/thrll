@@ -23,7 +23,7 @@ public class Land {
 	{
 		// Set Default Values
 		location = 1;
-		LandName = "MainLand";
+		LandName = "Empty Land";
 	}
 	
 	public String getLandName() 

@@ -5,10 +5,12 @@
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class Park 
 {
@@ -79,6 +81,8 @@ public class Park
 
 	public double calculateRevenue(Crowd c, Duration d)
 	{
+		sortLands();
+
 		double sales = 0;
 
 		//for each land
@@ -218,8 +222,8 @@ public class Park
 			Person pe = c.people.get(i);
 			pe.leavePark();
 		}
-		**/
-		
+		 **/
+
 		//Get Sales figures for all stores and restaurants
 		for(int i = 0; i < LandObjs.size(); i++){
 			ArrayList<LandElement> land_contents = LandObjs.get(i).getContents();
@@ -305,5 +309,69 @@ public class Park
 
 	public void setCreateFile(boolean createFile){
 		createPositionFile = createFile;
+	}
+
+	public void sortLands(){
+		Land[] sortedLands = new Land[6];
+		LinkedList<Land> landBuffer = new LinkedList<Land>();
+		int upperbound;
+		//check to ensure 6 or less lands have been defined
+		if (LandObjs.size() > 6){
+			System.out.println("More than six lands define.  Only first 6 defined will be used");
+			upperbound = 6;
+		}
+		else
+			upperbound = LandObjs.size();
+
+		//the actual sorting
+		for (int i = 0; i < upperbound; i++){
+			boolean suppressLaterOutput = false;
+			Land currentLand = LandObjs.get(i);
+			int location = currentLand.getLocation();
+			if (location >6){
+				System.out.println("Set location is out of bounds.  Land will be added at an available position");
+				location = 1;
+				suppressLaterOutput = true;
+			}
+			int index = location - 1;
+
+			//if no other land has been set to that location
+			if(sortedLands[index] == null)
+				sortedLands[index] = currentLand;
+			else{
+				if(!suppressLaterOutput){
+				System.out.println("Land already defined for Land " +location
+						+"\nLand will be placed in an available position.");
+				}
+				landBuffer.addLast(currentLand);
+			}
+
+		}
+		
+		//Fill in undefined lands with conflictingly labeled lands from above
+		for (int i = 0; i < 6; i++){
+			if (sortedLands[i] == null){
+				//If there are no more lands to use, fill with an empty land
+				if (landBuffer.isEmpty())
+					sortedLands[i] = createEmptyLand();
+				else
+					sortedLands[i] = landBuffer.remove();
+			}
+		}
+
+		//Copy sorted list into existing list.
+		LandObjs.clear();
+		for (int i = 0; i < sortedLands.length; i++){
+			LandObjs.add(sortedLands[i]);
+		}
+	}
+
+	public Land createEmptyLand(){
+		Land emptyLand = new Land();
+		return emptyLand;
+	}
+
+	public ArrayList<Land> getLands(){
+		return LandObjs;
 	}
 }
