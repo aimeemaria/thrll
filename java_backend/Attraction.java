@@ -195,10 +195,12 @@ public class Attraction implements LandElement {
 		this.land = land; 
 		//set location within land
 		Random r = new Random();
-		double radius = r.nextInt(150)+2;
-		double angle = r.nextInt(60) + 60*(land.getLocation()-1);
-		double x=radius*Math.cos(Math.toRadians(angle));
-		double y = radius*Math.sin(Math.toRadians(angle));
+		
+		//possible radius idx within land 2-4
+		int idx = r.nextInt(2)+2;
+		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
+		double x = idx*Math.cos(Math.toRadians(angle));
+		double y = idx*Math.sin(Math.toRadians(angle));
 		
 		position.setLocation(x,y);
 	}	
