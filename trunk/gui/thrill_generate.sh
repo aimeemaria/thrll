@@ -6,6 +6,7 @@ thrill_class=ThrillProgram.class
 #clean up position and input  files
 #rm -rf position.txt
 #rm -rf code.txt
+echo "Executing generate script"
 
 # Compile the input to generate the intermediate code - ThrillProgram.java
 java -cp ./thrill_parser.jar Parser code.txt $flag
