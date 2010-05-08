@@ -40,7 +40,7 @@ echo "Starting all tests."
 for testFile in $testFiles
 do
     echo "Running test $testFile."
-    $rundir/runTest.sh $testFile > testFile$result
+    $rundir/runTest.sh $testFile > $testFile$result
 done
 
 # move the results to a different folder
