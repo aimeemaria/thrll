@@ -55,7 +55,12 @@ public class LandSortingTester {
 		
 		listLands();
 
-
+		Crowd myCrowd = new Crowd();
+		myCrowd.setSize(10000);
+		
+		Days oneDay = new Days(1);
+		
+		System.out.println(myPark.calculateRevenue(myCrowd, oneDay));
 
 
 	}
