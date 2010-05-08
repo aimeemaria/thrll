@@ -32,6 +32,7 @@ Set SpendingCapacity 10;
 Start:
 {
 Set Cost 100 In GiantWheel;
+Number res = 0;
 String a;
 Days d = 10;
 a = CalculateRevenue: MyCrowdTwo,d;
