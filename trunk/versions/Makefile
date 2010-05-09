@@ -1,5 +1,4 @@
-# only works with the Java extension of yacc: 
-# byacc/j from http://troi.lincom-asg.com/~rjamison/byacc/
+# makefile to generate the THRLL parser
 
 JFLEX  = jflex 
 BYACCJ = yacc.linux -Jthrows=ThrillException -Jnorun -d -v
@@ -15,7 +14,7 @@ run: Parser.class
 build: clean Parser.class
 
 clean: 
-	rm -rf *.*~ *.class Parser.java Yylex.java ParserTokens.java ParserVal.java
+	del *.*~ *.class Parser.java Yylex.java ParserTokens.java ParserVal.java
 
 Parser.class: Yylex.java ThrillUserFunction.class ThrillException.class Parser.java
 	$(JAVAC) Parser.java
