@@ -212,8 +212,7 @@ public class Store implements LandElement {
 
 	@Override
 	public double calculateRevenue() {
-		// TODO Auto-generated method stub
-		return 0;
+		return sales;
 	}
 
 	@Override
