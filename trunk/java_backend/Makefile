@@ -1,14 +1,18 @@
 JAVAC  = javac
 JAR = jar -cf
 
-# targets:
+ifdef _IS_WINDOWS
+	DELETE = del /q /s /f
+else
+	DELETE = rm -rf
+endif
 
 all: backend.jar
 
 build: clean backend.jar
 
 clean: 
-	rm -rf *.*~ *.class thrill.jar
+	$(DELETE) *.*~ *.class thrill.jar
 
 backend.jar: Attraction.class Days.class Months.class NormalDistribution.class ThrillException.class Weeks.class Years.class
 	$(JAR) thrill.jar *.class

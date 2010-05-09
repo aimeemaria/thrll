@@ -1,6 +1,12 @@
 JAVAC  = javac
 JAR = jar -cf
 
+ifdef _IS_WINDOWS
+	DELETE = del /q /s /f
+else
+	DELETE=rm -rf
+endif
+
 # targets:
 
 all: ui.class
@@ -11,7 +17,7 @@ run: ui.class
 build: clean ui.class
 
 clean: 
-	rm -rf *.*~ *.class
+	$(DELETE) *.*~ *.class
 
 ui.class:
 	$(JAVAC) ui.java DisplayPanel.java TextAreaDemo.java
