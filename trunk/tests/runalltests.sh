@@ -25,7 +25,7 @@ then
     # if build command is issued, then call the build script
     # which will build the parser, create jars etc - initial setup
     echo "Building the thrill parser, thrill backend, creating required jars."
-    $rundir/gui_build.sh
+    $rundir/gui_build_linux.sh
 else
     echo "Build skipped."
 fi
