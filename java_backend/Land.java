@@ -1,5 +1,5 @@
 /*
-ccc * Land.java
+ * Land.java
  * Team THRLL
  * This file represents Land in theme park.
  */
@@ -14,6 +14,7 @@ public class Land {
 	
 	//list of land element objects
 	private ArrayList <LandElement> LandElemObjs = new ArrayList<LandElement>();
+	int nextslot=0;
 	//a land can hold up to 6 landElements
 	
 	/* Constructor
@@ -24,6 +25,7 @@ public class Land {
 		// Set Default Values
 		location = 1;
 		LandName = "Empty Land";
+		nextslot = LandElemObjs.size();
 	}
 	
 	public String getLandName() 
@@ -49,9 +51,10 @@ public class Land {
 	// Create the Land Elements in Land
 	public void add(LandElement t)
 	{
-		if(LandElemObjs.size() < 9){
-			t.setLand(this);
+		if(LandElemObjs.size() < 6){
+			//t.setLand(this);
 			LandElemObjs.add(t);
+			nextslot=LandElemObjs.size();
 		}
 		else
 			System.out.println("Land is full!");

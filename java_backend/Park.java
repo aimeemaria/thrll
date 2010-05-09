@@ -46,8 +46,8 @@ public class Park
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); 
 		int SCREEN_WIDTH=(int)dim.getWidth(); //screen size for panel
 		int SCREEN_HEIGHT=(int)dim.getHeight();
-		cx = (int)SCREEN_WIDTH/3;
-		cy = (int) SCREEN_HEIGHT/3;
+		cx = (int)(SCREEN_WIDTH/3-cr/3);
+		cy = (int) (SCREEN_HEIGHT/3-cr/3);
 	}
 
 	public String getParkName() 
@@ -131,7 +131,7 @@ public class Park
 					for(int j =0; j < LandObjs.get(i).getContents().size();j++){//for each element in this land, write position to file
 						e = LandObjs.get(i).getContents().get(j);
 						p = e.getPosition();
-						position = Integer.toString((int)p.getX()*cr + cx) + " " + Integer.toString((int)p.getY()*cr + cy);
+						position = Double.toString(p.getX()*cr + cx) + " " + Double.toString(p.getY()*cr + cy);
 						type = e.getType();
 						positionFile.write( type + " " + position + "\n");
 					}
