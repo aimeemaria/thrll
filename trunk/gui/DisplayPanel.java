@@ -19,10 +19,17 @@ public class DisplayPanel extends JPanel {
 	Graphics2D g;
 	ImageIcon[] boys;
 	int xposition[], yposition[];//array of people positions
+	int prevx[],prevy[];
+	char gender[];//is this person a male or female
 	int eposx[],eposy[];//array of land element positions
 	char type[];//array that holds type of each land element at index
 	boolean flag=false; //flag if graphics needs to be painted
 
+	//center and radius of hub
+	int cx = (int)SCREEN_WIDTH/3;
+	int cy = (int) SCREEN_HEIGHT/3;
+	int cr = 40; //hub radius
+	
 	//peopleSize = crowd size
 	int peopleSize;
 	//numObjs = LandObjs.size()
@@ -65,10 +72,6 @@ public class DisplayPanel extends JPanel {
 
 	public void drawhub(Graphics2D g) throws InterruptedException {//actually draws the tree
 
-		//center and radius of hub
-		int cx = (int)SCREEN_WIDTH/3;
-		int cy = (int) SCREEN_HEIGHT/3;
-		int cr = 40; //hub radius
 		g.setStroke(new BasicStroke(5));
 		//GradientPaint grad1 = new GradientPaint(0, 0, Color.cyan, 175, 175, Color.green, true);
 		//GradientPaint grad2 = new GradientPaint(0, 0, Color.green, 175, 175, Color.cyan, true);
@@ -90,7 +93,7 @@ public class DisplayPanel extends JPanel {
 		int x=0,x1=0,y=0,y2=0 ;
 		int degrees = 60;
 
-		int idx = 5;
+		int idx = 6;
 		Polygon tri;
 		for (int i = 1 ; i < 7 ; i++){
 			rad = degrees * Math.PI / 180; 
@@ -130,16 +133,10 @@ public class DisplayPanel extends JPanel {
 
 
 		if(flag){
-			g.drawString("Your Park Snapshot",cx - 150,50);
-
-			//find the peopleSize
-			for(int i = 0; i < peopleSize; i++ ) {
-				//System.out.println("xposition: " + xposition[i] + " yposition: " + yposition[i]);
-				g.setColor(Color.red);
-				//g.drawOval(xposition[i], yposition[i], 1, 1);
-				boy.paintIcon(this,g,xposition[i],yposition[i]);
-			}
 			
+			Random r = new Random();
+			g.drawString("Your Park Snapshot",cx - 150,30);
+			//draw the land element icons
 			for(int j = 0;j < numObjs;j++){
 				switch(type[j]){
 				case 'a': 
@@ -150,6 +147,30 @@ public class DisplayPanel extends JPanel {
 					break;
 				case 'r':restaurant.paintIcon(this,g,eposx[j],eposy[j]);
 				}
+			}
+			
+			
+			//draw the people
+			for( int i = 0; i < peopleSize; i++ ) {
+				if(gender[i]=='m')
+					boy.paintIcon(this,g,xposition[i],yposition[i]);
+				else
+					girl.paintIcon(this,g,xposition[i],yposition[i]);
+				/*
+				if(xposition[i]!=prevx[i] && yposition[i]!=prevy[i]){
+					if(gender[i]=='m')
+						boy.paintIcon(this,g,xposition[i],yposition[i]);
+					else
+						girl.paintIcon(this,g,xposition[i],yposition[i]);
+				}
+				else
+				{
+					if(gender[i]=='m')
+						boy.paintIcon(this,g,cx-30+r.nextInt(50),cy-20+r.nextInt(50));
+					else
+						girl.paintIcon(this,g,cx-30+r.nextInt(50),cy-20+r.nextInt(50));
+				}
+				*/
 			}
 
 			//draw people icons
@@ -168,7 +189,7 @@ public class DisplayPanel extends JPanel {
 //			}
 		}
 		else{
-			g.drawString("Theme Park Layout",cx - 150,50);
+			g.drawString("Theme Park Layout",cx - 150,30);
 			g.drawString("Hub",cx-25,cy+10);
 			degrees = 30;
 			idx = 3;
@@ -207,12 +228,14 @@ public class DisplayPanel extends JPanel {
 			eposx = new int[numObjs];
 			eposy = new int[numObjs];
 			type = new char[numObjs];
+			
+			//next few lines are positions of the elements(store, attraction, store)
 			for(int i = 0 ; i < numObjs;i++){
 				read = reader.readLine();
 				String[] line = read.split(" ");
 				type[i] = line[0].charAt(0);
-				eposx[i] = Integer.parseInt(line[1]);
-				eposy[i] = Integer.parseInt(line[2]);
+				eposx[i] = (int)Double.parseDouble(line[1]);
+				eposy[i] = (int)Double.parseDouble(line[2]);
 				
 			}
 			
@@ -225,15 +248,22 @@ public class DisplayPanel extends JPanel {
 			//boys = new ImageIcon[peopleSize];
 			xposition = new int[peopleSize];
 			yposition = new int[peopleSize];
-			//for(int i=0;i<peopleSize;i++) {
-			//	boys[i] = createImageIcon("boy.gif");
-			//}
-
-			Thread.sleep(200);
-			paintImmediately(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			prevx = new int[peopleSize];
+			prevx = new int[peopleSize];
+			//set half the people as male, half as female
+			gender = new char[peopleSize];
+			int i;
+			for(i = 0; i < (int)(peopleSize/2);i++)
+				gender[i]='m';
+			for(int j = i ; j < peopleSize; j++)
+				gender[j]='f';
+			for(int j = 0 ; j < peopleSize; j++){
+				xposition[j]= cx - 20 + generator.nextInt(30);
+				yposition[j]= cy - 20 + generator.nextInt(30);
+			}
 			
-			//next few lines are positions of the elements(store, attraction, store)
-
+			paintImmediately(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			Thread.sleep(200);
 			//read people positions
 			while ((read = reader.readLine()) != null) {
 				String[] line = read.split(":");
@@ -242,16 +272,20 @@ public class DisplayPanel extends JPanel {
 				double posx = Double.parseDouble(line[1]);
 				double posy = Double.parseDouble(line[2]);
 				
-				xposition[id] = (int)((posx == 0) ? 0: (posx + 240 + generator.nextInt(40)));
-				yposition[id] = (int)((posy == 0) ? 0: (posy + 240 + generator.nextInt(30)));
+				xposition[id] = (int)((posx == 0) ? 0: (cr*posx + cx + generator.nextInt(16)));
+				yposition[id] = (int)((posy == 0) ? 0: (cr*posy + cy + generator.nextInt(16)));
 				
 				//boy.paintIcon(this,g,(int)xposition[id],(int)posy+240);
 				//paintImmediately(xposition[id] - 4, yposition[id] - 4, 10, 10);
 				paintImmediately(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+				
 				if(id < prevId ) { //when the next tick starts.
 					repaint();
 					Thread.sleep(10);
 				}
+				prevx=xposition;
+				prevy=yposition;
+				
 			}
 		}catch(IOException ioexception) {
 

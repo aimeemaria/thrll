@@ -18,7 +18,7 @@ public class Restaurant implements LandElement
 	 private double price;
 	 private double sales;
 	 private Land land;
-
+	 
 	 private Point2D.Double position;
 	 private int timeNeeded;
 	 private Random generator;
@@ -98,7 +98,7 @@ public class Restaurant implements LandElement
 	 { 
 		 return cost; 
 	 } 
-	  
+	 
 	 public int getCapacity() 
 	 { 
 		 return capacity; 
@@ -158,11 +158,24 @@ public class Restaurant implements LandElement
 	 { 
 		this.land = land; 
 		//set location within land
-		Random r = new Random();
-		
+		int slot = land.nextslot;//location within a land, where each land is split into 1 of 9 possible slots
+		//System.out.println("restaurant slot" + slot);
 		//possible radius idx within land 2-4
-		int idx = r.nextInt(2)+2;
-		int angle = r.nextInt(60) + 60*(land.getLocation()-1);
+		int idx,angle;
+		
+		if(slot <2)
+			idx = 2; 
+		else if(slot < 4)
+			idx = 3;
+		else
+			idx = 4;
+		
+		if(slot % 2 == 0)
+			angle = 20+ 60*(land.getLocation()-1);
+		else 
+			angle = 40+ 60*(land.getLocation()-1);
+		
+		
 		double x = idx*Math.cos(Math.toRadians(angle));
 		double y = idx*Math.sin(Math.toRadians(angle));
 		
@@ -188,8 +201,6 @@ public class Restaurant implements LandElement
 		return 'r';
 	}
 
-
-
 	/**
 	 * @return the timeNeeded
 	 */
@@ -200,7 +211,7 @@ public class Restaurant implements LandElement
 
 
 	/**
-	 * @param timeNeeded the timeNeeded to set
+	 * @param timeNeeded the timeNeeded to se
 	 */
 	public void setTimeNeeded(int timeNeeded) {
 		this.timeNeeded = timeNeeded;
