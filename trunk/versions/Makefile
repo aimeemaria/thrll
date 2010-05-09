@@ -6,15 +6,18 @@ JAVAC  = javac
 
 # targets:
 
-all: Parser.class
+all: thrill_parser.jar
 
-run: Parser.class
+run: thrill_parser.jar
 	java Parser
 
 build: clean Parser.class
 
 clean: 
-	del *.*~ *.class Parser.java Yylex.java ParserTokens.java ParserVal.java
+	rm -rf *.*~ *.class Parser.java Yylex.java ParserTokens.java ParserVal.java
+
+thrill_parser.jar: Parser.class
+	jar -cf thrill_parser.jar *.class
 
 Parser.class: Yylex.java ThrillUserFunction.class ThrillException.class Parser.java
 	$(JAVAC) Parser.java
