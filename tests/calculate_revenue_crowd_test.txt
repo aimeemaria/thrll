@@ -35,4 +35,5 @@ Set Cost 100 In GiantWheel;
 Number a;
 Days d = 10;
 a = CalculateRevenue: Crowdone,d;
+PrintMe: ;
 }
